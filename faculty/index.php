@@ -12,15 +12,15 @@
     <meta name="viewport" content="width=device-width" />
 
 
-    <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
-    <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
-    <link href="../../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/main.css" rel="stylesheet" />
+    <link href="../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
+    <link href="../assets/css/demo.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
-    <link href="../../assets/css/themify-icons.css" rel="stylesheet">
+    <link href="../assets/css/themify-icons.css" rel="stylesheet">
 
 </head>
 <body>
@@ -30,39 +30,34 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    Faculty Dashboard
                 </a>
             </div>
 
             <ul class="nav">
-                <li>
-                    <a href="../">
+                <li class="active">
+                    <a href="">
                         <p>Main Menu</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../questions/">
+                    <a href="questions/">
                         <p>Questions</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../exams/">
+                    <a href="../admin/exams/">
                         <p>Exam</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../class/">
-                        <p>Class</p>
+                    <a href="subjects/">
+                        <p>Subjects</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../generate/">
+                    <a href="generate/">
                         <p>Reports</p>
-                    </a>
-                </li>
-                <li  class="active">
-                    <a href="">
-                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -84,7 +79,7 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../profile.php">
+                            <a href="profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>
@@ -105,7 +100,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -255,13 +250,13 @@
 
 </body>
 
-    <script src="../../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
-	<script src="../../assets/js/main.js" type="text/javascript"></script>
-	<script src="../../assets/js/main-checkbox-radio.js"></script>
-	<script src="../../assets/js/chartist.min.js"></script>
-    <script src="../../assets/js/main-notify.js"></script>
-	<script src="../../assets/js/paper-dashboard.js"></script>
+    <script src="../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="../assets/js/main.js" type="text/javascript"></script>
+	<script src="../assets/js/main-checkbox-radio.js"></script>
+	<script src="../assets/js/chartist.min.js"></script>
+    <script src="../assets/js/main-notify.js"></script>
+	<script src="../assets/js/paper-dashboard.js"></script>
 
 
-	<script src="../../assets/js/demo.js"></script>
+	<script src="../assets/js/demo.js"></script>
 </html>

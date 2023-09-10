@@ -30,64 +30,39 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin
+                    Admin Dashboard
                 </a>
             </div>
 
             <ul class="nav">
-                <li class="active">
-                    <a href="dashboard.html">
+                <li  class="active">
+                    <a href="">
                         <p>Main Menu</p>
                     </a>
                 </li>
                 <li>
-                    <a href="user.html">
-                        <p>Upload Questions</p>
+                    <a href="questions/">
+                        <p>Questions</p>
                     </a>
                 </li>
                 <li>
-                    <a href="user.html">
-                        <p>Add Questions</p>
+                    <a href="exams/">
+                        <p>Exam</p>
                     </a>
                 </li>
                 <li>
-                    <a href="user.html">
-                        <p>Create Exam</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="user.html">
-                        <p>Schedule Exam</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="user.html">
-                        <p>Edit Question Bank</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="user.html">
-                        <p>Modify User Profiles</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="table.html">
-                        <p>Add/Remove Users</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="class/index.php">
+                    <a href="class/">
                         <p>Class</p>
                     </a>
                 </li>
                 <li>
-                    <a href="typography.html">
-                        <p>Students</p>
+                    <a href="generate/">
+                        <p>Reports</p>
                     </a>
                 </li>
                 <li>
-                    <a href="icons.html">
-                        <p>Reports</p>
+                    <a href="user/">
+                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -109,7 +84,7 @@
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <a href="profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>
@@ -356,6 +331,6 @@
     <script src="../assets/js/main-notify.js"></script>
 	<script src="../assets/js/paper-dashboard.js"></script>
 
-    <!-- Paper Dashboard DEMO methods, don't include it in your project! -->
+
 	<script src="../assets/js/demo.js"></script>
 </html>

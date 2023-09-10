@@ -30,7 +30,7 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    Faculty Dashboard
                 </a>
             </div>
 
@@ -40,29 +40,24 @@
                         <p>Main Menu</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../questions/">
+                <li class="active">
+                    <a href="">
                         <p>Questions</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../exams/">
+                    <a href="../../admin/exams/">
                         <p>Exam</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../class/">
-                        <p>Class</p>
+                <li >
+                    <a href="../subjects/">
+                        <p>Subjects</p>
                     </a>
                 </li>
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
-                    </a>
-                </li>
-                <li  class="active">
-                    <a href="">
-                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -105,7 +100,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
