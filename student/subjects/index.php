@@ -40,13 +40,13 @@
                         <p>Main Menu</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../subjects/">
+                <li class="active">
+                    <a href="">
                         <p>Subjects</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="">
+                <li>
+                    <a href="../examination/">
                         <p>Exam</p>
                     </a>
                 </li>
