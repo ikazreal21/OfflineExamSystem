@@ -1,3 +1,14 @@
+<?php 
+session_start();
+
+
+if($_SESSION["usertype"] !=  "faculty"){
+    header('location:../others/validation.php');
+}
+
+ ?>
+
+
 <!doctype html>
 <html lang="en">
 <head>

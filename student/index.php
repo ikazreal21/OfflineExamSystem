@@ -1,3 +1,16 @@
+<?php 
+session_start();
+
+
+if($_SESSION["usertype"] !=  "student"){
+    header('location:../others/validation.php');
+}
+
+ ?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>

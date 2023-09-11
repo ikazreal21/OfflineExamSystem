@@ -1,3 +1,51 @@
+<?php 
+session_start();
+
+require_once 'dbconnect.php';
+// require_once 'others/validation.php';
+
+
+if(ISSET($_SESSION["usertype"])){
+    header('location:others/validation.php');
+  }
+
+try
+{
+    if (isset($_POST["login"])) {
+        if (empty($_POST["username"]) || empty($_POST["password"])) {
+            $message = '<label>All fields are required</label>';
+        } else {
+            $query = "SELECT * FROM accounts WHERE username = :username AND password = :password";
+            $statement = $pdo->prepare($query);
+            $statement->execute(
+                array(
+                    'username' => $_POST["username"],
+                    'password' => $_POST["password"],
+                )
+            );
+            $count = $statement->rowCount();
+            $user = $statement->fetchAll(PDO::FETCH_ASSOC);
+            // echo '<pre>';
+            // var_dump($user[0]);
+            // echo '<pre>';
+
+            if ($count > 0) {
+                $_SESSION["username"] = $_POST["username"];
+                $_SESSION["email"] = $user[0]["email"];
+                $_SESSION["usertype"] = $user[0]["role"];
+                $_SESSION["first_name"] = $user[0]["first_name"];
+                
+                echo "<script>alert('Login Success'); window.location = 'others/validation.php';</script>";
+            } else {
+                echo "<script>alert('Login Error'); window.location = 'login.php';</script>";
+            }
+        }
+    }
+} catch (PDOException $error) {
+    $message = $error->getMessage();
+}
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,6 +69,7 @@
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="assets/css/themify-icons.css" rel="stylesheet">
+	<script src="assets/js/demo.js"></script>
 
 </head>
 <body>
@@ -60,12 +109,12 @@
                             </div>
                             <div class="container">
                                 <div class="content">
-                                    <form method="post">
+                                    <form method="post" action="login.php">
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Username</label>
-                                                    <input type="text" class="form-control border-input" placeholder="Username" value="">
+                                                    <input type="text" name="username" class="form-control border-input" placeholder="Username" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -73,12 +122,12 @@
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Password</label>
-                                                    <input type="password" class="form-control border-input" placeholder="Password">
+                                                    <input type="password" name="password" class="form-control border-input" placeholder="Password" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-info btn-fill btn-wd">Login</button>
+                                            <button type="submit" name="login" class="btn btn-info btn-fill btn-wd">Login</button>
                                         </div>
                                         <div class="clearfix"></div>
                                     </form>
@@ -103,6 +152,24 @@
     <script src="assets/js/main-notify.js"></script>
 	<script src="assets/js/paper-dashboard.js"></script>
 
+    <script type="text/javascript">
 
-	<script src="assets/js/demo.js"></script>
+    function showNotification (from, align, color, text) {
+    	// color = Math.floor((Math.random() * 4) + 1);
+
+    	$.notify({
+        	message: text
+
+        },{
+            type: color,
+            timer: 4000,
+            placement: {
+                from: from,
+                align: align
+            }
+        });
+	}
+    </script>
+
+
 </html>

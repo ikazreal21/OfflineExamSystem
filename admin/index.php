@@ -1,3 +1,18 @@
+<?php 
+session_start();
+
+
+if($_SESSION["usertype"] !=  "admin"){
+    header('location:../others/validation.php');
+}
+
+
+
+?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -105,7 +120,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
