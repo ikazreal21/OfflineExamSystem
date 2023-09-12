@@ -52,7 +52,7 @@
                 </li>
                 <li>
                     <a href="../class/">
-                        <p>Class</p>
+                        <p>Subject</p>
                     </a>
                 </li>
                 <li>

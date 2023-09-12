@@ -52,7 +52,7 @@
                 </li>
                 <li>
                     <a href="../class/">
-                        <p>Class</p>
+                        <p>Subject</p>
                     </a>
                 </li>
                 <li>
@@ -122,17 +122,45 @@
                     <div class="">
                         <div class="card ">
                         <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <form action="" method="post">
+                                            <div class="flex">
+                                                <p><b>Filter</b></p>
+                                                <select class="form-select" style="font-size: medium;">
+                                                    <option selected>Semester</option>
+                                                    <option value="1">1st</option>
+                                                    <option value="2">2nd</option>
+                                                </select>
+                                                <select class="form-select" style="font-size: medium; margin-left:5rem;">
+                                                    <option selected>Year Level</option>
+                                                    <option value="1">1st</option>
+                                                    <option value="2">2nd</option>
+                                                    <option value="3">3rd</option>
+                                                    <option value="4">4th</option>
+                                                </select>
+                                                <select class="form-select" style="font-size: medium; margin-left:5rem;">
+                                                    <option selected>Grading Period</option>
+                                                    <option value="1">Prelim</option>
+                                                    <option value="2">Midterm</option>
+                                                    <option value="3">Finals</option>
+                                                </select>
+                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="left">
+                                        <a type="submit" class="btn btn-info btn-fill btn-wd">Upload Questions</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                        <th>Subject ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Number of Students</th>
+                                    	<th>Action</th>
                                     </thead>
                                     <tbody>
                                         <tr>
@@ -140,84 +168,72 @@
                                         	<td>Dakota Rice</td>
                                         	<td>$36,738</td>
                                         	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
                                         </tr>
                                         <tr>
                                         	<td>2</td>
                                         	<td>Minerva Hooper</td>
                                         	<td>$23,789</td>
                                         	<td>Curaçao</td>
-                                        	<td>Sinaai-Waas</td>
                                         </tr>
                                         <tr>
                                         	<td>3</td>
                                         	<td>Sage Rodriguez</td>
                                         	<td>$56,142</td>
                                         	<td>Netherlands</td>
-                                        	<td>Baileux</td>
                                         </tr>
                                         <tr>
                                         	<td>4</td>
                                         	<td>Philip Chaney</td>
                                         	<td>$38,735</td>
                                         	<td>Korea, South</td>
-                                        	<td>Overland Park</td>
                                         </tr>
                                         <tr>
                                         	<td>5</td>
                                         	<td>Doris Greene</td>
                                         	<td>$63,542</td>
                                         	<td>Malawi</td>
-                                        	<td>Feldkirchen in Kärnten</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                         <tr>
                                         	<td>6</td>
                                         	<td>Mason Porter</td>
                                         	<td>$78,615</td>
                                         	<td>Chile</td>
-                                        	<td>Gloucester</td>
                                         </tr>
                                     </tbody>
                                 </table>

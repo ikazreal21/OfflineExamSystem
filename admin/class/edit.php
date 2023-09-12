@@ -1,3 +1,53 @@
+<?php 
+session_start();
+
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+
+
+$id = $_GET['id'] ?? null;
+
+
+if (!$id) {
+    header('Location: index.php');
+    exit;
+}
+
+$statement = $pdo->prepare('SELECT * FROM subject WHERE rnd_id = :id ');
+$statement->bindValue(':id', $id);
+$statement->execute();
+$procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// $yearlevel = $procdata1[0]["yearlevel"];
+$subject = $procdata1[0]["subject_name"];
+
+$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id');
+$statement->bindValue(':subject_id', $id);
+$statement->execute();
+$procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$procdata = [];
+
+foreach ($procdata2 as $i => $products) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+    $statement->bindValue(':student_id', $products["student_id"]);
+    $statement->execute();
+    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // echo '<pre>';
+    // var_dump($procdatas);
+    // echo '<pre>';
+
+    $procdata[] = $procdatas[0];
+
+}
+
+
+ ?>
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -50,13 +100,13 @@
                         <p>Exam</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../class/">
+                <li  class="active">
+                    <a href="index.php">
                         <p>Subject</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="">
+                <li>
+                    <a href="../generate/">
                         <p>Reports</p>
                     </a>
                 </li>
@@ -79,7 +129,7 @@
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#"></a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -105,7 +155,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -122,103 +172,27 @@
                     <div class="">
                         <div class="card ">
                         <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                                <h4 class="title"><b><?php echo $subject; ?></b></h4>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table class="table">
                                     <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                        <th>Student ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Year Level</th>
+                                    	<th>Action</th>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
+                                        	<td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
+                                        	<td style="text-align:left;">
+                                                <a href="delete.php?student_id=<?php echo $item['student_id']; ?>" class="btn btn-danger btn-wd">Remove</a>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                        	<td>2</td>
-                                        	<td>Minerva Hooper</td>
-                                        	<td>$23,789</td>
-                                        	<td>Curaçao</td>
-                                        	<td>Sinaai-Waas</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>3</td>
-                                        	<td>Sage Rodriguez</td>
-                                        	<td>$56,142</td>
-                                        	<td>Netherlands</td>
-                                        	<td>Baileux</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>4</td>
-                                        	<td>Philip Chaney</td>
-                                        	<td>$38,735</td>
-                                        	<td>Korea, South</td>
-                                        	<td>Overland Park</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>5</td>
-                                        	<td>Doris Greene</td>
-                                        	<td>$63,542</td>
-                                        	<td>Malawi</td>
-                                        	<td>Feldkirchen in Kärnten</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

@@ -1,3 +1,37 @@
+<?php 
+session_start();
+
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+
+$search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['search2'] ?? '';
+
+if ($search1 && $search2) {
+    $statement = $pdo->prepare('SELECT * FROM subject WHERE semester like :semester and yearlevel like :yearlevel');
+    $statement->bindValue(':semester', "%$search1%");
+    $statement->bindValue(':yearlevel', "%$search2%");
+} elseif ($search1 && empty($search2)) {
+    $statement = $pdo->prepare('SELECT * FROM subject WHERE semester like :semester');
+    $statement->bindValue(':semester', "%$search1%");
+}
+ elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT * FROM subject WHERE yearlevel like :yearlevel');
+    $statement->bindValue(':yearlevel', "%$search2%"); 
+} else {
+    $statement = $pdo->prepare('SELECT * FROM subject');
+}
+
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+ ?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -52,7 +86,7 @@
                 </li>
                 <li  class="active">
                     <a href="">
-                        <p>Class</p>
+                        <p>Subject</p>
                     </a>
                 </li>
                 <li>
@@ -105,7 +139,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -115,110 +149,62 @@
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <form action="" method="get">
+                                            <div class="flex">
+                                                <p><b>Filter</b></p>
+                                                <select name="search1" class="form-select" style="font-size: medium;">
+                                                    <option value="" selected>Semester</option>
+                                                    <option value="1st">1st</option>
+                                                    <option value="2nd">2nd</option>
+                                                </select>
+                                                <select name="search2" class="form-select" style="font-size: medium; margin-left:5rem;">
+                                                    <option value="" selected>Year Level</option>
+                                                    <option value="1st">1st</option>
+                                                    <option value="2nd">2nd</option>
+                                                    <option value="3rd">3rd</option>
+                                                    <option value="4th">4th</option>
+                                                </select>
+                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="left">
+                                        <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table class="table">
                                     <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                        <th>Subject ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Number of Students</th>
+                                    	<th>Year Level</th>
+                                    	<th>Semester</th>
+                                    	<th>Action</th>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
+                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo count(json_decode($item['list_of_student'])); ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['semester']; ?></td>
+                                        	<td style="text-align:left;">
+                                                <a href="enroll.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Enroll</a>
+                                                <a href="edit.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-warning btn-wd">Edit</a>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                        	<td>2</td>
-                                        	<td>Minerva Hooper</td>
-                                        	<td>$23,789</td>
-                                        	<td>Curaçao</td>
-                                        	<td>Sinaai-Waas</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>3</td>
-                                        	<td>Sage Rodriguez</td>
-                                        	<td>$56,142</td>
-                                        	<td>Netherlands</td>
-                                        	<td>Baileux</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>4</td>
-                                        	<td>Philip Chaney</td>
-                                        	<td>$38,735</td>
-                                        	<td>Korea, South</td>
-                                        	<td>Overland Park</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>5</td>
-                                        	<td>Doris Greene</td>
-                                        	<td>$63,542</td>
-                                        	<td>Malawi</td>
-                                        	<td>Feldkirchen in Kärnten</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

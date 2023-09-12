@@ -1,12 +1,9 @@
-<?php 
+<?php
 session_start();
 
-
-if($_SESSION["usertype"] !=  "admin"){
+if ($_SESSION["usertype"] != "admin") {
     header('location:../others/validation.php');
 }
-
-
 
 ?>
 
@@ -67,7 +64,7 @@ if($_SESSION["usertype"] !=  "admin"){
                 </li>
                 <li>
                     <a href="class/">
-                        <p>Class</p>
+                        <p>Subject</p>
                     </a>
                 </li>
                 <li>
