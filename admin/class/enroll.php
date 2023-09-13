@@ -47,6 +47,11 @@ foreach ($procdata2 as $i => $products) {
 
 }
 
+if (count($procdata) == 0) {
+    header('Location: index.php');
+}
+
+
  ?>
 
 

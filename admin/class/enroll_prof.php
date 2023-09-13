@@ -4,7 +4,9 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-
+// echo '<pre>';
+//  var_dump($_SESSION);
+// echo '<pre>';
 
 $id = $_GET['id'] ?? null;
 
@@ -22,31 +24,34 @@ $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 // $yearlevel = $procdata1[0]["yearlevel"];
 $subject = $procdata1[0]["subject_name"];
 
-$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id');
-$statement->bindValue(':subject_id', $id);
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty"');
 $statement->execute();
 $procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
 
 $procdata = [];
 
 foreach ($procdata2 as $i => $products) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
-    $statement->bindValue(':student_id', $products["student_id"]);
+    $statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE prof_id = :prof_id and subject_id = :subject_id ');
+    $statement->bindValue(':prof_id', $products["id"]);
+    $statement->bindValue(':subject_id', $id);
     $statement->execute();
-    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $count = $statement->rowCount();
 
     // echo '<pre>';
-    // var_dump($procdatas);
+    // var_dump($count);
     // echo '<pre>';
 
-    $procdata[] = $procdatas[0];
+    if ($count == 0) {
+        $procdata[] = $products;
+    }
 
 }
-
 
 if (count($procdata) == 0) {
     header('Location: index.php');
 }
+
 
  ?>
 
@@ -181,19 +186,17 @@ if (count($procdata) == 0) {
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Student ID</th>
-                                    	<th>Subject Name</th>
-                                    	<th>Year Level</th>
+                                        <th>Faculty ID</th>
+                                    	<th>Faculty Name</th>
                                     	<th>Action</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="text-align:left;">
-                                                <a href="remove.php?id=<?php echo $id; ?>&student_id=<?php echo $item['student_id']; ?>" class="btn btn-danger btn-wd">Remove</a>
+                                                <a href="add_prof.php?id=<?php echo $id; ?>&faculty=<?php echo $item['id']; ?>" class="btn btn-success btn-wd">Add</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

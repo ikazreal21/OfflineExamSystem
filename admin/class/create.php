@@ -1,42 +1,53 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-
-
 $subject = '';
 $semester = '';
 $yearlevel = '';
 $unique_id = '';
+$prof_id = '';
+$prof_name = '';
+
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty" ');
+$statement->execute();
+$procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $subject = $_POST['subject'];
     $semester = $_POST['semester'];
     $yearlevel = $_POST['yearlevel'];
+    $prof_id = $_POST['prof_id'];
     $unique_id = randomString(8, 2);
-    
+
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :prof_id ');
+    $statement->bindValue(':prof_id', $prof_id);
+    $statement->execute();
+    $prof = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $prof_name = ucfirst($prof[0]["first_name"]) . "" . ucfirst($prof[0]["last_name"]);
+
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO subject (subject_name, rnd_id, semester, yearlevel)
-              VALUES (:subject_name, :rnd_id, :semester, :yearlevel)");
+        $statement = $pdo->prepare("INSERT INTO subject (subject_name, rnd_id, semester, yearlevel, prof_name, prof_id)
+              VALUES (:subject_name, :rnd_id, :semester, :yearlevel, :prof_name, :prof_id)");
 
         $statement->bindValue(':subject_name', $subject);
         $statement->bindValue(':rnd_id', $unique_id);
         $statement->bindValue(':semester', $semester);
         $statement->bindValue(':yearlevel', $yearlevel);
+        $statement->bindValue(':prof_name', $prof_name);
+        $statement->bindValue(':prof_id', $prof_id);
         $statement->execute();
         header('Location:index.php');
     }
 
 }
 
-
-
-
- ?>
+?>
 
 
 <!doctype html>
@@ -198,6 +209,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <option value="2nd">2nd</option>
                                                         <option value="3rd">3rd</option>
                                                         <option value="4th">4th</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Professor's Name</label>
+                                                    <select name="prof_id" class="form-control border-input" required>
+                                                        <option value="" selected>-</option>
+                                                        <?php foreach ($procdata1 as $i => $item): ?>
+                                                        <option value="<?php echo $item['id']; ?>"><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></option>
+                                                        <?php endforeach;?>
                                                     </select>
                                                 </div>
                                             </div>

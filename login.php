@@ -34,6 +34,7 @@ try
                 $_SESSION["email"] = $user[0]["email"];
                 $_SESSION["usertype"] = $user[0]["role"];
                 $_SESSION["first_name"] = $user[0]["first_name"];
+                $_SESSION["id"] = $user[0]["id"];
                 
                 echo "<script>alert('Login Success'); window.location = 'others/validation.php';</script>";
             } else {

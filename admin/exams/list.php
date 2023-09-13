@@ -1,54 +1,35 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+$search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['search2'] ?? '';
 
-
-$id = $_GET['id'] ?? null;
-
-
-if (!$id) {
-    header('Location: index.php');
-    exit;
+if ($search1 && $search2) {
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester and yearlevel like :yearlevel');
+    $statement->bindValue(':semester', "%$search1%");
+    $statement->bindValue(':yearlevel', "%$search2%");
+} elseif ($search1 && empty($search2)) {
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester');
+    $statement->bindValue(':semester', "%$search1%");
+} elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE yearlevel like :yearlevel');
+    $statement->bindValue(':yearlevel', "%$search2%");
+} else {
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
 }
 
-$statement = $pdo->prepare('SELECT * FROM subject WHERE rnd_id = :id ');
-$statement->bindValue(':id', $id);
 $statement->execute();
-$procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// $yearlevel = $procdata1[0]["yearlevel"];
-$subject = $procdata1[0]["subject_name"];
+?>
 
-$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id');
-$statement->bindValue(':subject_id', $id);
-$statement->execute();
-$procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$procdata = [];
-
-foreach ($procdata2 as $i => $products) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
-    $statement->bindValue(':student_id', $products["student_id"]);
-    $statement->execute();
-    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-    // echo '<pre>';
-    // var_dump($procdatas);
-    // echo '<pre>';
-
-    $procdata[] = $procdatas[0];
-
-}
-
-
-if (count($procdata) == 0) {
-    header('Location: index.php');
-}
-
- ?>
 
 
 
@@ -99,13 +80,13 @@ if (count($procdata) == 0) {
                         <p>Questions</p>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="../exams/">
                         <p>Exam</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="index.php">
+                <li>
+                    <a href="../class/">
                         <p>Subject</p>
                     </a>
                 </li>
@@ -133,7 +114,7 @@ if (count($procdata) == 0) {
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#"></a>
+                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -169,31 +150,56 @@ if (count($procdata) == 0) {
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <form action="" method="get">
+                                            <div class="flex">
+                                                <p><b>Filter</b></p>
+                                                <select name="search1" class="form-select" style="font-size: medium;">
+                                                    <option value="" selected>Semester</option>
+                                                    <option value="1st">1st</option>
+                                                    <option value="2nd">2nd</option>
+                                                </select>
+                                                <select name="search2" class="form-select" style="font-size: medium; margin-left:5rem;">
+                                                    <option value="" selected>Year Level</option>
+                                                    <option value="1st">1st</option>
+                                                    <option value="2nd">2nd</option>
+                                                    <option value="3rd">3rd</option>
+                                                    <option value="4th">4th</option>
+                                                </select>
+                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="left">
+                                        <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Student ID</th>
+                                        <th>Subject ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Year Level</th>
+                                    	<th>Semester</th>
                                     	<th>Action</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
-                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
-                                        	<td style="text-align:left;">
-                                                <a href="remove.php?id=<?php echo $id; ?>&student_id=<?php echo $item['student_id']; ?>" class="btn btn-danger btn-wd">Remove</a>
+                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
+                                            <td style="text-align:left;">
+                                                <a href="create.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Exam</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

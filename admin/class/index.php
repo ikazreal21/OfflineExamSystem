@@ -1,33 +1,34 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-
 $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
 if ($search1 && $search2) {
-    $statement = $pdo->prepare('SELECT * FROM subject WHERE semester like :semester and yearlevel like :yearlevel');
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester and yearlevel like :yearlevel');
     $statement->bindValue(':semester', "%$search1%");
     $statement->bindValue(':yearlevel', "%$search2%");
 } elseif ($search1 && empty($search2)) {
-    $statement = $pdo->prepare('SELECT * FROM subject WHERE semester like :semester');
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester');
     $statement->bindValue(':semester', "%$search1%");
-}
- elseif ($search2 && empty($search1)) {
-    $statement = $pdo->prepare('SELECT * FROM subject WHERE yearlevel like :yearlevel');
-    $statement->bindValue(':yearlevel', "%$search2%"); 
+} elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE yearlevel like :yearlevel');
+    $statement->bindValue(':yearlevel', "%$search2%");
 } else {
-    $statement = $pdo->prepare('SELECT * FROM subject');
+    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
 }
 
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
- ?>
+?>
 
 
 
@@ -187,21 +188,32 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <th>Subject ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Number of Students</th>
+                                    	<th>Number of Professor</th>
                                     	<th>Year Level</th>
                                     	<th>Semester</th>
-                                    	<th>Action</th>
+                                    	<th>Enroll</th>
+                                    	<th>Professor</th>
+                                    	<th>Delete</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
                                         	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo count(json_decode($item['list_of_student'])); ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['number_of_stud']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['number_of_prof']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['semester']; ?></td>
-                                        	<td style="text-align:left;">
+                                        	<td style="text-align:center;">
                                                 <a href="enroll.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Enroll</a>
                                                 <a href="edit.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-warning btn-wd">Edit</a>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <a href="enroll_prof.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Add Professor</a>
+                                                <a href="edit_prof.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-warning btn-wd">Remove Professor</a>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <a href="delete.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
