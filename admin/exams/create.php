@@ -4,42 +4,85 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+$rnd_id = $_GET['id'] ?? '';
 
+$subject_name = '';
 $subject_id = '';
 $grading_period = '';
 $semester = '';
 $yearlevel = '';
 $prof_id = '';
-$multiplechoice = '';
-$identification = '';
-$matching = '';
-$trueorfalse = '';
+$prof_name = '';
+$multiplechoice = 0;
+$identification = 0;
+$matching = 0;
+$trueorfalse = 0;
+$status = 'close';
+$faculty = [];
 
-$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty" ');
+$statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE subject_id = :rnd_id ');
+$statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
-$faculty = $statement->fetchAll(PDO::FETCH_ASSOC);
+$faculty_id = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$statement = $pdo->prepare('SELECT * FROM subject');
+foreach ($faculty_id as $i => $facul) { 
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :faculty_id ');
+    $statement->bindValue(':faculty_id', $facul['prof_id']);
+    $statement->execute();
+    $faculty_get = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+    $faculty[] = $faculty_get[0];
+
+}
+
+// echo '<pre>';
+// var_dump($faculty);
+// echo '<pre>';
+
+$statement = $pdo->prepare('SELECT * FROM subject where rnd_id = :rnd_id');
+$statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $subject = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $subject = $_POST['subject'];
-    $semester = $_POST['semester'];
-    $yearlevel = $_POST['yearlevel'];
-    $unique_id = randomString(8, 2);
+    $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
+    $statement->bindValue(':prof_id', $_POST['prof_id']);
+    $statement->execute();
+    $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $subject_name = $subject[0]['subject_name'];
+    $subject_id = $subject[0]['rnd_id'];
+    $semester = $subject[0]['semester'];
+    $yearlevel = $subject[0]['yearlevel'];
+    $prof_id = $prof_details[0]['id'];
+    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $grading_period = $_POST['grading_period'];
+    $multiplechoice = $_POST['multiplechoice'];
+    $identification = $_POST['identification'];
+    $matching = $_POST['matching'];
+    $trueorfalse = $_POST['trueorfalse'];
+    // $unique_id = randomString(8, 2);
     
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO subject (subject_name, rnd_id, semester, yearlevel)
-              VALUES (:subject_name, :rnd_id, :semester, :yearlevel)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
+              VALUES (:subject, :subject_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
 
-        $statement->bindValue(':subject_name', $subject);
-        $statement->bindValue(':rnd_id', $unique_id);
-        $statement->bindValue(':semester', $semester);
+        $statement->bindValue(':subject', $subject_name);
+        $statement->bindValue(':subject_id', $subject_id);
+        $statement->bindValue(':grading_period', $grading_period);
         $statement->bindValue(':yearlevel', $yearlevel);
+        $statement->bindValue(':semester', $semester);
+        $statement->bindValue(':prof_name', $prof_name);
+        $statement->bindValue(':prof_id', $prof_id);
+        $statement->bindValue(':multiplechoice', $multiplechoice);
+        $statement->bindValue(':identification', $identification);
+        $statement->bindValue(':matching', $matching);
+        $statement->bindValue(':trueorfalse', $trueorfalse);
+        $statement->bindValue(':status', $status);
         $statement->execute();
         header('Location:index.php');
     }
@@ -185,12 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Subject</label>
-                                                    <select name="subject" class="form-control border-input" required>
-                                                        <option value="" selected>-</option>
-                                                        <?php foreach ($subject as $i => $item): ?>
-                                                        <option value="<?php echo $item['rnd_id'];  ?>"><?php echo ucfirst($item['subject_name']);?></option>
-                                                        <?php endforeach;?>
-                                                    </select>
+                                                    <input type="text" min="0" name="subject" class="form-control border-input" placeholder="" value="<?php echo $subject[0]['subject_name'];  ?>" disabled>
                                                 </div>
                                             </div>
                                         </div>
@@ -230,8 +268,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Grading Period</label>
-                                                    <select name="yearlevel" class="form-control border-input" required>
-                                                        <option value="" selected>Year Level</option>
+                                                    <select name="grading_period" class="form-control border-input" required>
+                                                        <option value="" selected>-</option>
                                                         <option value="Prelim">Prelim</option>
                                                         <option value="Midterm">Midterm</option>
                                                         <option value="Finals">Finals</option>

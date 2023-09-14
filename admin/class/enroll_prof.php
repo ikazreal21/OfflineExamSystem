@@ -180,7 +180,7 @@ if (count($procdata) == 0) {
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
+                            <div class="header">
                                 <h4 class="title"><b><?php echo $subject; ?></b></h4>
                             </div>
                             <div class="content table-responsive table-full-width">

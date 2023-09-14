@@ -1,3 +1,24 @@
+<?php 
+session_start();
+
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+
+$search = $_GET['search1'] ?? 'multiplechoice';
+
+$statement = $pdo->prepare("SELECT * FROM $search");
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+// echo '<pre>';
+// var_dump($_GET['search1']);
+// echo '<pre>';
+
+
+ ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -105,7 +126,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -124,117 +145,104 @@
                         <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <form action="" method="post">
+                                        <form action="" method="get">
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
-                                                <select class="form-select" style="font-size: medium;">
-                                                    <option selected>Semester</option>
-                                                    <option value="1">1st</option>
-                                                    <option value="2">2nd</option>
+                                                <select name="search1" class="form-select" style="font-size: medium;">
+                                                    <option value="multiplechoice" selected>Multiple Choice</option>
+                                                    <option value="identification">Identification</option>
+                                                    <option value="trueorfalse">True or False</option>
+                                                    <option value="matchingtype">Matching Type</option>
                                                 </select>
-                                                <select class="form-select" style="font-size: medium; margin-left:5rem;">
-                                                    <option selected>Year Level</option>
-                                                    <option value="1">1st</option>
-                                                    <option value="2">2nd</option>
-                                                    <option value="3">3rd</option>
-                                                    <option value="4">4th</option>
-                                                </select>
-                                                <select class="form-select" style="font-size: medium; margin-left:5rem;">
-                                                    <option selected>Grading Period</option>
-                                                    <option value="1">Prelim</option>
-                                                    <option value="2">Midterm</option>
-                                                    <option value="3">Finals</option>
-                                                </select>
-                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <a type="submit" class="btn btn-info btn-fill btn-wd">Upload Questions</a>
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Subject</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>Subject ID</th>
+                                        <?php if ($search == 'multiplechoice'): ?>
+                                        <th>Mutliple Choice ID</th>
                                     	<th>Subject Name</th>
-                                    	<th>Number of Students</th>
+                                    	<th>Question</th>
+                                    	<th>Choice 1</th>
+                                    	<th>Choice 2</th>
+                                    	<th>Choice 3</th>
+                                    	<th>Choice 4</th>
+                                    	<th>Choice 5</th>
+                                    	<th>Answer</th>
                                     	<th>Action</th>
+                                        <?php endif;?>
+                                        <?php if ($search == 'identification'): ?>
+                                        <th>Identification ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Question</th>
+                                    	<th>Answer</th>
+                                    	<th>Action</th>
+                                        <?php endif;?>
+                                        <?php if ($search == 'trueorfalse'): ?>
+                                        <th>True or False ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Question</th>
+                                    	<th>Answer</th>
+                                    	<th>Action</th>
+                                        <?php endif;?>
+                                        <?php if ($search == 'matchingtype'): ?>
+                                        <th>Matching Type ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Question</th>
+                                    	<th>Answer</th>
+                                    	<th>Action</th>
+                                        <?php endif;?>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
+                                        	<td style="font-size:medium;">
+                                                <?php if ($search == 'multiplechoice'): ?>
+                                                    <?php echo $item['exammulti_id']; ?>
+                                                <?php endif;?>
+                                                <?php if ($search == 'identification'): ?>
+                                                    <?php echo $item['examiden_id']; ?>
+                                                <?php endif;?>
+                                                <?php if ($search == 'trueorfalse'): ?>
+                                                    <?php echo $item['trueorfalse']; ?>
+                                                <?php endif;?>
+                                                <?php if ($search == 'matchingtype'): ?>
+                                                    <?php echo $item['matchingtype_id']; ?>
+                                                <?php endif;?>
+                                            </td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['question']; ?></b></td>
+                                            <?php if ($search == 'multiplechoice'): ?>
+                                                <td style="font-size:medium;"><?php echo $item['c1']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['c2']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['c3']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['c4']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['c5']; ?></td>
+                                            <?php endif;?>
+                                            <td style="font-size:medium;"><?php echo $item['answer']; ?></td>
+                                        	<td style="text-align:left;">
+                                                <?php if ($search == 'multiplechoice'): ?>
+                                                    <a href="update.php?id=<?php echo $item['exammulti_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                <?php endif;?>
+                                                <?php if ($search == 'identification'): ?>
+                                                    <a href="update.php?id=<?php echo $item['examiden_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                <?php endif;?>
+                                                <?php if ($search == 'trueorfalse'): ?>
+                                                    <a href="update.php?id=<?php echo $item['trueorfalse']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                <?php endif;?>
+                                                <?php if ($search == 'matchingtype'): ?>
+                                                    <a href="update.php?id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                <?php endif;?>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                        	<td>2</td>
-                                        	<td>Minerva Hooper</td>
-                                        	<td>$23,789</td>
-                                        	<td>Curaçao</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>3</td>
-                                        	<td>Sage Rodriguez</td>
-                                        	<td>$56,142</td>
-                                        	<td>Netherlands</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>4</td>
-                                        	<td>Philip Chaney</td>
-                                        	<td>$38,735</td>
-                                        	<td>Korea, South</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>5</td>
-                                        	<td>Doris Greene</td>
-                                        	<td>$63,542</td>
-                                        	<td>Malawi</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        </tr>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

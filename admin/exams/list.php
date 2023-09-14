@@ -173,12 +173,12 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                     <option value="3rd">3rd</option>
                                                     <option value="4th">4th</option>
                                                 </select>
-                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a>
+                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
                                     </div>
                                 </div>
                             </div>

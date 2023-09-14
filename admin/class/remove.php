@@ -13,8 +13,9 @@ if (!$student_id && !$id) {
     exit;
 }
 
-$statement = $pdo->prepare("DELETE FROM enrolled_student WHERE student_id = :student_id");
+$statement = $pdo->prepare("DELETE FROM enrolled_student WHERE student_id = :student_id and subject_id = :subject_id");
 $statement->bindValue(':student_id', $student_id);
+$statement->bindValue(':subject_id', $id);
 $statement->execute();
 header('Location:edit.php?id='.$id);
 

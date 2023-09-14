@@ -1,9 +1,30 @@
 <?php
 session_start();
 
+require_once "../dbconnect.php";
+
 if ($_SESSION["usertype"] != "admin") {
     header('location:../others/validation.php');
 }
+
+
+$statement = $pdo->prepare('SELECT * FROM examcreated where status = "open" ');
+$statement->execute();
+$openexam = $statement->rowCount();
+
+$statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+(select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
+$statement->execute();
+$subject = $statement->rowCount();
+
+
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty"');
+$statement->execute();
+$faculty = $statement->rowCount();
+
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student"');
+$statement->execute();
+$student = $statement->rowCount();
 
 ?>
 
@@ -137,20 +158,20 @@ if ($_SESSION["usertype"] != "admin") {
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-warning text-center">
-                                            <i class="ti-server"></i>
+                                            <i class="ti-comment"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Capacity</p>
-                                            105GB
+                                            <p>Open Exam</p>
+                                            <?php echo $openexam; ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-reload"></i> Updated now
+                                        <i class="ti-reload"></i> Exam that are Open
                                     </div>
                                 </div>
                             </div>
@@ -162,20 +183,20 @@ if ($_SESSION["usertype"] != "admin") {
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-success text-center">
-                                            <i class="ti-wallet"></i>
+                                            <i class="ti-book"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Revenue</p>
-                                            $1,345
+                                            <p>Subjects</p>
+                                            <?php echo $subject; ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-calendar"></i> Last day
+                                        <i class="ti-book"></i> Available Subjects
                                     </div>
                                 </div>
                             </div>
@@ -187,20 +208,20 @@ if ($_SESSION["usertype"] != "admin") {
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-danger text-center">
-                                            <i class="ti-pulse"></i>
+                                            <i class="ti-user"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Errors</p>
-                                            23
+                                            <p>Faculty</p>
+                                            <?php echo $faculty; ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-timer"></i> In the last hour
+                                        <i class="ti-user"></i> Available Faculty
                                     </div>
                                 </div>
                             </div>
@@ -212,20 +233,20 @@ if ($_SESSION["usertype"] != "admin") {
                                 <div class="row">
                                     <div class="col-xs-5">
                                         <div class="icon-big icon-info text-center">
-                                            <i class="ti-twitter-alt"></i>
+                                            <i class="ti-pencil"></i>
                                         </div>
                                     </div>
                                     <div class="col-xs-7">
                                         <div class="numbers">
-                                            <p>Followers</p>
-                                            +45
+                                            <p>Student</p>
+                                            <?php echo $student; ?>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="footer">
                                     <hr />
                                     <div class="stats">
-                                        <i class="ti-reload"></i> Updated now
+                                        <i class="ti-pencil"></i> Available Student
                                     </div>
                                 </div>
                             </div>

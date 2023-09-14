@@ -9,18 +9,18 @@ $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
 if ($search1 && $search2) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and yearlevel like :yearlevel');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and yearlevel like :yearlevel ORDER BY exam_id DESC');
     $statement->bindValue(':semester', "%$search1%");
     $statement->bindValue(':yearlevel', "%$search2%");
 } elseif ($search1 && empty($search2)) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester ORDER BY exam_id DESC');
     $statement->bindValue(':semester', "%$search1%");
 }
  elseif ($search2 && empty($search1)) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel ORDER BY exam_id DESC');
     $statement->bindValue(':yearlevel', "%$search2%"); 
 } else {
-    $statement = $pdo->prepare('SELECT * FROM examcreated');
+    $statement = $pdo->prepare('SELECT * FROM examcreated ORDER BY exam_id DESC');
 }
 
 $statement->execute();
@@ -172,7 +172,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                     <option value="3rd">3rd</option>
                                                     <option value="4th">4th</option>
                                                 </select>
-                                                <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
                                             </div>
                                         </form>
                                     </div>
@@ -208,13 +208,18 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['semester']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['multiplechoice']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['indentification']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['identification']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['trueoffalse']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['status']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">
-                                                <a href="manual_open.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Manual Open</a>
-                                                <a href="schedule.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Scheduled Open</a>
+                                                <?php if ($item['status'] == 'close'): ?>
+                                                    <a href="manual_open.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Manual Open</a>
+                                                    <a href="schedule.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Schedule Open and Close</a>
+                                                <?php endif;?>
+                                                <?php if ($item['status'] == 'open'): ?>
+                                                    <a href="manual_close.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-warning btn-wd">Manual Close</a>
+                                                <?php endif;?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="../../admin/exams/">
+                    <a href="../exams/">
                         <p>Exam</p>
                     </a>
                 </li>

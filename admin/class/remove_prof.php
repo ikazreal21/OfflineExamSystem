@@ -13,8 +13,15 @@ if (!$faculty && !$id) {
     exit;
 }
 
-$statement = $pdo->prepare("DELETE FROM prof_subjects WHERE prof_id = :faculty");
+$statement = $pdo->prepare("DELETE FROM prof_subjects WHERE prof_id = :faculty and subject_id = :subject_id");
 $statement->bindValue(':faculty', $faculty);
+$statement->bindValue(':subject_id', $id);
+$statement->execute();
+
+
+$statement = $pdo->prepare("DELETE FROM examcreated WHERE prof_id = :faculty and subject_id = :subject_id");
+$statement->bindValue(':faculty', $faculty);
+$statement->bindValue(':subject_id', $id);
 $statement->execute();
 header('Location:edit_prof.php?id='.$id);
 
