@@ -1259,10 +1259,9 @@ textarea.form-control {
 .table-striped > tfoot > tr > td {
   padding: 15px 8px; }
 
-/*      Checkbox and radio         */
+     /* Checkbox and radio        
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\000032}}
-.checkbox,
-.radio {
+.checkbox {
   margin-bottom: 12px;
   padding-left: 30px;
   position: relative;
@@ -1274,8 +1273,7 @@ textarea.form-control {
   color: #000000;
   cursor: pointer; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000315}}
-  .checkbox .icons,
-  .radio .icons {
+  .checkbox .icons {
     color: #000000;
     display: block;
     height: 20px;
@@ -1291,12 +1289,10 @@ textarea.form-control {
     transition: color,opacity 0.15s linear;
     opacity: .50; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000335}}
-  .checkbox.checked .icons,
-  .radio.checked .icons {
+  .checkbox.checked .icons {
     opacity: 1; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000340}}
-  .checkbox input,
-  .radio input {
+  .checkbox input {
     outline: none !important;
     display: none; }
 
@@ -1307,9 +1303,7 @@ textarea.form-control {
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000353}}
 .checkbox .icons .first-icon,
-.radio .icons .first-icon,
-.checkbox .icons .second-icon,
-.radio .icons .second-icon {
+.checkbox .icons .second-icon {
   display: inline-table;
   position: absolute;
   left: 0;
@@ -1320,8 +1314,7 @@ textarea.form-control {
   filter: alpha(opacity=100); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000365}}
-.checkbox .icons .second-icon,
-.radio .icons .second-icon {
+.checkbox .icons .second-icon {
   opacity: 0;
   filter: alpha(opacity=0); }
 
@@ -1332,8 +1325,7 @@ textarea.form-control {
   transition: color 0.2s linear; }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000374}}
-.checkbox:hover .first-icon,
-.radio:hover .first-icon {
+.checkbox:hover .first-icon {
   opacity: 0;
   filter: alpha(opacity=0); }
 
@@ -1344,14 +1336,12 @@ textarea.form-control {
   filter: alpha(opacity=100); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000386}}
-.checkbox.checked .first-icon,
-.radio.checked .first-icon {
+.checkbox.checked .first-icon {
   opacity: 0;
   filter: alpha(opacity=0); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\0000391}}
-.checkbox.checked .second-icon,
-.radio.checked .second-icon {
+.checkbox.checked .second-icon {
   opacity: 1;
   filter: alpha(opacity=100);
   -webkit-transition: color 0.2s linear;
@@ -1364,39 +1354,33 @@ textarea.form-control {
   color: #DDDDDD; }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003104}}
-.checkbox.disabled .icons,
-.radio.disabled .icons {
+.checkbox.disabled .icons {
   color: #DDDDDD; }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003108}}
-.checkbox.disabled .first-icon,
-.radio.disabled .first-icon {
+.checkbox.disabled .first-icon {
   opacity: 1;
   filter: alpha(opacity=100); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003113}}
-.checkbox.disabled .second-icon,
-.radio.disabled .second-icon {
+.checkbox.disabled .second-icon {
   opacity: 0;
   filter: alpha(opacity=0); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003118}}
-.checkbox.disabled.checked .icons,
-.radio.disabled.checked .icons {
+.checkbox.disabled.checked .icons {
   color: #DDDDDD; }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003122}}
-.checkbox.disabled.checked .first-icon,
-.radio.disabled.checked .first-icon {
+.checkbox.disabled.checked .first-icon {
   opacity: 0;
   filter: alpha(opacity=0); }
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_checkbox-radio\.scss}line{font-family:\00003127}}
-.checkbox.disabled.checked .second-icon,
-.radio.disabled.checked .second-icon {
+.checkbox.disabled.checked .second-icon {
   opacity: 1;
   color: #DDDDDD;
-  filter: alpha(opacity=100); }
+  filter: alpha(opacity=100); } */
 
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Users\/conacelelena\/paper-dashboard\/assets\/sass\/paper\/_navbars\.scss}line{font-family:\000033}}
 .nav > li > a:hover,

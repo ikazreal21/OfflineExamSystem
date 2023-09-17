@@ -1,40 +1,40 @@
-<?php
+<?php 
 session_start();
 
-require_once "../../dbconnect.php";
-require_once "../../others/function.php";
-
-$search1 = $_GET['search1'] ?? '';
-$search2 = $_GET['search2'] ?? '';
-
-if ($search1 && $search2) {
-    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester and yearlevel like :yearlevel and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
-    $statement->bindValue(':semester', "%$search1%");
-    $statement->bindValue(':yearlevel', "%$search2%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
-
-} elseif ($search1 && empty($search2)) {
-    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
-    $statement->bindValue(':semester', "%$search1%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
-
-} elseif ($search2 && empty($search1)) {
-    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE yearlevel like :yearlevel and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
-    $statement->bindValue(':yearlevel', "%$search2%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
-
-} else {
-    $statement = $pdo->prepare('SELECT s.* FROM subject s where s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
+if (!isset($_SESSION["exam_taken"])) {
+    header("location:../");
 }
 
-$statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+// echo '<pre>';
+// var_dump($_SESSION);
+// echo '<pre>';
+// if ($_SESSION["current_type"] == "multiplechoice") {
+    
+// }
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+    if (strtolower($_POST['radio']) == strtolower($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["answer"])) {
+        $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
+        echo 'here';
+    }
+    if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
+        $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
+    } 
+    else {
+        $_SESSION["current_type"] = "identification";
+        // echo '<pre>';
+        // var_dump($_SESSION);
+        // echo '<pre>';
+        header("location:index.php?type=".$_SESSION["current_type"]);
+    }
+    
+}
+
+
 
 ?>
-
-
-
 
 <!doctype html>
 <html lang="en">
@@ -56,7 +56,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
 
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet"> -->
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="../../assets/css/themify-icons.css" rel="stylesheet">
 
@@ -73,29 +73,24 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <ul class="nav">
-                <li>
-                    <a href="../">
-                        <p>Main Menu</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../questions/">
-                        <p>Questions</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../exams/">
-                        <p>Exam</p>
-                    </a>
-                </li>
                 <li class="active">
-                    <a href="../subjects/">
-                        <p>Subjects</p>
+                    <a href="">
+                        <p>Mutliple Choice</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../generate/">
-                        <p>Reports</p>
+                    <a href="">
+                        <p>Identification</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <p>Matching Type</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <p>True or False</p>
                     </a>
                 </li>
             </ul>
@@ -112,14 +107,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../profile.php">
-                                <i class="ti-panel"></i>
-								<p>Profile</p>
+                            <a href="">
+                                <!-- <i class="ti-panel"></i> -->
+								<!-- <p>Profile</p> -->
                             </a>
                         </li>
                         <!-- <li class="dropdown">
@@ -138,8 +133,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../../logout">
-								<p>Logout</p>
+                            <a href="">
+								<!-- <p>Logout</p> -->
                             </a>
                         </li>
                     </ul>
@@ -147,6 +142,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </nav>
+
 
         <div class="content">
             <div class="container-fluid">
@@ -156,49 +152,56 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <form action="" method="get">
-                                            <div class="flex">
-                                                <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <option value="" selected>Semester</option>
-                                                    <option value="1st">1st</option>
-                                                    <option value="2nd">2nd</option>
-                                                </select>
-                                                <select name="search2" class="form-select" style="font-size: medium; margin-left:5rem;">
-                                                    <option value="" selected>Year Level</option>
-                                                    <option value="1st">1st</option>
-                                                    <option value="2nd">2nd</option>
-                                                    <option value="3rd">3rd</option>
-                                                    <option value="4th">4th</option>
-                                                </select>
-                                                <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
-                                            </div>
-                                        </form>
+                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]);  ?></h4>
                                     </div>
                                     <div class="left">
+                                        <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
                                         <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table">
-                                    <thead>
-                                        <th>Subject ID</th>
-                                    	<th>Subject Name</th>
-                                    	<th>Year Level</th>
-                                    	<th>Semester</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($procdata as $i => $item): ?>
-                                        <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div class="container">
+                                <div class="content">
+                                    <form method="post">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["question"]);  ?></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="">
+                                                <div class="">
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["A"]);  ?>
+                                                        <input type="radio" name="radio"  value="A">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["B"]);  ?>
+                                                        <input type="radio" name="radio" value="B">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["C"]);  ?>
+                                                        <input type="radio" name="radio" value="C">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["D"]);  ?>
+                                                        <input type="radio" name="radio" value="D">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["E"]);  ?>
+                                                        <input type="radio" name="radio" value="E">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" name="exam" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Next</button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

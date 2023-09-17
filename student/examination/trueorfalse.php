@@ -1,27 +1,37 @@
 <?php 
 session_start();
 
-require_once "../../dbconnect.php";
-require_once "../../others/function.php";
-
-
-$search1 = $_GET['search1'] ?? 'admin';
-
-if ($search1) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
-    $statement->bindValue(':role', "%$search1%");
-} else {
-    $statement = $pdo->prepare('SELECT * FROM accounts');
+if (!isset($_SESSION["exam_taken"])) {
+    header("location:../");
 }
 
-$statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// echo '<pre>';
+// var_dump($_POST['radio']);
+// echo '<pre>';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+    // echo '<pre>';
+    // var_dump($_POST['radio']);
+    // echo '<pre>';
+
+    if (strtolower($_POST['radio']) == strtolower( $_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["answer"])) {
+        $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
+        // echo 'here';
+    }
+    if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
+        $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
+    } 
+    else {
+        // $_SESSION["current_type"] = "trueorfalse";
+        
+        header("location:finish.php");
+    }
+    
+}
 
 
- ?>
-
-
-
+?>
 
 <!doctype html>
 <html lang="en">
@@ -43,7 +53,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
 
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet"> -->
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="../../assets/css/themify-icons.css" rel="stylesheet">
 
@@ -55,39 +65,28 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
                 </a>
             </div>
-
             <ul class="nav">
                 <li>
-                    <a href="../">
-                        <p>Main Menu</p>
+                    <a href="">
+                        <p>Mutliple Choice</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../questions/">
-                        <p>Questions</p>
+                    <a href="">
+                        <p>Identification</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="">
+                        <p>Matching Type</p>
                     </a>
                 </li>
                 <li class="active">
-                    <a href="../exams/">
-                        <p>Exam</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../class/">
-                        <p>Subject</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../generate/">
-                        <p>Reports</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../user/">
-                        <p>Users</p>
+                    <a href="">
+                        <p>True or False</p>
                     </a>
                 </li>
             </ul>
@@ -104,14 +103,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../profile.php">
-                                <i class="ti-panel"></i>
-								<p>Profile</p>
+                            <a href="">
+                                <!-- <i class="ti-panel"></i> -->
+								<!-- <p>Profile</p> -->
                             </a>
                         </li>
                         <!-- <li class="dropdown">
@@ -130,8 +129,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../../logout">
-								<p>Logout</p>
+                            <a href="">
+								<!-- <p>Logout</p> -->
                             </a>
                         </li>
                     </ul>
@@ -139,6 +138,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
         </nav>
+
 
         <div class="content">
             <div class="container-fluid">
@@ -148,60 +148,48 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <form action="" method="get">
-                                            <div class="flex">
-                                                <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <option value="admin" selected>Admin</option>
-                                                    <option value="faculty">Faculty</option>
-                                                    <option value="student">Student</option>
-                                                </select>
-                                                <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
-                                            </div>
-                                        </form>
+                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]);  ?></h4>
                                     </div>
                                     <div class="left">
-                                        <!-- <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Users</a> -->
+                                        <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
                                         <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
                                     </div>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table">
-                                    <thead>
-                                        <th>ID</th>
-                                    	<th>Username</th>
-                                    	<th>Email</th>
-                                    	<th>First Name</th>
-                                    	<th>Second Name</th>
-                                        <?php if ($search1 == 'student'): ?>
-                                    	<th>Student ID</th>
-                                    	<th>Year Level</th>
-                                        <?php endif;?>
-                                    	<th>Status</th>
-                                    	<th>Action</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($procdata as $i => $item): ?>
-                                        <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['id']; ?></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['username']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['email']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['first_name']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['last_name']; ?></td>
-                                            <?php if ($item['role'] == 'student'): ?>
-                                                <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
-                                            <?php endif;?>
-                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
-                                        	<td style="text-align:left;">
-                                                <a href="edit.php?id=<?php echo $item['id']; ?>" class="btn btn-warning btn-wd">Modify</a>
-                                                <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Delete </a>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div class="container">
+                                <div class="content">
+                                    <form method="post">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <h4><?php echo ucfirst($_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["question"]);  ?></h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <div class="">
+                                                <div class="">
+                                                    <label class="containers">True
+                                                        <input type="radio" name="radio" value="True">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <label class="containers">False
+                                                        <input type="radio" name="radio" value="False">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                                <?php if ($_SESSION["start_number_multiple"] == $_SESSION["current_exam_number"] - 1): ?>                                          
+                                                    <button type="submit" name="exam" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Finish</button>
+                                                <?php else: ?>
+                                                    <button type="submit" name="exam" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Next</button>
+                                                <?php endif;?>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

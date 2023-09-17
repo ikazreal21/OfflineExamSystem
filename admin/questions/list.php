@@ -8,21 +8,17 @@ $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
 if ($search1 && $search2) {
-    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
-    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester and yearlevel like :yearlevel');
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester and yearlevel like :yearlevel');
     $statement->bindValue(':semester', "%$search1%");
     $statement->bindValue(':yearlevel', "%$search2%");
 } elseif ($search1 && empty($search2)) {
-    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
-    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE semester like :semester');
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester');
     $statement->bindValue(':semester', "%$search1%");
 } elseif ($search2 && empty($search1)) {
-    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
-    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s WHERE yearlevel like :yearlevel');
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE yearlevel like :yearlevel');
     $statement->bindValue(':yearlevel', "%$search2%");
 } else {
-    $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
-    (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
+    $statement = $pdo->prepare('SELECT * FROM subject');
 }
 
 $statement->execute();
@@ -65,7 +61,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
                 </a>
             </div>
 
@@ -76,7 +72,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                     </a>
                 </li>
                 <li class="active">
-                    <a href="../questions/">
+                    <a href="">
                         <p>Questions</p>
                     </a>
                 </li>
@@ -194,13 +190,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
                                             <td style="text-align:left;">
                                                 <a href="upload.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Upload Question</a>
-                                                <a href="create.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Question</a>
+                                                <a href="question_type.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Question</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

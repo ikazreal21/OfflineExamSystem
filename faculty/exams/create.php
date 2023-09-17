@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Identification</label>
-                                                    <input type="number" min="0" name="identification" class="form-control border-input" placeholder="Number of Identification" value="">
+                                                    <input type="number" min="0" name="identification" class="form-control border-input" placeholder="Number of Identification" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Multiple Choice</label>
-                                                    <input type="number" min="0" name="multiplechoice" class="form-control border-input" placeholder="Number of Multiple Choice" value="">
+                                                    <input type="number" min="0" name="multiplechoice" class="form-control border-input" placeholder="Number of Multiple Choice" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -250,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
-                                                    <input type="number" min="0" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="">
+                                                    <input type="number" min="0" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of True or False</label>
-                                                    <input type="number" min="0" name="trueorfalse" class="form-control border-input" placeholder="Number of True or False" value="">
+                                                    <input type="number" min="0" name="trueorfalse" class="form-control border-input" placeholder="Number of True or False" value="" required>
                                                 </div>
                                             </div>
                                         </div>

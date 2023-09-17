@@ -4,23 +4,76 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+$rnd_id = $_GET['id'] ?? '';
 
-$search1 = $_GET['search1'] ?? 'admin';
-
-if ($search1) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
-    $statement->bindValue(':role', "%$search1%");
-} else {
-    $statement = $pdo->prepare('SELECT * FROM accounts');
+if (!$rnd_id) {
+    header('Location: index.php');
+    exit;
 }
 
+$subject_name = '';
+$subject_id = '';
+$grading_period = '';
+$semester = '';
+$yearlevel = '';
+$prof_id = '';
+$prof_name = '';
+
+// echo '<pre>';
+// var_dump($faculty);
+// echo '<pre>';
+
+$statement = $pdo->prepare('SELECT * FROM subject where rnd_id = :rnd_id');
+$statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+$subject = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
+    $statement->bindValue(':prof_id', $_SESSION['id']);
+    $statement->execute();
+    $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $subject_name = $subject[0]['subject_name'];
+    $subject_id = $subject[0]['rnd_id'];
+    $semester = $subject[0]['semester'];
+    $yearlevel = $subject[0]['yearlevel'];
+    $prof_id = $prof_details[0]['id'];
+    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $grading_period = $_POST['grading_period'];
+
+
+    $statement = $pdo->prepare("SELECT * FROM identification WHERE question = :question"); 
+    $statement->bindValue(':question', $_POST['question']);
+    $statement->execute();
+    $count = $statement->rowCount();
+    
+    if ($count == 0) {
+
+        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)"); 
+        $statement->bindValue(':subject', $subject_name);
+        $statement->bindValue(':subject_id', $subject_id);
+        $statement->bindValue(':question', $_POST['question']);
+        $statement->bindValue(':answer', $_POST['answer']);
+        $statement->bindValue(':yearlevel', $yearlevel);
+        $statement->bindValue(':grading_period', $_POST['grading_period']);
+        $statement->bindValue(':semester', $semester);
+        $statement->bindValue(':profname', $prof_name);
+        $statement->bindValue(':prof_id', $prof_id);
+        $statement->execute();
+        header('Location:index.php?search1=identification');
+    } else {
+        header('Location:index.php?status=dup');
+    }
+
+}
+
+
 
 
  ?>
-
-
 
 
 <!doctype html>
@@ -55,7 +108,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -65,29 +118,24 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Main Menu</p>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="../questions/">
                         <p>Questions</p>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="../exams/">
                         <p>Exam</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../class/">
-                        <p>Subject</p>
+                <li >
+                    <a href="../subjects/">
+                        <p>Subjects</p>
                     </a>
                 </li>
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../user/">
-                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -104,7 +152,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#"></a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -140,68 +188,53 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </nav>
 
+
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
-                        <div class="card ">
+                        <div class="card">
                             <div class="header">
-                                <div class="header-arrangement">
-                                    <div class="right">
-                                        <form action="" method="get">
-                                            <div class="flex">
-                                                <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <option value="admin" selected>Admin</option>
-                                                    <option value="faculty">Faculty</option>
-                                                    <option value="student">Student</option>
-                                                </select>
-                                                <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="left">
-                                        <!-- <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Users</a> -->
-                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
-                                    </div>
-                                </div>
+                                <h4 class="text-center">Create Question</h4>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table">
-                                    <thead>
-                                        <th>ID</th>
-                                    	<th>Username</th>
-                                    	<th>Email</th>
-                                    	<th>First Name</th>
-                                    	<th>Second Name</th>
-                                        <?php if ($search1 == 'student'): ?>
-                                    	<th>Student ID</th>
-                                    	<th>Year Level</th>
-                                        <?php endif;?>
-                                    	<th>Status</th>
-                                    	<th>Action</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($procdata as $i => $item): ?>
-                                        <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['id']; ?></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['username']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['email']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['first_name']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['last_name']; ?></td>
-                                            <?php if ($item['role'] == 'student'): ?>
-                                                <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
-                                            <?php endif;?>
-                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
-                                        	<td style="text-align:left;">
-                                                <a href="edit.php?id=<?php echo $item['id']; ?>" class="btn btn-warning btn-wd">Modify</a>
-                                                <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Delete </a>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div class="container">
+                                <div class="content">
+                                        <form method="post">
+                                            <div class="row">
+                                                <div class="col-md-auto">
+                                                    <div class="form-group">
+                                                        <label>Question</label>
+                                                        <input type="text" min="0" name="question" class="form-control border-input" placeholder="" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-auto">
+                                                    <div class="form-group">
+                                                        <label>Answer</label>
+                                                        <input type="text" name="answer" class="form-control border-input" placeholder="" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-auto">
+                                                    <div class="form-group">
+                                                        <label>Grading Period</label>
+                                                        <select name="grading_period" class="form-control border-input" required>
+                                                            <option value="" selected>-</option>
+                                                            <option value="Prelim">Prelim</option>
+                                                            <option value="Midterm">Midterm</option>
+                                                            <option value="Finals">Finals</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create</button>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </form>
+                                </div>
                             </div>
                         </div>
                     </div>

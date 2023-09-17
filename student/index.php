@@ -2,9 +2,39 @@
 session_start();
 
 
+require_once "../dbconnect.php";
+require_once "../others/function.php";
+
 if($_SESSION["usertype"] !=  "student"){
     header('location:../others/validation.php');
 }
+
+$available_exam = [];
+
+$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
+$statement->bindValue(':student_id', $_SESSION["student_id"]);
+$statement->bindValue(':student_id', $_SESSION["student_id"]);
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+// foreach ($procdata as $i => $products) {
+//     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
+//     $statement->bindValue(':subject_id', $products["rnd_id"]);
+//     $statement->execute();
+//     $exam = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+//     $available_exam[] = $exam[0];
+
+// }
+
+
+// echo '<pre>';
+// var_dump($procdata);
+// echo '<pre>';
+
+
 
  ?>
 
@@ -43,14 +73,14 @@ if($_SESSION["usertype"] !=  "student"){
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Student Name Here
+                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
                 </a>
             </div>
 
             <ul class="nav">
                 <li class="active">
                     <a href="">
-                        <p>Main Menu</p>
+                        <p>Exam</p>
                     </a>
                 </li>
                 <li>
@@ -59,10 +89,15 @@ if($_SESSION["usertype"] !=  "student"){
                     </a>
                 </li>
                 <li>
+                    <a href="examination/view_exam_results.php">
+                        <p>Exam Results</p>
+                    </a>
+                </li>
+                <!-- <li>
                     <a href="examination/">
                         <p>Exam</p>
                     </a>
-                </li>
+                </li> -->
             </ul>
     	</div>
     </div>
@@ -120,103 +155,27 @@ if($_SESSION["usertype"] !=  "student"){
                     <div class="">
                         <div class="card ">
                         <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                                <h4 class="title">Available Exam</h4>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                        <th>Subject Name</th>
+                                    	<th>Grading Period</th>
+                                    	<th>Number of Items</th>
+                                    	<th>Action</th>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['grading_period']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['multiplechoice'] + $item['identification'] + $item['matching'] + $item['trueorfalse']; ?></b></td>
+                                            <td style="text-align:left;">
+                                                <a href="examination/take_exam.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd" onclick="return confirm('Are you sure to take this exam?')">Take Exam</a>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                        	<td>2</td>
-                                        	<td>Minerva Hooper</td>
-                                        	<td>$23,789</td>
-                                        	<td>Curaçao</td>
-                                        	<td>Sinaai-Waas</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>3</td>
-                                        	<td>Sage Rodriguez</td>
-                                        	<td>$56,142</td>
-                                        	<td>Netherlands</td>
-                                        	<td>Baileux</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>4</td>
-                                        	<td>Philip Chaney</td>
-                                        	<td>$38,735</td>
-                                        	<td>Korea, South</td>
-                                        	<td>Overland Park</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>5</td>
-                                        	<td>Doris Greene</td>
-                                        	<td>$63,542</td>
-                                        	<td>Malawi</td>
-                                        	<td>Feldkirchen in Kärnten</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

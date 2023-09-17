@@ -122,12 +122,11 @@
                     <div class="">
                         <div class="card ">
                         <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                                <h4 class="title">Generate Results and Reports</h4>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
-                                    <thead>
+                                    <!-- <thead>
                                         <th>ID</th>
                                     	<th>Name</th>
                                     	<th>Salary</th>
@@ -142,7 +141,7 @@
                                         	<td>Niger</td>
                                         	<td>Oud-Turnhout</td>
                                         </tr>
-                                    </tbody>
+                                    </tbody> -->
                                 </table>
                             </div>
                         </div>

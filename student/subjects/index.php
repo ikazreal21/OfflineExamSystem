@@ -1,3 +1,22 @@
+<?php
+session_start();
+
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+$search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['search2'] ?? '';
+
+
+$statement = $pdo->prepare('SELECT s.* FROM subject s where s.rnd_id in (select e.subject_id from enrolled_student e where e.student_id = :student_id)');
+$statement->bindValue(':student_id', $_SESSION["student_id"]);
+
+
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,26 +49,31 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Student Name Here
+                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
                 </a>
             </div>
 
             <ul class="nav">
                 <li>
                     <a href="../">
-                        <p>Main Menu</p>
+                        <p>Exam</p>
                     </a>
                 </li>
-                <li class="active">
+                <li  class="active">
                     <a href="">
                         <p>Subjects</p>
                     </a>
                 </li>
                 <li>
-                    <a href="../examination/">
-                        <p>Exam</p>
+                    <a href="../examination/view_exam_results.php">
+                        <p>Exam Results</p>
                     </a>
                 </li>
+                <!-- <li>
+                    <a href="examination/">
+                        <p>Exam</p>
+                    </a>
+                </li> -->
             </ul>
     	</div>
     </div>
@@ -106,104 +130,24 @@
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title">Striped Table</h4>
-                                <p class="category">Here is a subtitle for this table</p>
+                            <div class="header">
+                                <h4 class="title">Enrolled Subjecty</h4>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table class="table">
                                     <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                        <th>Subject ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Semester</th>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
+                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
                                         </tr>
-                                        <tr>
-                                        	<td>2</td>
-                                        	<td>Minerva Hooper</td>
-                                        	<td>$23,789</td>
-                                        	<td>Curaçao</td>
-                                        	<td>Sinaai-Waas</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>3</td>
-                                        	<td>Sage Rodriguez</td>
-                                        	<td>$56,142</td>
-                                        	<td>Netherlands</td>
-                                        	<td>Baileux</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>4</td>
-                                        	<td>Philip Chaney</td>
-                                        	<td>$38,735</td>
-                                        	<td>Korea, South</td>
-                                        	<td>Overland Park</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>5</td>
-                                        	<td>Doris Greene</td>
-                                        	<td>$63,542</td>
-                                        	<td>Malawi</td>
-                                        	<td>Feldkirchen in Kärnten</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
-                                        <tr>
-                                        	<td>6</td>
-                                        	<td>Mason Porter</td>
-                                        	<td>$78,615</td>
-                                        	<td>Chile</td>
-                                        	<td>Gloucester</td>
-                                        </tr>
+                                        <?php endforeach;?>
                                     </tbody>
                                 </table>
                             </div>

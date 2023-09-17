@@ -1,23 +1,40 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+if(!empty($_GET['status'])){ 
+    switch($_GET['status']){ 
+        case 'succ': 
+            echo "<script>alert('Upload Successfully');</script>";
+            break; 
+        case 'err': 
+            echo "<script>alert('Error on Upload');</script>";
+            break; 
+        case 'dup': 
+            echo "<script>alert('Duplicated Question');</script>";
+            break; 
+        case 'invalid_file': 
+            echo "<script>alert('Invalid File');</script>";
+            break; 
+        default: 
+    } 
+} 
 
 $search = $_GET['search1'] ?? 'multiplechoice';
 
-$statement = $pdo->prepare("SELECT * FROM $search");
+
+$statement = $pdo->prepare("SELECT * FROM $search where prof_id = :prof_id");
+$statement->bindValue(':prof_id', $_SESSION["id"]);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
-
 
 // echo '<pre>';
 // var_dump($_GET['search1']);
 // echo '<pre>';
 
-
- ?>
+?>
 
 <!doctype html>
 <html lang="en">
@@ -51,7 +68,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Faculty Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -154,7 +171,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Subject</a>
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Subjects</a>
                                     </div>
                                 </div>
                             </div>
@@ -209,31 +226,35 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                     <?php echo $item['trueorfalse']; ?>
                                                 <?php endif;?>
                                                 <?php if ($search == 'matchingtype'): ?>
-                                                    <?php echo $item['matchingtype_id']; ?>
+                                                    <?php echo $item['matchtype_id']; ?>
                                                 <?php endif;?>
                                             </td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['question']; ?></b></td>
                                             <?php if ($search == 'multiplechoice'): ?>
-                                                <td style="font-size:medium;"><?php echo $item['c1']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['c2']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['c3']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['c4']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['c5']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['A']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['B']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['C']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['D']; ?></td>
+                                                <td style="font-size:medium;"><?php echo $item['E']; ?></td>
                                             <?php endif;?>
                                             <td style="font-size:medium;"><?php echo $item['answer']; ?></td>
                                         	<td style="text-align:left;">
                                                 <?php if ($search == 'multiplechoice'): ?>
-                                                    <a href="update.php?id=<?php echo $item['exammulti_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="update.php?exammulti_id=<?php echo $item['exammulti_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="delete.php?exammulti_id=<?php echo $item['exammulti_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
                                                 <?php if ($search == 'identification'): ?>
-                                                    <a href="update.php?id=<?php echo $item['examiden_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="update.php?examiden_id=<?php echo $item['examiden_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="delete.php?examiden_id=<?php echo $item['examiden_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
                                                 <?php if ($search == 'trueorfalse'): ?>
-                                                    <a href="update.php?id=<?php echo $item['trueorfalse']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="update.php?trueorfalse=<?php echo $item['trueorfalse']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="delete.php?trueorfalse=<?php echo $item['trueorfalse']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
                                                 <?php if ($search == 'matchingtype'): ?>
-                                                    <a href="update.php?id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="update.php?matchingtype_id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a>
+                                                    <a href="delete.php?matchingtype_id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
                                             </td>
                                         </tr>

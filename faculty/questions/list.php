@@ -68,7 +68,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
                 </a>
             </div>
 
@@ -197,13 +197,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
                                             <td style="text-align:left;">
                                                 <a href="upload.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Upload Question</a>
-                                                <a href="create.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Question</a>
+                                                <a href="question_type.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Question</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
