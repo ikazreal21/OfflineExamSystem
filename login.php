@@ -95,7 +95,7 @@ try
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="about.php">
                         <p>About Us</p>
                     </a>
                 </li>
