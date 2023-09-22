@@ -63,7 +63,7 @@ session_start()
                 </li>
                 <li class="active">
                     <a href="">
-                        <p>Reports</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>
