@@ -32,12 +32,10 @@ $statement->bindValue(':section_id', $sec);
 $statement->execute();
 $section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
 $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :faculty_id ');
 $statement->bindValue(':faculty_id', $section[0]['prof_id']);
 $statement->execute();
 $faculty_get = $statement->fetchAll(PDO::FETCH_ASSOC);
-
 
 // echo '<pre>';
 // var_dump($faculty);
@@ -53,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject_name = $subject[0]['subject_name'];
     $subject_id = $subject[0]['rnd_id'];
     $section_name = $section[0]['section_name'];
-    $section_id = $section[0]['section_id'];  
+    $section_id = $section[0]['section_id'];
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $faculty_get[0]['id'];
@@ -296,20 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

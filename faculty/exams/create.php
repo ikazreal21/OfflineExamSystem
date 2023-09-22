@@ -7,7 +7,6 @@ require_once "../../others/function.php";
 $sec = $_GET['id'] ?? '';
 $rnd_id = $_GET['rnd_id'] ?? '';
 
-
 $subject_name = '';
 $subject_id = '';
 $grading_period = '';
@@ -45,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject_name = $subject[0]['subject_name'];
     $subject_id = $subject[0]['rnd_id'];
     $section_name = $section[0]['section_name'];
-    $section_id = $section[0]['section_id'];  
+    $section_id = $section[0]['section_id'];
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
@@ -291,20 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

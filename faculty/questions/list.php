@@ -188,7 +188,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Subject ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Year Level</th>
                                     	<th>Semester</th>
@@ -197,7 +196,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>

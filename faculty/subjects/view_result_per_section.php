@@ -13,13 +13,10 @@ $rnd_id = $_GET['rnd_id'] ?? '';
 
 $available_exam = [];
 
-
 $statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
 $statement->bindValue(':section_id', $sec);
 $statement->execute();
 $section = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-
 
 $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
 $statement->bindValue(':section_id', $sec);
@@ -204,20 +201,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <!-- <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav> -->
+                <!-- -->
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

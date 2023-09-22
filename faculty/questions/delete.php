@@ -35,7 +35,7 @@ if ($exammulti_id) {
     $statement->execute();
     header('Location:index.php?search1=trueorfalse');
 } elseif ($matchingtype_id) {
-    $statement = $pdo->prepare("DELETE FROM matchingtype WHERE matchingtype_id = :matchingtype_id");
+    $statement = $pdo->prepare("DELETE FROM matchingtype WHERE matchtype_id = :matchingtype_id");
     $statement->bindValue(':matchingtype_id', $matchingtype_id);
     $statement->execute();
     header('Location:index.php?search1=matchingtype');
