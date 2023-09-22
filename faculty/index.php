@@ -1,30 +1,30 @@
-<?php 
+<?php
 session_start();
 
 require_once "../dbconnect.php";
 
-if($_SESSION["usertype"] !=  "faculty"){
+if ($_SESSION["usertype"] != "faculty") {
     header('location:../others/validation.php');
 }
-
-
 
 $statement = $pdo->prepare('SELECT * FROM examcreated where prof_id = :prof_id and status = "open" ');
 $statement->bindValue(':prof_id', $_SESSION["id"]);
 $statement->execute();
 $openexam = $statement->rowCount();
 
-
 $statement = $pdo->prepare('SELECT s.* FROM subject s where s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
 $statement->bindValue(':prof_id', $_SESSION["id"]);
 $statement->execute();
 $subject_available = $statement->rowCount();
 
+$statement = $pdo->prepare('SELECT * FROM section where prof_id = :prof_id');
+$statement->bindValue(':prof_id', $_SESSION["id"]);
+$statement->execute();
+$sections = $statement->rowCount();
 // $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
 // (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
 // $statement->execute();
 // $subject = $statement->rowCount();
-
 
 // $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty"');
 // $statement->execute();
@@ -45,14 +45,14 @@ $subject_available = $statement->rowCount();
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../assets/css/main.css" rel="stylesheet" />
-    <link href="../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../assets/css/animate.css" rel="stylesheet"/>
     <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../assets/css/demo.css" rel="stylesheet" />
 
@@ -69,7 +69,7 @@ $subject_available = $statement->rowCount();
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -113,7 +113,7 @@ $subject_available = $statement->rowCount();
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -198,6 +198,31 @@ $subject_available = $statement->rowCount();
                                         <hr />
                                         <div class="stats">
                                             <i class="ti-book"></i> Available Subjects
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="row">
+                                        <div class="col-xs-5">
+                                            <div class="icon-big icon-danger text-center">
+                                                <i class="ti-user"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-7">
+                                            <div class="numbers">
+                                                <p>Faculty</p>
+                                                <?php echo $sections; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="footer">
+                                        <hr />
+                                        <div class="stats">
+                                            <i class="ti-user"></i> Sections
                                         </div>
                                     </div>
                                 </div>

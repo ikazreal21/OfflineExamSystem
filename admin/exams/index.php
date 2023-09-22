@@ -1,9 +1,8 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
-
 
 $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
@@ -15,10 +14,9 @@ if ($search1 && $search2) {
 } elseif ($search1 && empty($search2)) {
     $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester ORDER BY exam_id DESC');
     $statement->bindValue(':semester', "%$search1%");
-}
- elseif ($search2 && empty($search1)) {
+} elseif ($search2 && empty($search1)) {
     $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel ORDER BY exam_id DESC');
-    $statement->bindValue(':yearlevel', "%$search2%"); 
+    $statement->bindValue(':yearlevel', "%$search2%");
 } else {
     $statement = $pdo->prepare('SELECT * FROM examcreated ORDER BY exam_id DESC');
 }
@@ -26,8 +24,7 @@ if ($search1 && $search2) {
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
- ?>
+?>
 
 
 
@@ -40,14 +37,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -113,7 +110,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -185,7 +182,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Exam ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Grading Period</th>
                                     	<th>Year Level</th>
@@ -201,8 +197,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['exam_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['grading_period']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['semester']; ?></td>

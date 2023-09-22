@@ -1,10 +1,12 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$rnd_id = $_GET['id'] ?? '';
+$sec = $_GET['id'] ?? '';
+$rnd_id = $_GET['rnd_id'] ?? '';
+
 
 $subject_name = '';
 $subject_id = '';
@@ -24,6 +26,11 @@ $statement->bindValue(':faculty_id', $_SESSION["id"]);
 $statement->execute();
 $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
+$statement->execute();
+$section = $statement->fetchAll(PDO::FETCH_ASSOC);
+
 // echo '<pre>';
 // var_dump($faculty);
 // echo '<pre>';
@@ -33,34 +40,32 @@ $statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $subject = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
-    // $statement->bindValue(':prof_id', $_POST['prof_id']);
-    // $statement->execute();
-    // $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     $subject_name = $subject[0]['subject_name'];
     $subject_id = $subject[0]['rnd_id'];
+    $section_name = $section[0]['section_name'];
+    $section_id = $section[0]['section_id'];  
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
-    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     $grading_period = $_POST['grading_period'];
     $multiplechoice = $_POST['multiplechoice'];
     $identification = $_POST['identification'];
     $matching = $_POST['matching'];
     $trueorfalse = $_POST['trueorfalse'];
     // $unique_id = randomString(8, 2);
-    
+
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
-              VALUES (:subject, :subject_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
+              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
 
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
+        $statement->bindValue(':section_name', $section_name);
+        $statement->bindValue(':section_id', $section_id);
         $statement->bindValue(':grading_period', $grading_period);
         $statement->bindValue(':yearlevel', $yearlevel);
         $statement->bindValue(':semester', $semester);
@@ -72,15 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':trueorfalse', $trueorfalse);
         $statement->bindValue(':status', $status);
         $statement->execute();
-        header('Location:index.php');
+        header('Location:list.php');
     }
 
 }
 
-
-
-
- ?>
+?>
 
 
 <!doctype html>
@@ -91,14 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -115,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -218,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Subject</label>
-                                                    <input type="text" min="0" name="subject" class="form-control border-input" placeholder="" value="<?php echo $subject[0]['subject_name'];  ?>" disabled>
+                                                    <input type="text" min="0" name="subject" class="form-control border-input" placeholder="" value="<?php echo $subject[0]['subject_name']; ?>" disabled>
                                                 </div>
                                             </div>
                                         </div>
@@ -226,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Professor's Name</label>
-                                                    <input type="text" min="0" name="subject" class="form-control border-input" placeholder="" value="<?php echo ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);  ?>" disabled>
+                                                    <input type="text" min="0" name="subject" class="form-control border-input" placeholder="" value="<?php echo ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']); ?>" disabled>
                                                 </div>
                                             </div>
                                         </div>

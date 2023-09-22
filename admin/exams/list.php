@@ -41,14 +41,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -114,7 +114,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -178,14 +178,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Subject ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Year Level</th>
                                     	<th>Semester</th>
@@ -194,12 +193,11 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
                                             <td style="text-align:left;">
-                                                <a href="create.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Create Exam</a>
+                                                <a href="section.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">List of Section</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

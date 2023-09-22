@@ -1,52 +1,26 @@
 <?php
 session_start();
 
-require_once "../dbconnect.php";
-require_once "../others/function.php";
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
 
-if ($_SESSION["usertype"] != "student") {
-    header('location:../others/validation.php');
+$id = $_GET['id'] ?? '';
+
+if (!$id) {
+    header('Location: index.php');
+    exit;
 }
 
-if (!empty($_GET['status'])) {
-    switch ($_GET['status']) {
-        case 'succ':
-            echo "<script>alert('Upload Successfully');</script>";
-            break;
-        case 'err':
-            echo "<script>alert('No Question Available in the Database');</script>";
-            break;
-        case 'dup':
-            echo "<script>alert('Duplicated Question');</script>";
-            break;
-        case 'invalid_file':
-            echo "<script>alert('Invalid File');</script>";
-            break;
-        default:
-    }
-}
-
-$available_exam = [];
-
-$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
-$statement->bindValue(':student_id', $_SESSION["student_id"]);
-$statement->bindValue(':student_id', $_SESSION["student_id"]);
+$statement = $pdo->prepare('SELECT * from subject where rnd_id = :id');
+$statement->bindValue(':id', $id);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// foreach ($procdata as $i => $products) {
-//     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
-//     $statement->bindValue(':subject_id', $products["rnd_id"]);
-//     $statement->execute();
-//     $exam = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-//     $available_exam[] = $exam[0];
-
-// }
-
-// echo '<pre>';
-// var_dump($procdata);
-// echo '<pre>';
+$statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id and prof_id = :prof_id');
+$statement->bindValue(':id', $id);
+$statement->bindValue(':prof_id', $_SESSION['id']);
+$statement->execute();
+$section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -67,15 +41,15 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width" />
 
 
-    <link href="../assets/css/main.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet"/>
-    <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
-    <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../../assets/css/main.css" rel="stylesheet" />
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
+    <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
+    <link href="../../assets/css/demo.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
-    <link href="../assets/css/themify-icons.css" rel="stylesheet">
+    <link href="../../assets/css/themify-icons.css" rel="stylesheet">
 
 </head>
 <body>
@@ -85,31 +59,36 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?>
                 </a>
             </div>
 
             <ul class="nav">
+                <li>
+                    <a href="../">
+                        <p>Main Menu</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="../questions/">
+                        <p>Questions</p>
+                    </a>
+                </li>
                 <li class="active">
-                    <a href="">
+                    <a href="../exams/">
                         <p>Exam</p>
                     </a>
                 </li>
                 <li>
-                    <a href="subjects/">
+                    <a href="../subjects/">
                         <p>Subjects</p>
                     </a>
                 </li>
                 <li>
-                    <a href="examination/view_exam_results.php">
-                        <p>Exam Results</p>
+                    <a href="../generate/">
+                        <p>Reports</p>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="examination/">
-                        <p>Exam</p>
-                    </a>
-                </li> -->
             </ul>
     	</div>
     </div>
@@ -124,12 +103,12 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="profile.php">
+                            <a href="../profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>
@@ -150,7 +129,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../logout.php">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -160,33 +139,38 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title">Available Exam</h4>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h3><?php echo $procdata[0]['subject_name']; ?></h3>
+                                    </div>
+                                    <div class="left">
+                                        <!-- <a href="create_section.php?id=<?php echo $id; ?>" class="btn btn-info btn-fill btn-wd">Create Section</a> -->
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                                <table class="table">
                                     <thead>
-                                        <th>Subject Name</th>
-                                        <th>Section Name</th>
-                                    	<th>Grading Period</th>
-                                    	<th>Number of Items</th>
+                                    	<th>Section Name</th>
+                                    	<th>Number of Student</th>
+                                    	<th>Professor's Name</th>
                                     	<th>Action</th>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($procdata as $i => $item): ?>
+                                        <?php foreach ($section as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['grading_period']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['multiplechoice'] + $item['identification'] + $item['matching'] + $item['trueorfalse']; ?></b></td>
-                                            <td style="text-align:left;">
-                                                <a href="examination/take_exam.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd" onclick="return confirm('Are you sure to take this exam?')">Take Exam</a>
+                                        	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
+                                        	<td style="text-align:center;">
+                                                <a href="create.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">Create Exam</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
@@ -226,13 +210,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 </body>
 
-    <script src="../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
-	<script src="../assets/js/main.js" type="text/javascript"></script>
-	<script src="../assets/js/main-checkbox-radio.js"></script>
-	<script src="../assets/js/chartist.min.js"></script>
-    <script src="../assets/js/main-notify.js"></script>
-	<script src="../assets/js/paper-dashboard.js"></script>
+    <script src="../../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="../../assets/js/main.js" type="text/javascript"></script>
+	<script src="../../assets/js/main-checkbox-radio.js"></script>
+	<script src="../../assets/js/chartist.min.js"></script>
+    <script src="../../assets/js/main-notify.js"></script>
+	<script src="../../assets/js/paper-dashboard.js"></script>
 
 
-	<script src="../assets/js/demo.js"></script>
+	<script src="../../assets/js/demo.js"></script>
 </html>

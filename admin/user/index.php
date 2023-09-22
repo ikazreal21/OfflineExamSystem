@@ -1,9 +1,26 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+if (!empty($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'succ':
+            echo "<script>alert('Upload Successfully');</script>";
+            break;
+        case 'err':
+            echo "<script>alert('Error on Upload');</script>";
+            break;
+        case 'dup':
+            echo "<script>alert('Duplicated Question');</script>";
+            break;
+        case 'invalid_file':
+            echo "<script>alert('Invalid File');</script>";
+            break;
+        default:
+    }
+}
 
 $search1 = $_GET['search1'] ?? 'admin';
 
@@ -17,8 +34,7 @@ if ($search1) {
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
- ?>
+?>
 
 
 
@@ -31,14 +47,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -70,7 +86,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Questions</p>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="../exams/">
                         <p>Exam</p>
                     </a>
@@ -85,7 +101,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Reports</p>
                     </a>
                 </li>
-                <li>
+                <li  class="active">
                     <a href="../user/">
                         <p>Users</p>
                     </a>
@@ -104,7 +120,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -152,17 +168,29 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
                                                 <select name="search1" class="form-select" style="font-size: medium;">
+                                                    <?php if ($search1 == 'admin'): ?>
                                                     <option value="admin" selected>Admin</option>
                                                     <option value="faculty">Faculty</option>
                                                     <option value="student">Student</option>
+                                                    <?php endif;?>
+                                                    <?php if ($search1 == 'student'): ?>
+                                                    <option value="admin">Admin</option>
+                                                    <option value="faculty">Faculty</option>
+                                                    <option value="student" selected>Student</option>
+                                                    <?php endif;?>
+                                                    <?php if ($search1 == 'faculty'): ?>
+                                                    <option value="admin">Admin</option>
+                                                    <option value="faculty" selected>Faculty</option>
+                                                    <option value="student">Student</option>
+                                                    <?php endif;?>
                                                 </select>
                                                 <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <!-- <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Users</a> -->
-                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
+                                        <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a>
+                                        <a href="create.php" class="btn btn-info btn-fill btn-wd">Create User</a>
                                     </div>
                                 </div>
                             </div>
@@ -196,7 +224,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">
                                                 <a href="edit.php?id=<?php echo $item['id']; ?>" class="btn btn-warning btn-wd">Modify</a>
-                                                <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Delete </a>
+                                                <!-- <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Delete </a> -->
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

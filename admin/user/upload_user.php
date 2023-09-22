@@ -3,73 +3,93 @@ session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
-$rnd_id = $_GET['id'] ?? '';
-
-if (!$rnd_id) {
-    header('Location: index.php');
-    exit;
-}
-
-$subject_name = '';
-$subject_id = '';
-$grading_period = '';
-$semester = '';
+$username = '';
+$password = '';
+$email = '';
+$role = '';
+$first_name = '';
+$last_name = '';
+$student_id = '';
 $yearlevel = '';
-$prof_id = '';
-$prof_name = '';
+$status = 'active';
 
-// echo '<pre>';
-// var_dump($faculty);
-// echo '<pre>';
-
-$statement = $pdo->prepare('SELECT * FROM subject where rnd_id = :rnd_id');
-$statement->bindValue(':rnd_id', $rnd_id);
-$statement->execute();
-$subject = $statement->fetchAll(PDO::FETCH_ASSOC);
+// $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty" ');
+// $statement->execute();
+// $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
-    $statement->bindValue(':prof_id', $_SESSION['id']);
-    $statement->execute();
-    $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $excelMimes = array('text/xls', 'text/xlsx', 'text/csv', 'application/excel', 'application/vnd.msexcel', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
-    $subject_name = $subject[0]['subject_name'];
-    $subject_id = $subject[0]['rnd_id'];
-    $semester = $subject[0]['semester'];
-    $yearlevel = $subject[0]['yearlevel'];
-    $prof_id = $prof_details[0]['id'];
-    $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
-    $grading_period = $_POST['grading_period'];
+    if (!empty($_FILES['file']['name']) && in_array($_FILES['file']['type'], $excelMimes)) {
 
-    $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question");
-    $statement->bindValue(':question', $_POST['question']);
-    $statement->execute();
-    $count = $statement->rowCount();
+        if (is_uploaded_file($_FILES['file']['tmp_name'])) {
+            if ($_FILES['file']['type'] == 'text/csv') {
+                $reader = new Csv();
+                $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+            } else {
+                $reader = new Xlsx();
+                $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+            }
 
-    if ($count == 0) {
+            $worksheet = $spreadsheet->getActiveSheet();
+            $worksheet_arr = $worksheet->toArray();
 
-        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
-        $statement->bindValue(':question', $_POST['question']);
-        $statement->bindValue(':answer', $_POST['radio']);
-        $statement->bindValue(':subject', $subject_name);
-        $statement->bindValue(':subject_id', $subject_id);
-        $statement->bindValue(':yearlevel', $yearlevel);
-        $statement->bindValue(':grading_period', $_POST['grading_period']);
-        $statement->bindValue(':semester', $semester);
-        $statement->bindValue(':profname', $prof_name);
-        $statement->bindValue(':prof_id', $prof_id);
-        $statement->execute();
-        // echo '<pre>';
-        // var_dump($_POST["radio"]);
-        // echo '<pre>';
+            // Remove header row
+            unset($worksheet_arr[0]);
 
-        header('Location:index.php?search1=trueorfalse');
-    } else {
-        header('Location:index.php?status=dup');
+            foreach ($worksheet_arr as $row) {
+
+                // echo '<pre>';
+                // var_dump($row);
+                // echo '<pre>';
+
+                $username = $row[0];
+                $password = $row[1];
+                $email = $row[2];
+                $role = $row[3];
+                $first_name = $row[4];
+                $last_name = $row[5];
+                $student_id = $row[6];
+                $yearlevel = $row[7];
+
+                // Check whether member already exists in the database with the same email
+                $statement = $pdo->prepare("SELECT * FROM accounts WHERE email = :email");
+                $statement->bindValue(':email', $email);
+                $statement->execute();
+                $count = $statement->rowCount();
+
+                // echo $count;
+
+                if ($count == 0) {
+
+                    // echo 'here';
+
+                    $statement = $pdo->prepare("INSERT INTO accounts (username, password, role, email, first_name, last_name, student_id, status, yearlevel)
+                    VALUES (:username, :password, :role, :email, :first_name, :last_name, :student_id, :status, :yearlevel)");
+                    $statement->bindValue(':username', $username);
+                    $statement->bindValue(':password', $password);
+                    $statement->bindValue(':role', $role);
+                    $statement->bindValue(':email', $email);
+                    $statement->bindValue(':first_name', $first_name);
+                    $statement->bindValue(':last_name', $last_name);
+                    $statement->bindValue(':student_id', $student_id);
+                    $statement->bindValue(':status', $status);
+                    $statement->bindValue(':yearlevel', $yearlevel);
+                    $statement->execute();
+                }
+                $qstring = '?status=succ';
+            }
+            header("Location: index.php" . $qstring);
+
+        } else {
+            $qstring = '?status=invalid_file';
+        }
+        header("Location: index.php" . $qstring);
     }
-
 }
 
 ?>
@@ -95,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
 
-    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="../../assets/css/themify-icons.css" rel="stylesheet">
 
@@ -107,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
+                    Admin Dashboard
                 </a>
             </div>
 
@@ -117,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Main Menu</p>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="../questions/">
                         <p>Questions</p>
                     </a>
@@ -127,14 +147,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Exam</p>
                     </a>
                 </li>
-                <li >
-                    <a href="../subjects/">
-                        <p>Subjects</p>
+                <li>
+                    <a href="../class/">
+                        <p>Subject</p>
                     </a>
                 </li>
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="../user/">
+                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -194,47 +219,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="">
                         <div class="card">
                             <div class="header">
-                                <h4 class="text-center">Create Question</h4>
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h4 class="text-center">Create User</h4>
+                                    </div>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="container">
                                 <div class="content">
-                                        <form method="post">
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Question</label>
-                                                        <input type="text" min="0" name="question" class="form-control border-input" placeholder="" value="">
-                                                    </div>
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Upload User</label>
+                                                    <input type="file" name="username" class="form-control border-input" placeholder="Upload" value="" required>
                                                 </div>
                                             </div>
-                                            <div class="">
-                                                    <label class="containers">True
-                                                        <input type="radio" name="radio"  value="True">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="containers">Flase
-                                                        <input type="radio" name="radio" value="Flase">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Grading Period</label>
-                                                        <select name="grading_period" class="form-control border-input" required>
-                                                            <option value="" selected>-</option>
-                                                            <option value="Prelim">Prelim</option>
-                                                            <option value="Midterm">Midterm</option>
-                                                            <option value="Finals">Finals</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="text-center">
-                                                <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create</button>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </form>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Upload</button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

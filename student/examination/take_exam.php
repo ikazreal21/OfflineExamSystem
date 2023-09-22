@@ -23,28 +23,34 @@ if ($procdata[0]["multiplechoice"] != 0) {
     $_SESSION["current_exam_number"] = intval($procdata[0]["multiplechoice"]);
     $_SESSION["current_type"] = "multiplechoice";
 
-    $statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id and prof_id = :prof_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+    $statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
     $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
-    $statement->bindValue(':prof_id', $_SESSION["taken_exam"]["prof_id"]);
     $statement->execute();
     $multiple_choice = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+    if (count($multiple_choice) != 0) {
+        $_SESSION["multiplechoice"] = $multiple_choice;
+        $_SESSION["start_number_multiple"] = 0;
+        $_SESSION["exam_taken"]["score"] = 0;
+        $_SESSION["exam_taken"]["subject_id"] = $_SESSION["taken_exam"]["subject_id"];
+        $_SESSION["exam_taken"]["grading_period"] = $_SESSION["taken_exam"]["grading_period"];
+        $_SESSION["exam_taken"]["student_id"] = $_SESSION["student_id"];
+        header("location:index.php?type=".$_SESSION["current_type"]);
+
+    } else {
+        header("Location:../index.php?status=err");
+    }
+
     // echo '<pre>';
-    // var_dump($multiple_choice);
+    // var_dump(count($multiple_choice));
     // echo '<pre>';
 
-    $_SESSION["multiplechoice"] = $multiple_choice;
-    $_SESSION["start_number_multiple"] = 0;
-    $_SESSION["exam_taken"]["score"] = 0;
-    $_SESSION["exam_taken"]["subject_id"] = $_SESSION["taken_exam"]["subject_id"];
-    $_SESSION["exam_taken"]["grading_period"] = $_SESSION["taken_exam"]["grading_period"];
-    $_SESSION["exam_taken"]["student_id"] = $_SESSION["student_id"];
+    
 
 
 } 
 
 echo "<script>return confirm('Are you sure?');</script>";
-header("location:index.php?type=".$_SESSION["current_type"]);
     
 
  ?>

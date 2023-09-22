@@ -1,35 +1,32 @@
-<?php 
+<?php
 session_start();
 
 if (!isset($_SESSION["exam_taken"])) {
     header("location:../");
 }
 
-
 // echo '<pre>';
 // var_dump($_POST['radio']);
 // echo '<pre>';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // echo '<pre>';
     // var_dump($_POST['radio']);
     // echo '<pre>';
 
-    if (strtolower($_POST['radio']) == strtolower( $_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["answer"])) {
+    if (strtolower($_POST['radio']) == strtolower($_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["answer"])) {
         $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
         // echo 'here';
     }
     if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
         $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
-    } 
-    else {
+    } else {
         // $_SESSION["current_type"] = "trueorfalse";
-        
+
         header("location:finish.php");
     }
-    
-}
 
+}
 
 ?>
 
@@ -41,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -65,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
             <ul class="nav">
@@ -103,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -148,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]);  ?></h4>
+                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
                                         <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
@@ -162,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
-                                                    <h4><?php echo ucfirst($_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["question"]);  ?></h4>
+                                                    <h4><?php echo ucfirst($_SESSION["trueorfalse"][$_SESSION["start_number_multiple"]]["question"]); ?></h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -181,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </div>
                                         </div>
                                         <div class="text-center">
-                                                <?php if ($_SESSION["start_number_multiple"] == $_SESSION["current_exam_number"] - 1): ?>                                          
+                                                <?php if ($_SESSION["start_number_multiple"] == $_SESSION["current_exam_number"] - 1): ?>
                                                     <button type="submit" name="exam" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Finish</button>
                                                 <?php else: ?>
                                                     <button type="submit" name="exam" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Next</button>

@@ -1,8 +1,4 @@
 !function ($) {
-
- /* CHECKBOX PUBLIC CLASS DEFINITION
-  * ============================== */
-
   var Checkbox = function (element, options) {
     this.init(element, options);
   }

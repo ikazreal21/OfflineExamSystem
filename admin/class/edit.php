@@ -1,15 +1,13 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+$id = $_GET['rnd_id'] ?? null;
+$sect_id = $_GET['id'] ?? null;
 
-
-$id = $_GET['id'] ?? null;
-
-
-if (!$id) {
+if (!$id && !$sect_id) {
     header('Location: index.php');
     exit;
 }
@@ -22,8 +20,9 @@ $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 // $yearlevel = $procdata1[0]["yearlevel"];
 $subject = $procdata1[0]["subject_name"];
 
-$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id');
+$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id and section_id = :section_id');
 $statement->bindValue(':subject_id', $id);
+$statement->bindValue(':section_id', $sect_id);
 $statement->execute();
 $procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -43,12 +42,11 @@ foreach ($procdata2 as $i => $products) {
 
 }
 
-
 if (count($procdata) == 0) {
-    header('Location: index.php');
+    header('Location: section.php?id=' . $id);
 }
 
- ?>
+?>
 
 
 
@@ -60,14 +58,14 @@ if (count($procdata) == 0) {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -200,7 +198,7 @@ if (count($procdata) == 0) {
                                         	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="text-align:left;">
-                                                <a href="remove.php?id=<?php echo $id; ?>&student_id=<?php echo $item['student_id']; ?>" class="btn btn-danger btn-wd">Remove</a>
+                                                <a href="remove.php?id=<?php echo $id; ?>&student_id=<?php echo $item['student_id']; ?>&section_id=<?php echo $sect_id; ?>" class="btn btn-danger btn-wd">Remove</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

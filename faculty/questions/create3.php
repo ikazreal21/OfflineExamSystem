@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
@@ -28,7 +28,6 @@ $statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $subject = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
@@ -41,18 +40,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
-    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     $grading_period = $_POST['grading_period'];
 
-
-    $statement = $pdo->prepare("SELECT * FROM matchingtype WHERE question = :question"); 
+    $statement = $pdo->prepare("SELECT * FROM matchingtype WHERE question = :question");
     $statement->bindValue(':question', $_POST['question']);
     $statement->execute();
     $count = $statement->rowCount();
-    
+
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)"); 
+        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
         $statement->bindValue(':question', $_POST['question']);
         $statement->bindValue(':answer', $_POST['answer']);
         $statement->bindValue(':subject', $subject_name);
@@ -70,10 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
-
-
-
- ?>
+?>
 
 
 <!doctype html>
@@ -84,14 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 

@@ -48,14 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -164,7 +164,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="">
                         <div class="card">
                             <div class="header">
-                                <h4 class="text-center">Create A Subject</h4>
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h4 class="text-center">Create Subject</h4>
+                                    </div>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="container">
                                 <div class="content">

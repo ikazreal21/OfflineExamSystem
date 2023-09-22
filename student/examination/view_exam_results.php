@@ -1,11 +1,10 @@
-<?php 
+<?php
 session_start();
-
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-if($_SESSION["usertype"] !=  "student"){
+if ($_SESSION["usertype"] != "student") {
     header('location:../others/validation.php');
 }
 
@@ -15,7 +14,6 @@ $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from examcreated e w
 $statement->bindValue(':student_id', $_SESSION["student_id"]);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
-
 
 // foreach ($procdata as $i => $products) {
 //     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
@@ -27,14 +25,11 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 // }
 
-
 // echo '<pre>';
 // var_dump($procdata);
 // echo '<pre>';
 
-
-
- ?>
+?>
 
 
 
@@ -47,14 +42,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -71,7 +66,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -110,7 +105,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -136,7 +131,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../logout.php">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -158,8 +153,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>Taken Exam ID</th>
                                     	<th>Subject Name</th>
+                                    	<th>Section Name</th>
                                     	<th>Professor's Name</th>
                                     	<th>Number of Items</th>
                                     	<th>Score</th>
@@ -167,8 +162,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['examtake_id']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo ucfirst($item['prof_name']); ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['out_of']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['score']; ?></b></td>

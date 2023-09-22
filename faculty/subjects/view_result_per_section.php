@@ -1,36 +1,28 @@
 <?php
 session_start();
 
-require_once "../dbconnect.php";
-require_once "../others/function.php";
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
 
-if ($_SESSION["usertype"] != "student") {
+if ($_SESSION["usertype"] != "faculty") {
     header('location:../others/validation.php');
 }
 
-if (!empty($_GET['status'])) {
-    switch ($_GET['status']) {
-        case 'succ':
-            echo "<script>alert('Upload Successfully');</script>";
-            break;
-        case 'err':
-            echo "<script>alert('No Question Available in the Database');</script>";
-            break;
-        case 'dup':
-            echo "<script>alert('Duplicated Question');</script>";
-            break;
-        case 'invalid_file':
-            echo "<script>alert('Invalid File');</script>";
-            break;
-        default:
-    }
-}
+$sec = $_GET['id'] ?? '';
+$rnd_id = $_GET['rnd_id'] ?? '';
 
 $available_exam = [];
 
-$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
-$statement->bindValue(':student_id', $_SESSION["student_id"]);
-$statement->bindValue(':student_id', $_SESSION["student_id"]);
+
+$statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
+$statement->execute();
+$section = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+$statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -67,15 +59,15 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width" />
 
 
-    <link href="../assets/css/main.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet"/>
-    <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
-    <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../../assets/css/main.css" rel="stylesheet" />
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
+    <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
+    <link href="../../assets/css/demo.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
-    <link href="../assets/css/themify-icons.css" rel="stylesheet">
+    <link href="../../assets/css/themify-icons.css" rel="stylesheet">
 
 </head>
 <body>
@@ -90,26 +82,31 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <ul class="nav">
-                <li class="active">
-                    <a href="">
-                        <p>Exam</p>
+                <li>
+                    <a href="../">
+                        <p>Main Menu</p>
                     </a>
                 </li>
                 <li>
-                    <a href="subjects/">
+                    <a href="../questions/">
+                        <p>Questions</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="../exams/">
+                        <p>Exam</p>
+                    </a>
+                </li>
+                <li  class="active">
+                    <a href="../subjects/">
                         <p>Subjects</p>
                     </a>
                 </li>
                 <li>
-                    <a href="examination/view_exam_results.php">
-                        <p>Exam Results</p>
+                    <a href="../generate/">
+                        <p>Reports</p>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="examination/">
-                        <p>Exam</p>
-                    </a>
-                </li> -->
             </ul>
     	</div>
     </div>
@@ -150,7 +147,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../logout.php">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -166,28 +163,35 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title">Available Exam</h4>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h4 class="title">Result of Exam | <?php echo $section[0]['section_name']; ?></h4>
+                                    </div>
+                                    <div class="left">
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <th>Subject Name</th>
-                                        <th>Section Name</th>
-                                    	<th>Grading Period</th>
+                                    	<th>Student Name</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Section Name</th>
+                                    	<th>Professor's Name</th>
                                     	<th>Number of Items</th>
-                                    	<th>Action</th>
+                                    	<th>Score</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
+                                        	<td style="font-size:medium;"><b><?php echo $item['student_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['grading_period']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['multiplechoice'] + $item['identification'] + $item['matching'] + $item['trueorfalse']; ?></b></td>
-                                            <td style="text-align:left;">
-                                                <a href="examination/take_exam.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd" onclick="return confirm('Are you sure to take this exam?')">Take Exam</a>
-                                            </td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['prof_name']); ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['out_of']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['score']; ?></b></td>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>
@@ -200,7 +204,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
+                <!-- <nav class="pull-left">
                     <ul>
                         <li>
                             <a href="">
@@ -213,7 +217,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             </a>
                         </li>
                     </ul>
-                </nav>
+                </nav> -->
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>
@@ -226,13 +230,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 </body>
 
-    <script src="../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
-	<script src="../assets/js/main.js" type="text/javascript"></script>
-	<script src="../assets/js/main-checkbox-radio.js"></script>
-	<script src="../assets/js/chartist.min.js"></script>
-    <script src="../assets/js/main-notify.js"></script>
-	<script src="../assets/js/paper-dashboard.js"></script>
+    <script src="../../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
+	<script src="../../assets/js/main.js" type="text/javascript"></script>
+	<script src="../../assets/js/main-checkbox-radio.js"></script>
+	<script src="../../assets/js/chartist.min.js"></script>
+    <script src="../../assets/js/main-notify.js"></script>
+	<script src="../../assets/js/paper-dashboard.js"></script>
 
 
-	<script src="../assets/js/demo.js"></script>
+	<script src="../../assets/js/demo.js"></script>
 </html>

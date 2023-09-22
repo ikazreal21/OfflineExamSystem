@@ -7,7 +7,6 @@ if ($_SESSION["usertype"] != "admin") {
     header('location:../others/validation.php');
 }
 
-
 $statement = $pdo->prepare('SELECT * FROM examcreated where status = "open" ');
 $statement->execute();
 $openexam = $statement->rowCount();
@@ -16,7 +15,6 @@ $statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e
 (select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
 $statement->execute();
 $subject = $statement->rowCount();
-
 
 $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty"');
 $statement->execute();
@@ -39,14 +37,14 @@ $student = $statement->rowCount();
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../assets/css/main.css" rel="stylesheet" />
-    <link href="../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../assets/css/animate.css" rel="stylesheet"/>
     <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../assets/css/demo.css" rel="stylesheet" />
 
@@ -112,7 +110,7 @@ $student = $statement->rowCount();
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -149,7 +147,7 @@ $student = $statement->rowCount();
         </nav>
 
 
-        <div class="content">
+        <div class="content" >
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-3 col-sm-6">
@@ -247,78 +245,6 @@ $student = $statement->rowCount();
                                     <hr />
                                     <div class="stats">
                                         <i class="ti-pencil"></i> Available Student
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title">Users Behavior</h4>
-                                <p class="category">24 Hours performance</p>
-                            </div>
-                            <div class="content">
-                                <div id="chartHours" class="ct-chart"></div>
-                                <div class="footer">
-                                    <div class="chart-legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Click
-                                        <i class="fa fa-circle text-warning"></i> Click Second Time
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="ti-reload"></i> Updated 3 minutes ago
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="header">
-                                <h4 class="title">Email Statistics</h4>
-                                <p class="category">Last Campaign Performance</p>
-                            </div>
-                            <div class="content">
-                                <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div>
-
-                                <div class="footer">
-                                    <div class="chart-legend">
-                                        <i class="fa fa-circle text-info"></i> Open
-                                        <i class="fa fa-circle text-danger"></i> Bounce
-                                        <i class="fa fa-circle text-warning"></i> Unsubscribe
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="ti-timer"></i> Campaign sent 2 days ago
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card ">
-                            <div class="header">
-                                <h4 class="title">2015 Sales</h4>
-                                <p class="category">All products including Taxes</p>
-                            </div>
-                            <div class="content">
-                                <div id="chartActivity" class="ct-chart"></div>
-
-                                <div class="footer">
-                                    <div class="chart-legend">
-                                        <i class="fa fa-circle text-info"></i> Tesla Model S
-                                        <i class="fa fa-circle text-warning"></i> BMW 5 Series
-                                    </div>
-                                    <hr>
-                                    <div class="stats">
-                                        <i class="ti-check"></i> Data information certified
                                     </div>
                                 </div>
                             </div>

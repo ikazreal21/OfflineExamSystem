@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
@@ -20,7 +20,6 @@ $prof_id = '';
 $prof_name = '';
 $faculty = [];
 
-
 // echo '<pre>';
 // var_dump($faculty);
 // echo '<pre>';
@@ -35,21 +34,18 @@ $statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $faculty_id = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-foreach ($faculty_id as $i => $facul) { 
+foreach ($faculty_id as $i => $facul) {
     $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :faculty_id ');
     $statement->bindValue(':faculty_id', $facul['prof_id']);
     $statement->execute();
     $faculty_get = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
     $faculty[] = $faculty_get[0];
 
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    
     $statement = $pdo->prepare('SELECT * FROM accounts where id = :prof_id');
     $statement->bindValue(':prof_id', $_POST['prof_id']);
     $statement->execute();
@@ -60,19 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
-    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     $grading_period = $_POST['grading_period'];
 
-
-    $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question"); 
+    $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question");
     $statement->bindValue(':question', $_POST['question']);
     $statement->execute();
     $count = $statement->rowCount();
-    
-    
+
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)"); 
+        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
         $statement->bindValue(':question', $_POST['question']);
         $statement->bindValue(':answer', $_POST['radio']);
         $statement->bindValue(':subject', $subject_name);
@@ -94,10 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
-
-
-
- ?>
+?>
 
 
 <!doctype html>
@@ -108,14 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -132,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
+                    Admin Dashboard
                 </a>
             </div>
 
@@ -274,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <select name="prof_id" class="form-control border-input" required>
                                                             <option value="" selected>-</option>
                                                             <?php foreach ($faculty as $i => $item): ?>
-                                                            <option value="<?php echo $item['id'];  ?>"><?php echo ucfirst($item['first_name']);  ?> <?php echo ucfirst($item['last_name']);  ?></option>
+                                                            <option value="<?php echo $item['id']; ?>"><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></option>
                                                             <?php endforeach;?>
                                                         </select>
                                                     </div>

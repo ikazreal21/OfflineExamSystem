@@ -7,10 +7,8 @@ require_once "../../others/function.php";
 $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
-
-$statement = $pdo->prepare('SELECT s.* FROM subject s where s.rnd_id in (select e.subject_id from enrolled_student e where e.student_id = :student_id)');
+$statement = $pdo->prepare('SELECT s.*, (select b.subject_name from subject b where b.rnd_id = s.subject_id) as subject_name, (select b.semester from subject b where b.rnd_id = s.subject_id) as semester FROM section s where s.section_id in (select e.section_id from enrolled_student e where e.student_id = :student_id)');
 $statement->bindValue(':student_id', $_SESSION["student_id"]);
-
 
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -25,14 +23,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -49,7 +47,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -88,7 +86,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -114,7 +112,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../logout.php">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -136,14 +134,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Subject ID</th>
+                                    	<th>Section Name</th>
                                     	<th>Subject Name</th>
                                     	<th>Semester</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['rnd_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
                                         </tr>
@@ -158,7 +156,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
+                <!-- <nav class="pull-left">
                     <ul>
                         <li>
                             <a href="">
@@ -171,7 +169,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             </a>
                         </li>
                     </ul>
-                </nav>
+                </nav> -->
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

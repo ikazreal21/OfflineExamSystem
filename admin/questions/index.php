@@ -4,23 +4,23 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-if(!empty($_GET['status'])){ 
-    switch($_GET['status']){ 
-        case 'succ': 
+if (!empty($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'succ':
             echo "<script>alert('Upload Successfully');</script>";
-            break; 
-        case 'err': 
+            break;
+        case 'err':
             echo "<script>alert('Error on Upload');</script>";
-            break; 
-        case 'dup': 
+            break;
+        case 'dup':
             echo "<script>alert('Duplicated Question');</script>";
-            break; 
-        case 'invalid_file': 
+            break;
+        case 'invalid_file':
             echo "<script>alert('Invalid File');</script>";
-            break; 
-        default: 
-    } 
-} 
+            break;
+        default:
+    }
+}
 
 $search = $_GET['search1'] ?? 'multiplechoice';
 
@@ -42,14 +42,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -66,7 +66,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
+                    Admin Dashboard
                 </a>
             </div>
 
@@ -115,7 +115,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -164,10 +164,30 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
                                                 <select name="search1" class="form-select" style="font-size: medium;">
+                                                    <?php if ($search == 'multiplechoice'): ?>
                                                     <option value="multiplechoice" selected>Multiple Choice</option>
                                                     <option value="identification">Identification</option>
                                                     <option value="trueorfalse">True or False</option>
                                                     <option value="matchingtype">Matching Type</option>
+                                                    <?php endif;?>
+                                                    <?php if ($search == 'identification'): ?>
+                                                    <option value="multiplechoice">Multiple Choice</option>
+                                                    <option value="identification" selected>Identification</option>
+                                                    <option value="trueorfalse">True or False</option>
+                                                    <option value="matchingtype">Matching Type</option>
+                                                    <?php endif;?>
+                                                    <?php if ($search == 'trueorfalse'): ?>
+                                                    <option value="multiplechoice">Multiple Choice</option>
+                                                    <option value="identification">Identification</option>
+                                                    <option value="trueorfalse" selected>True or False</option>
+                                                    <option value="matchingtype">Matching Type</option>
+                                                    <?php endif;?>
+                                                    <?php if ($search == 'matchingtype'): ?>
+                                                    <option value="multiplechoice">Multiple Choice</option>
+                                                    <option value="identification">Identification</option>
+                                                    <option value="trueorfalse">True or False</option>
+                                                    <option value="matchingtype" selected>Matching Type</option>
+                                                    <?php endif;?>
                                                 </select>
                                                 <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
                                             </div>
@@ -182,7 +202,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table table-striped">
                                     <thead>
                                         <?php if ($search == 'multiplechoice'): ?>
-                                        <th>Mutliple Choice ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Choice 1</th>
@@ -194,21 +213,18 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'identification'): ?>
-                                        <th>Identification ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'trueorfalse'): ?>
-                                        <th>True or False ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'matchingtype'): ?>
-                                        <th>Matching Type ID</th>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
@@ -218,20 +234,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;">
-                                                <?php if ($search == 'multiplechoice'): ?>
-                                                    <?php echo $item['exammulti_id']; ?>
-                                                <?php endif;?>
-                                                <?php if ($search == 'identification'): ?>
-                                                    <?php echo $item['examiden_id']; ?>
-                                                <?php endif;?>
-                                                <?php if ($search == 'trueorfalse'): ?>
-                                                    <?php echo $item['trueorfalse']; ?>
-                                                <?php endif;?>
-                                                <?php if ($search == 'matchingtype'): ?>
-                                                    <?php echo $item['matchtype_id']; ?>
-                                                <?php endif;?>
-                                            </td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['question']; ?></b></td>
                                             <?php if ($search == 'multiplechoice'): ?>

@@ -1,9 +1,8 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
-
 
 $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
@@ -18,10 +17,9 @@ if ($search1 && $search2) {
     $statement->bindValue(':semester', "%$search1%");
     $statement->bindValue(':prof_id', $_SESSION["id"]);
 
-}
- elseif ($search2 && empty($search1)) {
+} elseif ($search2 && empty($search1)) {
     $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel and prof_id = :prof_id ORDER BY exam_id DESC');
-    $statement->bindValue(':yearlevel', "%$search2%"); 
+    $statement->bindValue(':yearlevel', "%$search2%");
     $statement->bindValue(':prof_id', $_SESSION["id"]);
 
 } else {
@@ -32,8 +30,7 @@ if ($search1 && $search2) {
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
- ?>
+?>
 
 
 
@@ -46,14 +43,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -70,7 +67,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -114,7 +111,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Olfu Offline Exam System</a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">

@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 require_once "../../dbconnect.php";
@@ -34,17 +34,15 @@ $statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $faculty_id = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-foreach ($faculty_id as $i => $facul) { 
+foreach ($faculty_id as $i => $facul) {
     $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :faculty_id ');
     $statement->bindValue(':faculty_id', $facul['prof_id']);
     $statement->execute();
     $faculty_get = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
     $faculty[] = $faculty_get[0];
 
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -58,20 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $semester = $subject[0]['semester'];
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
-    $prof_name = ucfirst($prof_details[0]['first_name'])." ".ucfirst($prof_details[0]['last_name']);
+    $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     // $unique_id = randomString(8, 2);
 
-
-    $statement = $pdo->prepare("SELECT * FROM multiplechoice WHERE question = :question"); 
+    $statement = $pdo->prepare("SELECT * FROM multiplechoice WHERE question = :question");
     $statement->bindValue(':question', $_POST['question']);
     $statement->execute();
     $count = $statement->rowCount();
-    
+
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)"); 
+        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
         $statement->bindValue(':subject', $subject_name);
-        $statement->bindValue(':subject_id', $subject_id );
+        $statement->bindValue(':subject_id', $subject_id);
         $statement->bindValue(':question', $_POST['question']);
         $statement->bindValue(':c1', $_POST['A']);
         $statement->bindValue(':c2', $_POST['B']);
@@ -92,10 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
-
-
-
- ?>
+?>
 
 
 <!doctype html>
@@ -106,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -130,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
+                    Admin Dashboard
                 </a>
             </div>
 
@@ -310,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <select name="prof_id" class="form-control border-input" required>
                                                             <option value="" selected>-</option>
                                                             <?php foreach ($faculty as $i => $item): ?>
-                                                            <option value="<?php echo $item['id'];  ?>"><?php echo ucfirst($item['first_name']);  ?> <?php echo ucfirst($item['last_name']);  ?></option>
+                                                            <option value="<?php echo $item['id']; ?>"><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></option>
                                                             <?php endforeach;?>
                                                         </select>
                                                     </div>

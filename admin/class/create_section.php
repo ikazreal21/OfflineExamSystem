@@ -6,28 +6,11 @@ require_once "../../others/function.php";
 
 $rnd_id = $_GET['id'] ?? '';
 
-if (!$rnd_id) {
-    header('Location: index.php');
-    exit;
-}
-
-$subject_name = '';
-$subject_id = '';
-$grading_period = '';
-$semester = '';
+$section_name = '';
 $yearlevel = '';
 $prof_id = '';
 $prof_name = '';
 $faculty = [];
-
-// echo '<pre>';
-// var_dump($faculty);
-// echo '<pre>';
-
-$statement = $pdo->prepare('SELECT * FROM subject where rnd_id = :rnd_id');
-$statement->bindValue(':rnd_id', $rnd_id);
-$statement->execute();
-$subject = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 $statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE subject_id = :rnd_id ');
 $statement->bindValue(':rnd_id', $rnd_id);
@@ -51,35 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $statement->execute();
     $prof_details = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    $subject_name = $subject[0]['subject_name'];
-    $subject_id = $subject[0]['rnd_id'];
-    $semester = $subject[0]['semester'];
-    $yearlevel = $subject[0]['yearlevel'];
+    $section_name = $_POST['section_name'];
+    $subject_id = $rnd_id;
     $prof_id = $prof_details[0]['id'];
     $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
-    $grading_period = $_POST['grading_period'];
 
-    $statement = $pdo->prepare("SELECT * FROM matchingtype WHERE question = :question");
-    $statement->bindValue(':question', $_POST['question']);
-    $statement->execute();
-    $count = $statement->rowCount();
+    if (empty($errors)) {
 
-    if ($count == 0) {
+        $statement = $pdo->prepare("INSERT INTO section (section_name, subject_id, prof_id, prof_name)
+              VALUES (:section_name, :subject_id, :prof_id, :prof_name)");
 
-        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
-        $statement->bindValue(':question', $_POST['question']);
-        $statement->bindValue(':answer', $_POST['answer']);
-        $statement->bindValue(':subject', $subject_name);
+        $statement->bindValue(':section_name', $section_name);
         $statement->bindValue(':subject_id', $subject_id);
-        $statement->bindValue(':yearlevel', $yearlevel);
-        $statement->bindValue(':grading_period', $_POST['grading_period']);
-        $statement->bindValue(':semester', $semester);
-        $statement->bindValue(':profname', $prof_name);
         $statement->bindValue(':prof_id', $prof_id);
+        $statement->bindValue(':prof_name', $prof_name);
         $statement->execute();
-        header('Location:index.php?search1=matchingtype');
-    } else {
-        header('Location:index.php?status=dup');
+        header('Location:section.php?id=' . $subject_id);
     }
 
 }
@@ -129,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Main Menu</p>
                     </a>
                 </li>
-                <li class="active">
-                    <a href="">
+                <li>
+                    <a href="../questions/">
                         <p>Questions</p>
                     </a>
                 </li>
@@ -139,8 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Exam</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../class/">
+                <li  class="active">
+                    <a href="index.php">
                         <p>Subject</p>
                     </a>
                 </li>
@@ -213,63 +183,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h4 class="text-center">Create Exam</h4>
+                                        <h4 class="text-center">Create Section</h4>
                                     </div>
                                     <div class="left">
-                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        <a href="section.php?id=<?php echo $rnd_id; ?>" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="container">
                                 <div class="content">
-                                        <form method="post">
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Question</label>
-                                                        <input type="text" min="0" name="question" class="form-control border-input" placeholder="" value="">
-                                                    </div>
+                                    <form method="post">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Section Name</label>
+                                                    <input type="text" name="section_name" class="form-control border-input" placeholder="Section Name" value="" required>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Answer</label>
-                                                        <input type="text" name="answer" class="form-control border-input" placeholder="" value="">
-                                                    </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Proctor</label>
+                                                    <select name="prof_id" class="form-control border-input" required>
+                                                        <option value="" selected>-</option>
+                                                        <?php foreach ($faculty as $i => $item): ?>
+                                                        <option value="<?php echo $item['id']; ?>"><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Grading Period</label>
-                                                        <select name="grading_period" class="form-control border-input" required>
-                                                            <option value="" selected>-</option>
-                                                            <option value="Prelim">Prelim</option>
-                                                            <option value="Midterm">Midterm</option>
-                                                            <option value="Finals">Finals</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-auto">
-                                                    <div class="form-group">
-                                                        <label>Proctor</label>
-                                                        <select name="prof_id" class="form-control border-input" required>
-                                                            <option value="" selected>-</option>
-                                                            <?php foreach ($faculty as $i => $item): ?>
-                                                            <option value="<?php echo $item['id']; ?>"><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></option>
-                                                            <?php endforeach;?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="text-center">
-                                                <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create</button>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </form>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create Section</button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

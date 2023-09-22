@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 
 if (!isset($_SESSION["exam_taken"])) {
@@ -9,30 +9,25 @@ if (!isset($_SESSION["exam_taken"])) {
 // var_dump($_SESSION);
 // echo '<pre>';
 // if ($_SESSION["current_type"] == "multiplechoice") {
-    
+
 // }
 
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strtolower($_POST['radio']) == strtolower($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["answer"])) {
         $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
         echo 'here';
     }
     if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
         $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
-    } 
-    else {
+    } else {
         $_SESSION["current_type"] = "identification";
         // echo '<pre>';
         // var_dump($_SESSION);
         // echo '<pre>';
-        header("location:index.php?type=".$_SESSION["current_type"]);
+        header("location:index.php?type=" . $_SESSION["current_type"]);
     }
-    
+
 }
-
-
 
 ?>
 
@@ -44,14 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-	<title>Olfu Offline Exam System</title>
+	<title>EXAMINATION SYSTEM - CCS</title>
 
 	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
 
     <link href="../../assets/css/main.css" rel="stylesheet" />
-    <link href="../../assets/css/animate.min.css" rel="stylesheet"/>
+    <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
 
@@ -68,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]);  ?> Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -107,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <!-- <a class="navbar-brand" href="#">Olfu Offline Exam System</a> -->
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -152,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]);  ?></h4>
+                                        <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
                                         <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
@@ -166,30 +161,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
-                                                    <label><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["question"]);  ?></label>
+                                                    <label><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["question"]); ?></label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="">
                                             <div class="">
                                                 <div class="">
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["A"]);  ?>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["A"]); ?>
                                                         <input type="radio" name="radio"  value="A">
                                                         <span class="checkmark"></span>
                                                     </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["B"]);  ?>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["B"]); ?>
                                                         <input type="radio" name="radio" value="B">
                                                         <span class="checkmark"></span>
                                                     </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["C"]);  ?>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["C"]); ?>
                                                         <input type="radio" name="radio" value="C">
                                                         <span class="checkmark"></span>
                                                     </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["D"]);  ?>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["D"]); ?>
                                                         <input type="radio" name="radio" value="D">
                                                         <span class="checkmark"></span>
                                                     </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["E"]);  ?>
+                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["E"]); ?>
                                                         <input type="radio" name="radio" value="E">
                                                         <span class="checkmark"></span>
                                                     </label>
