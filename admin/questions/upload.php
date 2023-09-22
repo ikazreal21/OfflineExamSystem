@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // echo 'here';
 
-                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
+                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
                         $statement->bindValue(':subject', $subject_name);
                         $statement->bindValue(':subject_id', $subject[0]['rnd_id']);
                         $statement->bindValue(':question', $question);
