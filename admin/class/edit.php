@@ -187,7 +187,7 @@ if (count($procdata) == 0) {
                                 <table class="table">
                                     <thead>
                                         <th>Student ID</th>
-                                    	<th>Subject Name</th>
+                                    	<th>Student Name</th>
                                     	<th>Year Level</th>
                                     	<th>Action</th>
                                     </thead>

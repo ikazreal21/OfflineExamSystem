@@ -3,6 +3,7 @@ session_start();
 
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
+require '../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
@@ -39,7 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $worksheet_arr = $worksheet->toArray();
 
             // Remove header row
-            unset($worksheet_arr[0]);
+            // echo '<pre>';
+            // var_dump($worksheet_arr);
+            // echo '<pre>';
+            // unset($worksheet_arr[0]);
 
             foreach ($worksheet_arr as $row) {
 
@@ -235,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Upload User</label>
-                                                    <input type="file" name="username" class="form-control border-input" placeholder="Upload" value="" required>
+                                                    <input type="file" name="file" class="form-control border-input" placeholder="Upload" value="" required>
                                                 </div>
                                             </div>
                                         </div>

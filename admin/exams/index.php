@@ -183,13 +183,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table">
                                     <thead>
                                     	<th>Subject Name</th>
+                                    	<th>Section</th>
                                     	<th>Grading Period</th>
                                     	<th>Year Level</th>
                                     	<th>Semester</th>
                                     	<th>Professor's Name</th>
                                     	<th>Multiple Choice</th>
                                     	<th>Identification</th>
-                                    	<th>Matching Type</th>
+                                    	<!-- <th>Matching Type</th> -->
                                     	<th>True or False</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
@@ -205,7 +206,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['multiplechoice']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['identification']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
+                                        	<!-- <td style="font-size:medium;"><?php echo $item['matching']; ?></td> -->
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">

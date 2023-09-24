@@ -96,7 +96,7 @@ $sections = $statement->rowCount();
                 </li>
                 <li>
                     <a href="generate/">
-                        <p>Reports</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>

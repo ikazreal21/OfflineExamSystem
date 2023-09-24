@@ -94,7 +94,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 </li>
                 <li>
                     <a href="../generate/">
-                        <p>Reports</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>
@@ -183,15 +183,15 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                        <th>Exam ID</th>
                                     	<th>Subject Name</th>
+                                    	<th>Section</th>
                                     	<th>Grading Period</th>
                                     	<th>Year Level</th>
                                     	<th>Semester</th>
                                     	<th>Professor's Name</th>
                                     	<th>Multiple Choice</th>
                                     	<th>Identification</th>
-                                    	<th>Matching Type</th>
+                                    	<!-- <th>Matching Type</th> -->
                                     	<th>True or False</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
@@ -199,15 +199,15 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['exam_id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['grading_period']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['semester']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['multiplechoice']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['identification']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
+                                        	<!-- <td style="font-size:medium;"><?php echo $item['matching']; ?></td> -->
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">

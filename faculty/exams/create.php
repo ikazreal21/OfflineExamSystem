@@ -7,6 +7,28 @@ require_once "../../others/function.php";
 $sec = $_GET['id'] ?? '';
 $rnd_id = $_GET['rnd_id'] ?? '';
 
+$statement = $pdo->prepare('SELECT * FROM identification where subject_id = :subject_id');
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$identi = $statement->rowCount(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT * FROM multiplechoice where subject_id = :subject_id');
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$multi = $statement->rowCount(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT * FROM trueorfalse where subject_id = :subject_id');
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$torf = $statement->rowCount(PDO::FETCH_ASSOC);
+
+// echo '<pre>';
+// var_dump($identi);
+// var_dump($multi);
+// var_dump($torf);
+// var_dump($rnd_id);
+// echo '<pre>';
+
 $subject_name = '';
 $subject_id = '';
 $grading_period = '';
@@ -58,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
-              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, trueorfalse, status)
+              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :trueorfalse, :status)");
 
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
@@ -72,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':prof_id', $prof_id);
         $statement->bindValue(':multiplechoice', $multiplechoice);
         $statement->bindValue(':identification', $identification);
-        $statement->bindValue(':matching', $matching);
+        // $statement->bindValue(':matching', $matching);
         $statement->bindValue(':trueorfalse', $trueorfalse);
         $statement->bindValue(':status', $status);
         $statement->execute();
@@ -143,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </li>
                 <li>
                     <a href="../generate/">
-                        <p>Reports</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>
@@ -235,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Identification</label>
-                                                    <input type="number" min="0" name="identification" class="form-control border-input" placeholder="Number of Identification" value="" required>
+                                                    <input type="number" min="1" max="<?php echo $identi; ?>" name="identification" class="form-control border-input" placeholder="Number of Identification" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -243,23 +265,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Multiple Choice</label>
-                                                    <input type="number" min="0" name="multiplechoice" class="form-control border-input" placeholder="Number of Multiple Choice" value="" required>
+                                                    <input type="number" min="0" max="<?php echo $multi; ?>" name="multiplechoice" class="form-control border-input" placeholder="Number of Multiple Choice" value="" required>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <!-- <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
                                                     <input type="number" min="0" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of True or False</label>
-                                                    <input type="number" min="0" name="trueorfalse" class="form-control border-input" placeholder="Number of True or False" value="" required>
+                                                    <input type="number" min="0" max="<?php echo $torf; ?>" name="trueorfalse" class="form-control border-input" placeholder="Number of True or False" value="" required>
                                                 </div>
                                             </div>
                                         </div>

@@ -110,7 +110,7 @@ try
                     <div class="">
                         <div class="card">
                             <div class="header">
-                                <h4 class="text-center">OLFU OFFLINE EXAM SYSTEM</h4>
+                                <h4 class="text-center">Our Lady of Fatima University Examination System</h4>
                             </div>
                             <div class="container">
                                 <div class="content">

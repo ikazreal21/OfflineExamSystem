@@ -10,14 +10,14 @@ if (!isset($_SESSION["exam_taken"])) {
 // echo '<pre>';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (strtolower($_POST['answer']) == strtolower($_SESSION["identification"][$_SESSION["start_number_multiple"]]["answer"])) {
+    if (strtolower($_POST['answer']) == strtolower($_SESSION["matchingtype"][$_SESSION["start_number_multiple"]]["answer"])) {
         $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
         // echo 'here';
     }
     if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
         $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
     } else {
-        $_SESSION["current_type"] = "matchingtype";
+        $_SESSION["current_type"] = "trueorfalse";
 
         header("location:index.php?type=" . $_SESSION["current_type"]);
     }
@@ -73,11 +73,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Identification</p>
                     </a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="">
                         <p>Matching Type</p>
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a href="">
                         <p>True or False</p>

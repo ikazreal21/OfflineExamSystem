@@ -163,7 +163,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table">
                                     <thead>
                                     	<th>Section Name</th>
-                                    	<th>Number of Student</th>
+                                    	<th>Number of Students</th>
                                     	<th>Professor's Name</th>
                                     	<th>Enroll</th>
                                     	<th>Delete</th>
@@ -174,11 +174,12 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
-                                        	<td style="text-align:center;">
+                                        	
+											<td style="text-align:left;">
                                                 <a href="enroll.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">Enroll</a>
                                                 <a href="edit.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-warning btn-wd">Edit</a>
                                             </td>
-                                            <td style="text-align:center;">
+                                            <td style="text-align:left;">
                                                 <a href="delete_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                             </td>
                                         </tr>

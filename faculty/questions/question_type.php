@@ -67,7 +67,7 @@ $rnd_id = $_GET['id'] ?? '';
                 </li>
                 <li>
                     <a href="../generate/">
-                        <p>Reports</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>

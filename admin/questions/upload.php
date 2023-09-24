@@ -4,6 +4,7 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 require_once '../../vendor/autoload.php';
+require '../../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 
@@ -152,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // echo 'here';
 
-                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
+                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
                         $statement->bindValue(':subject', $subject_name);
                         $statement->bindValue(':subject_id', $subject[0]['rnd_id']);
                         $statement->bindValue(':question', $question);
@@ -413,7 +414,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
-                                                    <label>Proctor</label>
+                                                    <label>Professor</label>
                                                     <select name="prof_id" class="form-control border-input" required>
                                                         <option value="" selected>-</option>
                                                         <?php foreach ($faculty as $i => $item): ?>

@@ -244,17 +244,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
-                                                    <label>Student ID</label>
-                                                    <input type="text" name="student_id" class="form-control border-input" placeholder="Student ID" value="">
+                                                    <label>Student ID / Employee ID</label>
+                                                    <input type="text" name="student_id" class="form-control border-input" placeholder="Student ID / Employee ID" value="">
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
-                                                    <label>Year Level</label>
+                                                    <label>Year Level (only for students)</label>
                                                     <select name="yearlevel" class="form-control border-input">
                                                         <option value="" selected>Year Level</option>
+														<option value="N/A">N/A</option>
                                                         <option value="1st">1st</option>
                                                         <option value="2nd">2nd</option>
                                                         <option value="3rd">3rd</option>
