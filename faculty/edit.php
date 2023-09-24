@@ -2,15 +2,55 @@
 session_start();
 
 require_once "../dbconnect.php";
+require_once "../others/function.php";
 
-$statement = $pdo->prepare('SELECT * FROM accounts where id = :id');
-$statement->bindValue(':id', $_SESSION['id']);
-$statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+$id = $_GET['id'] ?? null;
+
+if (!$id) {
+    header('Location: index.php');
+    exit;
+}
+
+if (!empty($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'err':
+            echo "<script>alert('Password are not the same as Confirm Password');</script>";
+            break;
+        default:
+    }
+}
+
+// $subject = '';
+// $semester = '';
+// $yearlevel = '';
+// $unique_id = '';
+// // $prof_id = '';
+// // $prof_name = '';
+
+// $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty" ');
+// $statement->execute();
+// $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    if ($_POST['password'] == $_POST['confirm_password']) {
+        if (empty($errors)) {
+
+            $statement = $pdo->prepare("UPDATE accounts set password = :password WHERE id = :id");
+            $statement->bindValue(':password', $_POST['password']);
+            $statement->bindValue(':id', $id);
+            $statement->execute();
+
+            header('Location:index.php');
+        }
+    } else {
+        $qstring = '?status=err&id=' . $id;
+        header("Location: edit.php" . $qstring);
+    }
+
+}
 
 ?>
-
-
 
 
 <!doctype html>
@@ -89,7 +129,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
+                    <a class="navbar-brand" href="#"></a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -115,7 +155,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../logout.php">
+                            <a href="../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -129,67 +169,65 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12 col-md-7">
+                    <div class="">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Edit Profile</h4>
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h4 class="text-center">Change Password</h4>
+                                    </div>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="content">
-                                <form>
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <div class="form-group">
-                                                <label>Username</label>
-                                                <input type="text" class="form-control border-input"  placeholder="Username" value="<?php echo $procdata[0]['username']; ?>">
+                            <div class="container">
+                                <div class="content">
+                                    <form method="post">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>New Password</label>
+                                                    <input type="text" name="password" class="form-control border-input" placeholder="New Password" value="" required>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label>Password</label>
-                                                <input type="text" class="form-control border-input" placeholder="Password" value="<?php echo $procdata[0]['password']; ?>">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Confirm Password</label>
+                                                    <input type="text" name="confirm_password" class="form-control border-input" placeholder="Confirm Password" value="" required>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control border-input" placeholder="Email" value="<?php echo $procdata[0]['email']; ?>">
-                                            </div>
+                                        <div class="text-center">
+                                            <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Change Password</button>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>First Name</label>
-                                                <input type="text" class="form-control border-input" placeholder="First Name" value="<?php echo $procdata[0]['first_name']; ?>">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Last Name</label>
-                                                <input type="text" class="form-control border-input" placeholder="Last Name" value="<?php echo $procdata[0]['last_name']; ?>">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Update Profile</button>
-                                        <a href="edit.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-warning btn-wd">Change Password</a>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </form>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
-
-
         <footer class="footer">
             <div class="container-fluid">
-                <!-- -->
+                <nav class="pull-left">
+                    <ul>
+                        <li>
+                            <a href="">
+                               Contact
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                Support
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

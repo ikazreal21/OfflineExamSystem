@@ -1,0 +1,63 @@
+Subject
+    - add_prof = adding prof by subject
+    - add = adding stundet/enrolling them to section per subject
+    - create_section = creating a section per subject
+    - create = creating a subject
+    - delete_section = deleting a section
+    - delete = deleting a subject
+    - edit_prof = is the view of prof per subject and option to remove them per subject
+    - edit = is the view of stundet per section and option to remove them per section
+    - enroll_prof = is the view of adding prof per subject
+    - enroll = is the view of adding/enrolling students per section
+    - index = list of the subjects and the options
+    - remove_prof =  removing the prof per subject
+    - remove = removing students per section
+    - section = list of section per subject
+Exam
+    - create = create an exam per section
+    - edit = wala pang laman
+    - index = list of the exam per section
+    - list = list of subjects and option to list the sections of that subject
+    - manual_open = manually opening exam
+    - manual_close = manually closing exam
+    - schedule = wala pang laman
+    - section = list of section per subject and option to create exam
+- generate = wala pang laman
+Questions
+    - create1 = create question for multiple choice type
+    - create2 = create question for identification type
+    - create3 = create question for matchingtype
+    - create4 = create question for true or false type
+    - delete = delete a question
+    - list = list of subjects and option to create a question
+    - question_type = after clicking create question you need to choose in this page what question type you want to create
+    - update = wala pang laman
+    - upload = upload question
+User
+    - create = create a individual user
+    - edit = changing password for user
+    - index = list of user
+    - remove = wala pang laman
+    - upload_user = uploading of user
+Examination
+    - finish = end of exam squence and computing score
+    - identification = identification part of the exam
+    - index = checking the type of exam and redirecting you to the propper page depends on exam type
+    - matchingtype = matching type part of the exam
+    - multiplechoice = multiple choice part of the exam
+    - take_exam = page that shows you the list of exam availbale/open and option to take the exam
+    - view_exam_results = page that shows you your exam results
+edit_profile - wala pang laman
+index - admin dashboard
+profile - see profile and option to change password
+
+
+
+Other file/folder
+ - Vendor folder = where the csv, xls and xlsx file reader are located
+ - Others Folder
+    - function = where the randomize id function reside
+    - validation = is where login validation is reside
+ -  dbconnect database connection
+
+

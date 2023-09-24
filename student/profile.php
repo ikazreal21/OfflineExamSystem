@@ -168,7 +168,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-info btn-fill btn-wd">Update Profile</button>
-                                        <a href="user/edit.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-warning btn-wd">Change Password</a>
+                                        <a href="edit.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-warning btn-wd">Change Password</a>
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
