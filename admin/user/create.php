@@ -17,13 +17,28 @@ $status = 'active';
 // $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "faculty" ');
 // $statement->execute();
 // $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+$search1 = $_GET['search1'] ?? '';
+
+if (!empty($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'err':
+            echo "<script>alert('Password are not the same as Confirm Password');</script>";
+            break;
+        default:
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    if ($_POST['password'] != $_POST['confirm_password']) {
+        $qstring = '?status=err';
+        header("Location: create.php" . $qstring);
+    }
 
     $username = $_POST['username'];
     $password = $_POST['password'];
     $email = $_POST['email'];
-    $role = $_POST['role'];
+    $role = $search1;
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $student_id = $_POST['student_id'];
@@ -36,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $statement->bindValue(':username', $username);
         $statement->bindValue(':password', $password);
-        $statement->bindValue(':role', $role);
+        $statement->bindValue(':role', $search1);
         $statement->bindValue(':email', $email);
         $statement->bindValue(':first_name', $first_name);
         $statement->bindValue(':last_name', $last_name);
@@ -188,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="container">
                                 <div class="content">
                                     <form method="post">
-                                        <div class="row">
+                                        <!-- <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Role</label>
@@ -200,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
@@ -213,7 +228,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Password</label>
-                                                    <input type="text" name="password" class="form-control border-input" placeholder="Password" value="" required>
+                                                    <input type="password" name="password" class="form-control border-input" placeholder="Password" value="" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Confirm Password</label>
+                                                    <input type="password" name="confirm_password" class="form-control border-input" placeholder="Confirm" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -241,6 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php if ($search1 == 'student'): ?>
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
@@ -264,6 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </div>
                                             </div>
                                         </div>
+                                        <?php endif; ?>
                                         <div class="text-center">
                                             <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create</button>
                                         </div>

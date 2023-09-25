@@ -6,6 +6,7 @@ require_once "../../others/function.php";
 
 $id = $_GET['rnd_id'] ?? null;
 $sect_id = $_GET['id'] ?? null;
+$search1 = $_GET['search1'] ?? null;
 
 if (!$id && !$sect_id) {
     header('Location: index.php');
@@ -175,8 +176,27 @@ if (count($procdata) == 0) {
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <form action="" method="get">
+                                            <div class="flex">
+                                                <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <input type="text" name="search1" class="form-control border-input" placeholder="Username or Student Id" value="">
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-top:.5rem;">Search</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table">

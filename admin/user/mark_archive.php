@@ -4,22 +4,36 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$id = $_GET['id'] ?? '';
-
-if (!$id) {
-    header('Location: index.php');
-    exit;
+if (!empty($_GET['status'])) {
+    switch ($_GET['status']) {
+        case 'succ':
+            echo "<script>alert('Upload Successfully');</script>";
+            break;
+        case 'err':
+            echo "<script>alert('Error on Upload');</script>";
+            break;
+        case 'dup':
+            echo "<script>alert('Duplicated Question');</script>";
+            break;
+        case 'invalid_file':
+            echo "<script>alert('Invalid File');</script>";
+            break;
+        default:
+    }
 }
 
-$statement = $pdo->prepare('SELECT * from subject where rnd_id = :id');
-$statement->bindValue(':id', $id);
+$search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['search2'] ?? '';
+
+if ($search1) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
+    $statement->bindValue(':role', "%$search1%");
+} else {
+    $statement = $pdo->prepare('SELECT * FROM accounts where role != "admin" order by student_id asc');
+}
+
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id');
-$statement->bindValue(':id', $id);
-$statement->execute();
-$section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -78,8 +92,8 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Exam</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="">
+                <li>
+                    <a href="../class/">
                         <p>Subject</p>
                     </a>
                 </li>
@@ -88,7 +102,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Reports</p>
                     </a>
                 </li>
-                <li>
+                <li  class="active">
                     <a href="../user/">
                         <p>Users</p>
                     </a>
@@ -151,10 +165,30 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h3><?php echo $procdata[0]['subject_name']; ?></h3>
+                                        <form action="" method="get">
+                                            <div class="flex">
+                                                <p><b>Filter</b></p>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <input type="text" name="username" class="form-control border-input" placeholder="Username" value="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control border-input" style="font-size: medium;">
+                                                            <option value="" selected>Select</option>
+                                                            <option value="faculty">Faculty</option>
+                                                            <option value="student">Student</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                     <div class="left">
-                                        <a href="create_section.php?id=<?php echo $id; ?>" class="btn btn-info btn-fill btn-wd">Create Section</a>
+                                        <!-- <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a> -->
+                                        <a href="mark_archive.php" class="btn btn-info btn-fill btn-wd">Confirm Archive</a>
                                         <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
@@ -162,26 +196,34 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
                                     <thead>
-                                    	<th>Section Name</th>
-                                    	<th>Number of Students</th>
-                                    	<th>Professor's Name</th>
-                                    	<th>Enroll</th>
-                                    	<th>Delete</th>
+                                        <th>ID</th>
+                                    	<th>Username</th>
+                                    	<th>Email</th>
+                                    	<th>First Name</th>
+                                    	<th>Second Name</th>
+                                    	<th>Student ID</th>
+                                    	<th>Year Level</th>
+                                    	<th>Status</th>
+                                    	<!-- <th>Action</th> -->
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($section as $i => $item): ?>
+                                        <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
-                                        	
-											<td style="text-align:left;">
-                                                <a href="enroll.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">Enroll</a>
-                                                <a href="edit.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-warning btn-wd">Edit</a>
-                                            </td>
-                                            <td style="text-align:left;">
-                                                <a href="delete_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" onclick="return confirm('Are you sure you want to delete <?php echo $item['section_name'] ?>?')" class="btn btn-danger btn-wd">Delete</a>
-                                            </td>
+                                        	<td style="font-size:medium;"><?php echo $item['id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['username']; ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['email']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['first_name']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['last_name']; ?></td>
+                                            <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
+                                            <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
+                                        	<!-- <td style="text-align:left;">
+                                                <?php if ($item['status'] == 'active'): ?>
+                                                    <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Deactivate </a>
+                                                <?php elseif ($item['status'] == 'deactivate'): ?>
+                                                    <a href="activate.php?id=<?php echo $item['id']; ?>" class="btn btn-success btn-">Activate </a>
+                                                <?php endif; ?>
+                                            </td> -->
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

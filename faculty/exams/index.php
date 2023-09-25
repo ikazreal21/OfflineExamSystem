@@ -158,19 +158,25 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <form action="" method="get">
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <option value="" selected>Semester</option>
-                                                    <option value="1st">1st</option>
-                                                    <option value="2nd">2nd</option>
-                                                </select>
-                                                <select name="search2" class="form-select" style="font-size: medium; margin-left:5rem;">
-                                                    <option value="" selected>Year Level</option>
-                                                    <option value="1st">1st</option>
-                                                    <option value="2nd">2nd</option>
-                                                    <option value="3rd">3rd</option>
-                                                    <option value="4th">4th</option>
-                                                </select>
-                                                <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control" style="font-size: medium;">
+                                                            <option value="" selected>Semester</option>
+                                                            <option value="1st">1st</option>
+                                                            <option value="2nd">2nd</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="search2" class="form-control" style="font-size: medium; margin-left:5rem;">
+                                                            <option value="" selected>Year Level</option>
+                                                            <option value="1st">1st</option>
+                                                            <option value="2nd">2nd</option>
+                                                            <option value="3rd">3rd</option>
+                                                            <option value="4th">4th</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -191,7 +197,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Professor's Name</th>
                                     	<th>Multiple Choice</th>
                                     	<th>Identification</th>
-                                    	<!-- <th>Matching Type</th> -->
+                                    	<th>Matching Type</th>
                                     	<th>True or False</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
@@ -207,7 +213,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['multiplechoice']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['identification']; ?></td>
-                                        	<!-- <td style="font-size:medium;"><?php echo $item['matching']; ?></td> -->
+                                        	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">

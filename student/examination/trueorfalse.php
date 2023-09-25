@@ -76,11 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Identification</p>
                     </a>
                 </li>
-                <!-- <li>
+                <li>
                     <a href="">
                         <p>Matching Type</p>
                     </a>
-                </li> -->
+                </li>
                 <li class="active">
                     <a href="">
                         <p>True or False</p>

@@ -163,33 +163,37 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <form action="" method="get">
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <?php if ($search == 'multiplechoice'): ?>
-                                                    <option value="multiplechoice" selected>Multiple Choice</option>
-                                                    <option value="identification">Identification</option>
-                                                    <option value="trueorfalse">True or False</option>
-                                                    <option value="matchingtype">Matching Type</option>
-                                                    <?php endif;?>
-                                                    <?php if ($search == 'identification'): ?>
-                                                    <option value="multiplechoice">Multiple Choice</option>
-                                                    <option value="identification" selected>Identification</option>
-                                                    <option value="trueorfalse">True or False</option>
-                                                    <option value="matchingtype">Matching Type</option>
-                                                    <?php endif;?>
-                                                    <?php if ($search == 'trueorfalse'): ?>
-                                                    <option value="multiplechoice">Multiple Choice</option>
-                                                    <option value="identification">Identification</option>
-                                                    <option value="trueorfalse" selected>True or False</option>
-                                                    <option value="matchingtype">Matching Type</option>
-                                                    <?php endif;?>
-                                                    <?php if ($search == 'matchingtype'): ?>
-                                                    <option value="multiplechoice">Multiple Choice</option>
-                                                    <option value="identification">Identification</option>
-                                                    <option value="trueorfalse">True or False</option>
-                                                    <option value="matchingtype" selected>Matching Type</option>
-                                                    <?php endif;?>
-                                                </select>
-                                                <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control" style="font-size: medium;">
+                                                            <?php if ($search == 'multiplechoice'): ?>
+                                                            <option value="multiplechoice" selected>Multiple Choice</option>
+                                                            <option value="identification">Identification</option>
+                                                            <option value="trueorfalse">True or False</option>
+                                                            <option value="matchingtype">Matching Type</option>
+                                                            <?php endif;?>
+                                                            <?php if ($search == 'identification'): ?>
+                                                            <option value="multiplechoice">Multiple Choice</option>
+                                                            <option value="identification" selected>Identification</option>
+                                                            <option value="trueorfalse">True or False</option>
+                                                            <option value="matchingtype">Matching Type</option>
+                                                            <?php endif;?>
+                                                            <?php if ($search == 'trueorfalse'): ?>
+                                                            <option value="multiplechoice">Multiple Choice</option>
+                                                            <option value="identification">Identification</option>
+                                                            <option value="trueorfalse" selected>True or False</option>
+                                                            <option value="matchingtype">Matching Type</option>
+                                                            <?php endif;?>
+                                                            <?php if ($search == 'matchingtype'): ?>
+                                                            <option value="multiplechoice">Multiple Choice</option>
+                                                            <option value="identification">Identification</option>
+                                                            <option value="trueorfalse">True or False</option>
+                                                            <option value="matchingtype" selected>Matching Type</option>
+                                                            <?php endif;?>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>

@@ -80,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, trueorfalse, status)
-              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :trueorfalse, :status)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
+              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
 
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':prof_id', $prof_id);
         $statement->bindValue(':multiplechoice', $multiplechoice);
         $statement->bindValue(':identification', $identification);
-        // $statement->bindValue(':matching', $matching);
+        $statement->bindValue(':matching', $matching);
         $statement->bindValue(':trueorfalse', $trueorfalse);
         $statement->bindValue(':status', $status);
         $statement->execute();
@@ -266,14 +266,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- <div class="row">
+                                        <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
                                                     <input type="number" min="0" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">

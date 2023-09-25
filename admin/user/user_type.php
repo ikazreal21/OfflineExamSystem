@@ -4,27 +4,9 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$id = $_GET['id'] ?? '';
 
-if (!$id) {
-    header('Location: index.php');
-    exit;
-}
-
-$statement = $pdo->prepare('SELECT * from subject where rnd_id = :id');
-$statement->bindValue(':id', $id);
-$statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id');
-$statement->bindValue(':id', $id);
-$statement->execute();
-$section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
-
-
-
 
 <!doctype html>
 <html lang="en">
@@ -69,7 +51,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                     </a>
                 </li>
                 <li>
-                    <a href="../questions/">
+                    <a href="">
                         <p>Questions</p>
                     </a>
                 </li>
@@ -78,8 +60,8 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Exam</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="">
+                <li>
+                    <a href="../class/">
                         <p>Subject</p>
                     </a>
                 </li>
@@ -88,7 +70,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Reports</p>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="../user/">
                         <p>Users</p>
                     </a>
@@ -107,7 +89,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
+                    <a class="navbar-brand" href="#"></a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -143,49 +125,26 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </nav>
 
+
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
-                        <div class="card ">
+                        <div class="card">
                             <div class="header">
-                                <div class="header-arrangement">
-                                    <div class="right">
-                                        <h3><?php echo $procdata[0]['subject_name']; ?></h3>
-                                    </div>
-                                    <div class="left">
-                                        <a href="create_section.php?id=<?php echo $id; ?>" class="btn btn-info btn-fill btn-wd">Create Section</a>
-                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
-                                    </div>
-                                </div>
+                                <h4 class="text-center">Role</h4>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table">
-                                    <thead>
-                                    	<th>Section Name</th>
-                                    	<th>Number of Students</th>
-                                    	<th>Professor's Name</th>
-                                    	<th>Enroll</th>
-                                    	<th>Delete</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($section as $i => $item): ?>
-                                        <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
-                                        	
-											<td style="text-align:left;">
-                                                <a href="enroll.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">Enroll</a>
-                                                <a href="edit.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-warning btn-wd">Edit</a>
-                                            </td>
-                                            <td style="text-align:left;">
-                                                <a href="delete_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" onclick="return confirm('Are you sure you want to delete <?php echo $item['section_name'] ?>?')" class="btn btn-danger btn-wd">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div class="container">
+                                <div class="content">
+                                    <form method="post">
+                                        <div class="text-center">
+                                            <a href="create.php?search1=admin" class="btn btn-info btn-fill btn-wd">Admin</a>
+                                            <a href="create.php?search1=faculty" class="btn btn-info btn-fill btn-wd">Faculty</a>
+                                            <a href="create.php?search1=student" class="btn btn-info btn-fill btn-wd">Student</a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,20 +153,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

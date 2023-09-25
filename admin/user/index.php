@@ -22,13 +22,13 @@ if (!empty($_GET['status'])) {
     }
 }
 
-$search1 = $_GET['search1'] ?? 'admin';
+$search1 = $_GET['search1'] ?? '';
 
 if ($search1) {
     $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
     $statement->bindValue(':role', "%$search1%");
 } else {
-    $statement = $pdo->prepare('SELECT * FROM accounts');
+    $statement = $pdo->prepare('SELECT * FROM accounts order by student_id asc');
 }
 
 $statement->execute();
@@ -167,30 +167,24 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <form action="" method="get">
                                             <div class="flex">
                                                 <p><b>Filter</b></p>
-                                                <select name="search1" class="form-select" style="font-size: medium;">
-                                                    <?php if ($search1 == 'admin'): ?>
-                                                    <option value="admin" selected>Admin</option>
-                                                    <option value="faculty">Faculty</option>
-                                                    <option value="student">Student</option>
-                                                    <?php endif;?>
-                                                    <?php if ($search1 == 'student'): ?>
-                                                    <option value="admin">Admin</option>
-                                                    <option value="faculty">Faculty</option>
-                                                    <option value="student" selected>Student</option>
-                                                    <?php endif;?>
-                                                    <?php if ($search1 == 'faculty'): ?>
-                                                    <option value="admin">Admin</option>
-                                                    <option value="faculty" selected>Faculty</option>
-                                                    <option value="student">Student</option>
-                                                    <?php endif;?>
-                                                </select>
-                                                <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control" style="font-size: medium;">
+                                                            <option value="" selected>Select</option>
+                                                            <option value="admin">Admin</option>
+                                                            <option value="faculty">Faculty</option>
+                                                            <option value="student">Student</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit"  class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
                                     <div class="left">
                                         <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a>
-                                        <a href="create.php" class="btn btn-info btn-fill btn-wd">Create User</a>
+                                        <a href="user_type.php" class="btn btn-info btn-fill btn-wd">Create User</a>
+                                        <a href="mark_archive.php?search1=<?php echo $search1; ?>" class="btn btn-info btn-fill btn-wd">Archive User</a>
                                     </div>
                                 </div>
                             </div>
@@ -202,10 +196,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Email</th>
                                     	<th>First Name</th>
                                     	<th>Second Name</th>
-                                        <?php if ($search1 == 'student'): ?>
                                     	<th>Student ID</th>
                                     	<th>Year Level</th>
-                                        <?php endif;?>
                                     	<th>Status</th>
                                     	<th>Action</th>
                                     </thead>
@@ -217,14 +209,16 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['email']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['first_name']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['last_name']; ?></td>
-                                            <?php if ($item['role'] == 'student'): ?>
-                                                <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
-                                                <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
-                                            <?php endif;?>
+                                            <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
+                                            <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">
                                                 <a href="edit.php?id=<?php echo $item['id']; ?>" class="btn btn-warning btn-wd">Modify</a>
-                                                <!-- <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Delete </a> -->
+                                                <?php if ($item['status'] == 'active'): ?>
+                                                    <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Deactivate </a>
+                                                <?php elseif ($item['status'] == 'deactivate'): ?>
+                                                    <a href="activate.php?id=<?php echo $item['id']; ?>" class="btn btn-success btn-">Activate </a>
+                                                <?php endif;?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
