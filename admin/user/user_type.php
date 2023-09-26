@@ -132,6 +132,13 @@ require_once "../../others/function.php";
                     <div class="">
                         <div class="card">
                             <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        </div>
+                                        <div class="left">
+                                            <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        </div>
+                                    </div>
                                 <h4 class="text-center">Role</h4>
                             </div>
                             <div class="container">

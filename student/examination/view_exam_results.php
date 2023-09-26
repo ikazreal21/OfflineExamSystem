@@ -158,6 +158,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Professor's Name</th>
                                     	<th>Number of Items</th>
                                     	<th>Score</th>
+                                    	<th>Percentage Score</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
@@ -167,6 +168,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo ucfirst($item['prof_name']); ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['out_of']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['score']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['score']/$item['out_of']*100; ?>%</b></td>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

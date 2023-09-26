@@ -11,7 +11,7 @@ require_once "../../others/function.php";
 // var_dump($_SESSION);
 // echo '<pre>';
 
-$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id ');
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
 $statement->bindValue(':student_id', $_SESSION['student_id']);
 $statement->execute();
 $student_details = $statement->fetchAll(PDO::FETCH_ASSOC);

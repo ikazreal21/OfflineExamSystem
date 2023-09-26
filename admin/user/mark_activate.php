@@ -12,11 +12,8 @@ if (!empty($_GET['status'])) {
         case 'err':
             echo "<script>alert('Error on Upload');</script>";
             break;
-        case 'dup1':
-            echo "<script>alert('Password Not Match');</script>";
-            break;
-        case 'dup2':
-            echo "<script>alert('Username Unavailable');</script>";
+        case 'dup':
+            echo "<script>alert('Duplicated Question');</script>";
             break;
         case 'invalid_file':
             echo "<script>alert('Invalid File');</script>";
@@ -26,18 +23,27 @@ if (!empty($_GET['status'])) {
 }
 
 $search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['username'] ?? '';
 
-if ($search1) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
+if ($search1 && $search2) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role or username like :username and status = "deactivated"');
     $statement->bindValue(':role', "%$search1%");
-} else {
-    $statement = $pdo->prepare('SELECT * FROM accounts order by student_id asc');
+    $statement->bindValue(':username', "%$search2%");
+} elseif ($search1 && empty($search2)) { 
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role and status = "deactivated"');
+    $statement->bindValue(':role', "%$search1%");
+} elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE username like :username and status = "deactivated"');
+    $statement->bindValue(':username', "%$search2%");
+}
+else {
+    $statement = $pdo->prepare('SELECT * FROM accounts where role != "admin" and status = "deactivated" order by student_id asc');
 }
 
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-
+$_SESSION['archive_data'] = $procdata;
 
 ?>
 
@@ -174,9 +180,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <p><b>Filter</b></p>
                                                 <div class="row">
                                                     <div class="col-md-2">
-                                                        <select name="search1" class="form-control" style="font-size: medium;">
+                                                        <div class="form-group">
+                                                            <input type="text" name="username" class="form-control border-input" placeholder="Username" value="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control border-input" style="font-size: medium;">
                                                             <option value="" selected>Select</option>
-                                                            <option value="admin">Admin</option>
                                                             <option value="faculty">Faculty</option>
                                                             <option value="student">Student</option>
                                                         </select>
@@ -187,10 +197,9 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a>
-                                        <a href="user_type.php" class="btn btn-info btn-fill btn-wd">Create User</a>
-                                        <a href="mark_archive.php?search1=<?php echo $search1; ?>" class="btn btn-info btn-fill btn-wd">Archive User</a>
-                                        <a href="mark_activate.php?search1=<?php echo $search1; ?>" class="btn btn-info btn-fill btn-wd">Unarchive User</a>
+                                        <!-- <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a> -->
+                                        <a href="activate.php" onclick="return confirm('Are you sure you want to Activate this Users?')" class="btn btn-info btn-fill btn-wd">Confirm Activate</a>
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>
@@ -205,7 +214,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Student ID</th>
                                     	<th>Year Level</th>
                                     	<th>Status</th>
-                                    	<th>Action</th>
+                                    	<!-- <th>Action</th> -->
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
@@ -218,14 +227,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
                                             <td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
-                                        	<td style="text-align:left;">
-                                                <a href="edit.php?id=<?php echo $item['id']; ?>" class="btn btn-warning btn-wd">Change Password</a>
+                                        	<!-- <td style="text-align:left;">
                                                 <?php if ($item['status'] == 'active'): ?>
                                                     <a href="remove.php?id=<?php echo $item['id']; ?>" class="btn btn-danger btn-">Deactivate </a>
-                                                <?php elseif ($item['status'] == 'deactivated'): ?>
+                                                <?php elseif ($item['status'] == 'deactivate'): ?>
                                                     <a href="activate.php?id=<?php echo $item['id']; ?>" class="btn btn-success btn-">Activate </a>
-                                                <?php endif;?>
-                                            </td>
+                                                <?php endif; ?>
+                                            </td> -->
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

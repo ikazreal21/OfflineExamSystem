@@ -23,17 +23,27 @@ if (!empty($_GET['status'])) {
 }
 
 $search1 = $_GET['search1'] ?? '';
-$search2 = $_GET['search2'] ?? '';
+$search2 = $_GET['username'] ?? '';
 
-if ($search1) {
-    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role');
+if ($search1 && $search2) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role or username like :username and status = "active"');
     $statement->bindValue(':role', "%$search1%");
-} else {
-    $statement = $pdo->prepare('SELECT * FROM accounts where role != "admin" order by student_id asc');
+    $statement->bindValue(':username', "%$search2%");
+} elseif ($search1 && empty($search2)) { 
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role like :role and status = "active"');
+    $statement->bindValue(':role', "%$search1%");
+} elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE username like :username and status = "active"');
+    $statement->bindValue(':username', "%$search2%");
+}
+else {
+    $statement = $pdo->prepare('SELECT * FROM accounts where role != "admin" and status = "active" order by student_id asc');
 }
 
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$_SESSION['archive_data'] = $procdata;
 
 ?>
 
@@ -188,7 +198,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                     <div class="left">
                                         <!-- <a href="upload_user.php" class="btn btn-info btn-fill btn-wd">Upload Users</a> -->
-                                        <a href="mark_archive.php" class="btn btn-info btn-fill btn-wd">Confirm Archive</a>
+                                        <a href="remove.php" onclick="return confirm('Are you sure you want to Archive this Users?')" class="btn btn-info btn-fill btn-wd">Confirm Archive</a>
                                         <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>

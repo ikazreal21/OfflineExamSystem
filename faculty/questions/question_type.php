@@ -127,7 +127,16 @@ $rnd_id = $_GET['id'] ?? '';
                     <div class="">
                         <div class="card">
                             <div class="header">
-                                <h4 class="text-center">Question Type</h4>
+                                <div class="header">
+                                    <div class="header-arrangement">
+                                        <div class="right">
+                                        </div>
+                                        <div class="left">
+                                            <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        </div>
+                                    </div>
+                                    <h4 class="text-center">Question Type</h4>
+                                </div>
                             </div>
                             <div class="container">
                                 <div class="content">

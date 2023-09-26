@@ -76,12 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $identification = $_POST['identification'];
     $matching = $_POST['matching'];
     $trueorfalse = $_POST['trueorfalse'];
+    $timer = $_POST['timer'];
+    $difficulty = $_POST['difficulty'];
     // $unique_id = randomString(8, 2);
 
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status)
-              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status, timer, difficulty)
+              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status, :timer, :difficulty)");
 
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
@@ -97,6 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':matching', $matching);
         $statement->bindValue(':trueorfalse', $trueorfalse);
         $statement->bindValue(':status', $status);
+        $statement->bindValue(':timer', $timer);
+        $statement->bindValue(':difficulty', $difficulty);
         $statement->execute();
         header('Location:list.php');
     }
@@ -294,6 +298,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         <option value="Prelim">Prelim</option>
                                                         <option value="Midterm">Midterm</option>
                                                         <option value="Finals">Finals</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Time Limit</label>
+                                                    <select name="timer" class="form-control border-input" required>
+                                                        <option value="" selected>-</option>
+                                                        <option value="15">15 Minutes</option>
+                                                        <option value="30">30 Minutes</option>
+                                                        <option value="45">45 Minutes</option>
+                                                        <option value="60">60 Minutes</option>
+                                                        <option value="75">75 Minutes</option>
+                                                        <option value="90">90 Minutes</option>
+                                                        <option value="105">105 Minutes</option>
+                                                        <option value="120">120 Minutes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label>Difficulty</label>
+                                                    <select name="difficulty" class="form-control border-input" required>
+                                                        <option value="easy" selected>Easy</option>
+                                                        <option value="medium">Medium</option>
+                                                        <option value="hard">Hard</option>
                                                     </select>
                                                 </div>
                                             </div>

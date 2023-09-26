@@ -148,6 +148,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
+                                    <b>Timer: <p id='response'></p></b>
+                                        <script type='text/javascript'>
+                                            setInterval(function ()
+                                            {
+                                                var xmlhttp = new XMLHttpRequest();
+                                                xmlhttp.open('GET','response_timer.php', false);
+                                                xmlhttp.send(null);
+                                                document.getElementById("response").innerHTML=xmlhttp.responseText;
+                                                if(xmlhttp.responseText == '00:00:00') {
+                                                    alert('Times Up!!!')
+                                                    window.location="finish.php"
+                                                }
+                                            }, 1000); 
+                                        </script>
                                         <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
                                         <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
                                     </div>

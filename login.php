@@ -14,7 +14,7 @@ try
         if (empty($_POST["username"]) || empty($_POST["password"])) {
             $message = '<label>All fields are required</label>';
         } else {
-            $query = "SELECT * FROM accounts WHERE username = :username AND password = :password";
+            $query = "SELECT * FROM accounts WHERE username = :username AND password = :password and status = 'active'";
             $statement = $pdo->prepare($query);
             $statement->execute(
                 array(

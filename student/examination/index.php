@@ -16,8 +16,9 @@ if ($type == "multiplechoice") {
 
     $_SESSION["current_exam_number"] = intval($_SESSION["taken_exam"]["identification"]);
 
-    $statement = $pdo->prepare('SELECT * FROM identification WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+    $statement = $pdo->prepare('SELECT * FROM identification WHERE subject_id = :subject_id and difficulty = :difficulty ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
     $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
+    $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
     $statement->execute();
     $identification = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -36,14 +37,23 @@ if ($type == "multiplechoice") {
 
     $_SESSION["current_exam_number"] = intval($_SESSION["taken_exam"]["matching"]);
 
-    $statement = $pdo->prepare('SELECT * FROM matchingtype WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+    $statement = $pdo->prepare('SELECT * FROM matchingtype WHERE subject_id = :subject_id and difficulty = :difficulty ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
     $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
+    $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
     $statement->execute();
     $matchingtype = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($matchingtype) != 0) {
         $_SESSION["matchingtype"] = $matchingtype;
         $_SESSION["start_number_multiple"] = 0;
+
+        $match_ans = [];
+
+        foreach ($_SESSION["matchingtype"] as $i => $matching) {
+            $match_ans[] = $matching["answer"];
+            shuffle($match_ans);
+        }
+        $_SESSION["matchingtype_ans"] = $match_ans;
     } else {
         header("Location:../index.php?status=err");
     }
@@ -56,8 +66,9 @@ if ($type == "multiplechoice") {
 } elseif ($type == "trueorfalse") {
     $_SESSION["current_exam_number"] = intval($_SESSION["taken_exam"]["trueorfalse"]);
 
-    $statement = $pdo->prepare('SELECT * FROM trueorfalse WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+    $statement = $pdo->prepare('SELECT * FROM trueorfalse WHERE subject_id = :subject_id and difficulty = :difficulty ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
     $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
+    $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
     $statement->execute();
     $trueorfalse = $statement->fetchAll(PDO::FETCH_ASSOC);
 

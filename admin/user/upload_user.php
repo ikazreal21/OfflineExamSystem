@@ -61,8 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $yearlevel = $row[7];
 
                 // Check whether member already exists in the database with the same email
-                $statement = $pdo->prepare("SELECT * FROM accounts WHERE email = :email");
+                $statement = $pdo->prepare("SELECT * FROM accounts WHERE email = :email and username = :username");
                 $statement->bindValue(':email', $email);
+                $statement->bindValue(':username', $username);
                 $statement->execute();
                 $count = $statement->rowCount();
 

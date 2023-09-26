@@ -18,6 +18,7 @@ $semester = '';
 $yearlevel = '';
 $prof_id = '';
 $prof_name = '';
+$difficulty = '';
 
 // echo '<pre>';
 // var_dump($faculty);
@@ -41,16 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $yearlevel = $subject[0]['yearlevel'];
     $prof_id = $prof_details[0]['id'];
     $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
+    $difficulty = $_POST['difficulty'];
     // $unique_id = randomString(8, 2);
 
-    $statement = $pdo->prepare("SELECT * FROM multiplechoice WHERE question = :question");
+    $statement = $pdo->prepare("SELECT * FROM multiplechoice WHERE question = :question and subject_id = :subject_id");
     $statement->bindValue(':question', $_POST['question']);
+    $statement->bindValue(':subject_id', $subject_id);
     $statement->execute();
     $count = $statement->rowCount();
 
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
+        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id, difficulty) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
         $statement->bindValue(':question', $_POST['question']);
@@ -65,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':semester', $semester);
         $statement->bindValue(':profname', $prof_name);
         $statement->bindValue(':prof_id', $prof_id);
+        $statement->bindValue(':difficulty', $difficulty);
         $statement->execute();
         header('Location:index.php?search1=multiplechoice');
     } else {
@@ -265,6 +269,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                             <option value="Prelim">Prelim</option>
                                                             <option value="Midterm">Midterm</option>
                                                             <option value="Finals">Finals</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-auto">
+                                                    <div class="form-group">
+                                                        <label>Difficulty</label>
+                                                        <select name="difficulty" class="form-control border-input" required>
+                                                            <option value="easy" selected>Easy</option>
+                                                            <option value="medium">Medium</option>
+                                                            <option value="hard">Hard</option>
                                                         </select>
                                                     </div>
                                                 </div>

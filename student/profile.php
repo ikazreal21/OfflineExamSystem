@@ -135,19 +135,19 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <div class="col-md-5">
                                             <div class="form-group">
                                                 <label>Username</label>
-                                                <input type="text" class="form-control border-input"  placeholder="Username" value="<?php echo $procdata[0]['username']; ?>">
+                                                <input type="text" class="form-control border-input"  placeholder="Username" value="<?php echo $procdata[0]['username']; ?>" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Password</label>
-                                                <input type="text" class="form-control border-input" placeholder="Password" value="<?php echo $procdata[0]['password']; ?>">
+                                                <input type="text" class="form-control border-input" placeholder="Password" value="<?php echo $procdata[0]['password']; ?>" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="exampleInputEmail1">Email address</label>
-                                                <input type="email" class="form-control border-input" placeholder="Email" value="<?php echo $procdata[0]['email']; ?>">
+                                                <input type="email" class="form-control border-input" placeholder="Email" value="<?php echo $procdata[0]['email']; ?>" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -156,18 +156,18 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>First Name</label>
-                                                <input type="text" class="form-control border-input" placeholder="First Name" value="<?php echo $procdata[0]['first_name']; ?>">
+                                                <input type="text" class="form-control border-input" placeholder="First Name" value="<?php echo $procdata[0]['first_name']; ?>" disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Last Name</label>
-                                                <input type="text" class="form-control border-input" placeholder="Last Name" value="<?php echo $procdata[0]['last_name']; ?>">
+                                                <input type="text" class="form-control border-input" placeholder="Last Name" value="<?php echo $procdata[0]['last_name']; ?>" disabled>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-info btn-fill btn-wd">Update Profile</button>
+                                        <!-- <button type="submit" class="btn btn-info btn-fill btn-wd">Update Profile</button> -->
                                         <a href="edit.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-warning btn-wd">Change Password</a>
                                     </div>
                                     <div class="clearfix"></div>

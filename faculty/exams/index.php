@@ -199,6 +199,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Identification</th>
                                     	<th>Matching Type</th>
                                     	<th>True or False</th>
+                                        <th>Timer</th>
+                                    	<th>Difficulty</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
                                     </thead>
@@ -216,6 +218,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
+                                            <td style="font-size:medium;"><?php echo $item['timer']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo $item['difficulty']; ?></td>
                                         	<td style="text-align:left;">
                                                 <?php if ($item['status'] == 'close'): ?>
                                                     <a href="manual_open.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Manual Open</a>
@@ -223,6 +227,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <?php if ($item['status'] == 'open'): ?>
                                                     <a href="manual_close.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-warning btn-wd">Manual Close</a>
                                                 <?php endif;?>
+                                                <a href="delete.php?id=<?php echo $item['exam_id']; ?>" onclick="return confirm('Are you sure you want to delete this Exam?')"  class="btn btn-danger btn-wd">Delete</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

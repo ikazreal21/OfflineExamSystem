@@ -90,17 +90,12 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 </li>
                 <li>
                     <a href="../class/">
-                        <p>Subject</p>
+                        <p>Subjects</p>
                     </a>
                 </li>
                 <li>
                     <a href="../generate/">
                         <p>Results</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../user/">
-                        <p>Users</p>
                     </a>
                 </li>
             </ul>
@@ -187,7 +182,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         </form>
                                     </div>
                                     <div class="left">
-                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>

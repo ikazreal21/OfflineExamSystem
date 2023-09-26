@@ -24,16 +24,33 @@ if (!empty($_GET['status'])) {
         case 'err':
             echo "<script>alert('Password are not the same as Confirm Password');</script>";
             break;
+        case 'err2':
+            echo "<script>alert('Username is Unavailable');</script>";
+            break;
         default:
     }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // echo '<pre>';
+    // var_dump($_POST);
+    // echo '<pre>';
+
     
-    if ($_POST['password'] != $_POST['confirm_password']) {
-        $qstring = '?status=err';
-        header("Location: create.php" . $qstring);
+    if (strval($_POST['password']) != strval($_POST['confirm_password'])) {
+        $qstring = '?status=dup1';
     }
+
+
+    $statement = $pdo->prepare("SELECT * FROM accounts WHERE username = :username and role = 'student'");
+    $statement->bindValue(':username', strval($_POST['username']));
+    $statement->execute();
+    $count = $statement->rowCount();
+
+    // echo '<pre>';
+    // var_dump($count);
+    // echo '<pre>';
 
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -44,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $student_id = $_POST['student_id'];
     $yearlevel = $_POST['yearlevel'];
 
-    if (empty($errors)) {
+    if ($count == 0) {
 
         $statement = $pdo->prepare("INSERT INTO accounts (username, password, role, email, first_name, last_name, student_id, status, yearlevel)
               VALUES (:username, :password, :role, :email, :first_name, :last_name, :student_id, :status, :yearlevel)");
@@ -59,9 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':status', $status);
         $statement->bindValue(':yearlevel', $yearlevel);
         $statement->execute();
-        header('Location:index.php');
+        // header('Location:index.php');
+    } else {
+        $qstring = '?status=dup2';
     }
-
+    header("Location:index.php". $qstring);
 }
 
 ?>

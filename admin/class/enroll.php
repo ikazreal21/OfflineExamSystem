@@ -6,7 +6,7 @@ require_once "../../others/function.php";
 
 $id = $_GET['rnd_id'] ?? null;
 $sect_id = $_GET['id'] ?? null;
-$search1 = $_GET['search1'] ?? null;
+$search1 = '';
 
 if (!$id && !$sect_id) {
     header('Location: index.php');
@@ -21,7 +21,29 @@ $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 $yearlevel = $procdata1[0]["yearlevel"];
 $subject = $procdata1[0]["subject_name"];
 
-$statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student"');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['search1'] = $_POST['search1'];
+    $search1 = $_SESSION['search1'];
+}
+
+if ($search1) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student" and first_name like :username or student_id like :student_id');
+    $statement->bindValue(':username', "%$search1%");
+    $statement->bindValue(':student_id', "%$search1%");
+    $statement->execute();
+    $count = $statement->rowCount();
+    if ($count == 0) {
+        $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student"');
+    } else {
+        $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student" and first_name like :username or student_id like :student_id');
+        $statement->bindValue(':username', "%$search1%");
+        $statement->bindValue(':student_id', "%$search1%");
+    }
+} else {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE role = "student"');
+}
+
+
 $statement->execute();
 $procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -179,7 +201,7 @@ if (count($procdata) == 0) {
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <form action="" method="get">
+                                        <form action="" method="post">
                                             <div class="flex">
                                                 <h4 class="title"><b><?php echo $subject; ?></b></h4>
                                                 <div class="row">
@@ -188,7 +210,7 @@ if (count($procdata) == 0) {
                                                             <input type="text" name="search1" class="form-control border-input" placeholder="Username or Student Id" value="">
                                                         </div>
                                                     </div>
-                                                    <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-top:.5rem;">Search</button>
+                                                    <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-top:.5rem; ">Search</button>
                                                 </div>
                                             </div>
                                         </form>

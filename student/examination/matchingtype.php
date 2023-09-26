@@ -5,14 +5,20 @@ if (!isset($_SESSION["exam_taken"])) {
     header("location:../");
 }
 
+$alphab = [];
 // echo '<pre>';
 // var_dump($_SESSION);
 // echo '<pre>';
-$match_ans = [];
+$match_ans = $_SESSION["matchingtype_ans"];
 
-foreach ($_SESSION["matchingtype"] as $i => $matching) {
-    $match_ans[] = $matching["answer"];
-    shuffle($match_ans);
+// foreach ($_SESSION["matchingtype"] as $i => $matching) {
+//     $match_ans[] = $matching["answer"];
+//     shuffle($match_ans);
+// }
+
+
+for( $i = 65; $i < 91; $i++) {
+    $alphab[] = chr($i);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -151,6 +157,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
+                                        <b>Timer: <p id='response'></p></b>
+                                        <script type='text/javascript'>
+                                            setInterval(function ()
+                                            {
+                                                var xmlhttp = new XMLHttpRequest();
+                                                xmlhttp.open('GET','response_timer.php', false);
+                                                xmlhttp.send(null);
+                                                document.getElementById("response").innerHTML=xmlhttp.responseText;
+                                                if(xmlhttp.responseText == '00:00:00') {
+                                                    alert('Times Up!!!')
+                                                    window.location="finish.php"
+                                                }
+                                            }, 1000); 
+                                        </script>
                                         <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
                                         <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
                                     </div>
@@ -159,16 +179,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="container">
                                 <div class="content">
                                     <form method="post">
+                                        <h3 class="text-center">Answers</h3>
                                         <div class="row">
-                                            <div class="col-md-auto">
+                                            <?php foreach ($match_ans as $i => $item): ?>
+                                            <div class="col-md-2">
                                                 <div class="form-group">
-                                                    <label>Answers</label>
-                                                    <?php foreach ($match_ans as $i => $item): ?>
-                                                        <h4><b><?php echo $i + 1; ?>.<?php echo ucfirst($item); ?></b></h4>
-                                                    <?php endforeach;?>
+                                                    <h5><b><?php echo $alphab[$i]; ?>. <u><?php echo ucfirst($item); ?></u></b></h5>
                                                 </div>
                                             </div>
+                                            <?php endforeach;?>
                                         </div>
+                                        <h3 class="text-center">Questions</h3>
                                         <div class="row">
                                             <div class="col-md-auto">
                                                 <div class="form-group">
