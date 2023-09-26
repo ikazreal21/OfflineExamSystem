@@ -110,7 +110,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="profile.php">
+                            <a href="../profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>

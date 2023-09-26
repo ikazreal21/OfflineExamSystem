@@ -10,17 +10,22 @@ $rnd_id = $_GET['rnd_id'] ?? '';
 $statement = $pdo->prepare('SELECT * FROM identification where subject_id = :subject_id');
 $statement->bindValue(':subject_id', $rnd_id);
 $statement->execute();
-$identi = $statement->rowCount(PDO::FETCH_ASSOC);
+$identi = $statement->rowCount();
 
 $statement = $pdo->prepare('SELECT * FROM multiplechoice where subject_id = :subject_id');
 $statement->bindValue(':subject_id', $rnd_id);
 $statement->execute();
-$multi = $statement->rowCount(PDO::FETCH_ASSOC);
+$multi = $statement->rowCount();
 
 $statement = $pdo->prepare('SELECT * FROM trueorfalse where subject_id = :subject_id');
 $statement->bindValue(':subject_id', $rnd_id);
 $statement->execute();
-$torf = $statement->rowCount(PDO::FETCH_ASSOC);
+$torf = $statement->rowCount();
+
+$statement = $pdo->prepare('SELECT * FROM matchingtype where subject_id = :subject_id');
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$matching = $statement->rowCount();
 
 $subject_name = '';
 $subject_id = '';
@@ -276,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
-                                                    <input type="number" min="1" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
+                                                    <input type="number" min="1" max="<?php echo $matching; ?>" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
                                                 </div>
                                             </div>
                                         </div>

@@ -268,7 +268,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <?php endif;?>
                                                 <?php if ($search == 'matchingtype'): ?>
                                                     <!-- <a href="update.php?matchingtype_id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
-                                                    <a href="delete.php?matchingtype_id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
+                                                    <a href="delete.php?matchingtype_id=<?php echo $item['matchtype_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
                                             </td>
                                         </tr>

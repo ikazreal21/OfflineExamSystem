@@ -30,7 +30,7 @@ foreach ($faculty_id as $i => $facul) {
     $statement->bindValue(':faculty_id', $facul['prof_id']);
     $statement->execute();
     $faculty_get = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+    
     $faculty[] = $faculty_get[0];
 
 }
