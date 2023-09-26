@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2023 at 05:53 PM
+-- Generation Time: Sep 26, 2023 at 07:05 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -46,11 +46,15 @@ CREATE TABLE `accounts` (
 --
 
 INSERT INTO `accounts` (`id`, `username`, `password`, `role`, `email`, `first_name`, `last_name`, `student_id`, `status`, `list_of_subject`, `yearlevel`) VALUES
-(1, 'admin', 'adminadmin', 'admin', '', '', '', '', '', '', '0'),
+(1, 'admin', 'adminadmin', 'admin', '', '', '', '', 'active', '', '0'),
 (3, 'student1', 'student123', 'student', 'test@gmail.com', 'test1', 'test1', '1111111', 'active', '', '1st'),
 (4, 'faculty1', '123', 'faculty', 'faculty@gmail.com', 'Test Prof', 'Test', '', 'active', '', ''),
 (5, 'faculty2', '123', 'faculty', 'faculty@gmail.com', 'Test Prof2', 'Test', '', 'active', '', ''),
-(6, 'zaki', '2001210809', 'student', 'joaquinzaki21@gmail.com', 'Joaquin Zaki', 'Soriano', '1111111111', 'active', '', '4th');
+(6, 'zaki', '2001210809', 'student', 'joaquinzaki21@gmail.com', 'Joaquin Zaki', 'Soriano', '1111111111', 'active', '', '4th'),
+(7, 'joaquin', '12346', 'student', 'joaquinzaki211@gmail.com ', 'Joaquin Zaki', 'Soriano', '1313131314', 'active', '', '2nd'),
+(8, 'joaquin', '12347', 'student', 'joaquinzaki212@gmail.com ', 'Joaquin Zaki', 'Soriano', '1313131315', 'active', '', '3rd'),
+(9, 'joaquin', '12348', 'student', 'joaquinzaki213@gmail.com ', 'Joaquin Zaki', 'Soriano', '1313131316', 'active', '', '4th'),
+(20, 'zaki', 'zaki', 'student', 'joaquinzaki21@gmail.comfffffaaaa', 'Joaquin', 'Soriano', '121212121', 'active', '', '3rd');
 
 -- --------------------------------------------------------
 
@@ -72,10 +76,11 @@ CREATE TABLE `enrolled_student` (
 INSERT INTO `enrolled_student` (`enrolled_id`, `student_id`, `subject_id`, `section_id`) VALUES
 (46, '1111111', 'WJCLJYC0', '2'),
 (47, '1111111111', 'WJCLJYC0', '2'),
-(52, '1111111', 'B0EZ0VSP', '7'),
-(53, '1111111111', 'B0EZ0VSP', '7'),
 (54, '1111111', 'WJCLJYC0', '8'),
-(55, '1111111111', 'WJCLJYC0', '8');
+(55, '1111111111', 'WJCLJYC0', '8'),
+(60, '1313131314', 'WJCLJYC0', '2'),
+(61, '1313131315', 'WJCLJYC0', '2'),
+(62, '1313131316', 'WJCLJYC0', '2');
 
 -- --------------------------------------------------------
 
@@ -98,16 +103,17 @@ CREATE TABLE `examcreated` (
   `identification` int(50) NOT NULL,
   `matching` int(255) NOT NULL,
   `trueorfalse` int(50) NOT NULL,
-  `status` varchar(255) NOT NULL
+  `status` varchar(255) NOT NULL,
+  `timer` varchar(255) NOT NULL,
+  `difficulty` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `examcreated`
 --
 
-INSERT INTO `examcreated` (`exam_id`, `subject`, `section_name`, `section_id`, `subject_id`, `grading_period`, `yearlevel`, `semester`, `prof_name`, `prof_id`, `multiplechoice`, `identification`, `matching`, `trueorfalse`, `status`) VALUES
-(18, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 10, 10, 10, 10, 'close'),
-(19, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 1, 1, 1, 1, 'open');
+INSERT INTO `examcreated` (`exam_id`, `subject`, `section_name`, `section_id`, `subject_id`, `grading_period`, `yearlevel`, `semester`, `prof_name`, `prof_id`, `multiplechoice`, `identification`, `matching`, `trueorfalse`, `status`, `timer`, `difficulty`) VALUES
+(23, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 1, 1, 2, 1, 'open', '15', 'easy');
 
 -- --------------------------------------------------------
 
@@ -130,13 +136,6 @@ CREATE TABLE `exam_take` (
   `yearl` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `exam_take`
---
-
-INSERT INTO `exam_take` (`examtake_id`, `exam_id`, `student_name`, `student_id`, `subject`, `subject_id`, `section_name`, `section_id`, `grading_per`, `score`, `out_of`, `yearl`) VALUES
-(31, 16, 'Test1 Test1', '1111111', 'Test', '0AIUEYAZ', '', '', 'Prelim', 4, 4, '1st');
-
 -- --------------------------------------------------------
 
 --
@@ -153,8 +152,16 @@ CREATE TABLE `identification` (
   `grading_period` varchar(200) NOT NULL,
   `semester` varchar(50) NOT NULL,
   `prof_name` varchar(255) NOT NULL,
-  `prof_id` int(50) NOT NULL
+  `prof_id` int(50) NOT NULL,
+  `difficulty` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `identification`
+--
+
+INSERT INTO `identification` (`examiden_id`, `subject`, `subject_id`, `question`, `answer`, `yearlevel`, `grading_period`, `semester`, `prof_name`, `prof_id`, `difficulty`) VALUES
+(115, 'Test3', 'WJCLJYC0', 'Test1', 'Test1', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy');
 
 -- --------------------------------------------------------
 
@@ -172,8 +179,17 @@ CREATE TABLE `matchingtype` (
   `grading_period` varchar(50) NOT NULL,
   `semester` varchar(50) NOT NULL,
   `prof_name` varchar(255) NOT NULL,
-  `prof_id` int(50) NOT NULL
+  `prof_id` int(50) NOT NULL,
+  `difficulty` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `matchingtype`
+--
+
+INSERT INTO `matchingtype` (`matchtype_id`, `question`, `answer`, `subject`, `subject_id`, `yearlevel`, `grading_period`, `semester`, `prof_name`, `prof_id`, `difficulty`) VALUES
+(2, 'Test1', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy'),
+(3, 'Test555', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy');
 
 -- --------------------------------------------------------
 
@@ -196,25 +212,20 @@ CREATE TABLE `multiplechoice` (
   `grading_period` varchar(200) NOT NULL,
   `semester` varchar(50) NOT NULL,
   `profname` varchar(200) NOT NULL,
-  `prof_id` int(50) NOT NULL
+  `prof_id` int(50) NOT NULL,
+  `difficulty` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `multiplechoice`
 --
 
-INSERT INTO `multiplechoice` (`exammulti_id`, `subject`, `subject_id`, `question`, `A`, `B`, `C`, `D`, `E`, `answer`, `yearlevel`, `grading_period`, `semester`, `profname`, `prof_id`) VALUES
-(76, 'Test2', 'SLM98HPR', 'Test for Prof 2', '1', '2', '3', '4', '5', 'A', '4th', 'Prelim', '1st', 'Test Prof2 Test', 5),
-(77, 'TEST1', '0AIUEYAZ', 'TEST33', 'MC1', 'MC2', 'MC3', 'MC4', 'MC5', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(78, 'TEST1', '0AIUEYAZ', 'TEST34', 'MC2', 'MC3', 'MC4', 'MC5', 'MC6', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(79, 'TEST1', '0AIUEYAZ', 'TEST35', 'MC3', 'MC4', 'MC5', 'MC6', 'MC7', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(80, 'TEST1', '0AIUEYAZ', 'TEST36', 'MC4', 'MC5', 'MC6', 'MC7', 'MC8', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(81, 'TEST1', '0AIUEYAZ', 'TEST37', 'MC5', 'MC6', 'MC7', 'MC8', 'MC9', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(82, 'TEST1', '0AIUEYAZ', 'TEST38', 'MC6', 'MC7', 'MC8', 'MC9', 'MC10', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(83, 'TEST1', '0AIUEYAZ', 'TEST39', 'MC7', 'MC8', 'MC9', 'MC10', 'MC11', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(84, 'TEST1', '0AIUEYAZ', 'TEST40', 'MC8', 'MC9', 'MC10', 'MC11', 'MC12', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(85, 'TEST1', '0AIUEYAZ', 'TEST41', 'MC9', 'MC10', 'MC11', 'MC12', 'MC13', 'A', '1st', 'Prelim', '1st', 'Test', 5),
-(86, 'TEST1', '0AIUEYAZ', 'TEST42', 'MC10', 'MC11', 'MC12', 'MC13', 'MC14', 'A', '1st', 'Prelim', '1st', 'Test', 5);
+INSERT INTO `multiplechoice` (`exammulti_id`, `subject`, `subject_id`, `question`, `A`, `B`, `C`, `D`, `E`, `answer`, `yearlevel`, `grading_period`, `semester`, `profname`, `prof_id`, `difficulty`) VALUES
+(84, 'TEST1', '0AIUEYAZ', 'TEST40', 'MC8', 'MC9', 'MC10', 'MC11', 'MC12', 'A', '1st', 'Prelim', '1st', 'Test', 5, 'medium'),
+(85, 'TEST1', '0AIUEYAZ', 'TEST41', 'MC9', 'MC10', 'MC11', 'MC12', 'MC13', 'A', '1st', 'Prelim', '1st', 'Test', 5, ''),
+(86, 'TEST1', '0AIUEYAZ', 'TEST42', 'MC10', 'MC11', 'MC12', 'MC13', 'MC14', 'A', '1st', 'Prelim', '1st', 'Test', 5, ''),
+(87, 'Test', '0AIUEYAZ', 'Test', '1', '1', '1', '1', '1', '1', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy'),
+(89, 'Test3', 'WJCLJYC0', 'Test', '1', '6', '9', '4', '2', '1', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy');
 
 -- --------------------------------------------------------
 
@@ -303,8 +314,17 @@ CREATE TABLE `trueorfalse` (
   `grading_period` varchar(50) NOT NULL,
   `semester` varchar(50) NOT NULL,
   `prof_name` varchar(255) NOT NULL,
-  `prof_id` int(50) NOT NULL
+  `prof_id` int(50) NOT NULL,
+  `difficulty` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `trueorfalse`
+--
+
+INSERT INTO `trueorfalse` (`trueorfalse`, `question`, `answer`, `subject`, `subject_id`, `yearlevel`, `grading_period`, `semester`, `prof_name`, `prof_id`, `difficulty`) VALUES
+(6, 'Test222', 'True', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy'),
+(7, 'Test', 'True', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy');
 
 --
 -- Indexes for dumped tables
@@ -340,21 +360,21 @@ ALTER TABLE `exam_take`
 --
 ALTER TABLE `identification`
   ADD PRIMARY KEY (`examiden_id`),
-  ADD UNIQUE KEY `question` (`question`);
+  ADD UNIQUE KEY `question` (`question`,`subject_id`) USING BTREE;
 
 --
 -- Indexes for table `matchingtype`
 --
 ALTER TABLE `matchingtype`
   ADD PRIMARY KEY (`matchtype_id`),
-  ADD UNIQUE KEY `question` (`question`);
+  ADD UNIQUE KEY `question` (`question`,`subject_id`) USING BTREE;
 
 --
 -- Indexes for table `multiplechoice`
 --
 ALTER TABLE `multiplechoice`
   ADD PRIMARY KEY (`exammulti_id`),
-  ADD UNIQUE KEY `qs` (`question`);
+  ADD UNIQUE KEY `qs` (`question`,`subject_id`) USING BTREE;
 
 --
 -- Indexes for table `prof_subjects`
@@ -379,7 +399,7 @@ ALTER TABLE `subject`
 --
 ALTER TABLE `trueorfalse`
   ADD PRIMARY KEY (`trueorfalse`),
-  ADD UNIQUE KEY `question` (`question`);
+  ADD UNIQUE KEY `question` (`question`,`subject_id`) USING BTREE;
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -389,43 +409,43 @@ ALTER TABLE `trueorfalse`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `enrolled_student`
 --
 ALTER TABLE `enrolled_student`
-  MODIFY `enrolled_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `enrolled_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `examcreated`
 --
 ALTER TABLE `examcreated`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `exam_take`
 --
 ALTER TABLE `exam_take`
-  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `identification`
 --
 ALTER TABLE `identification`
-  MODIFY `examiden_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `examiden_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT for table `matchingtype`
 --
 ALTER TABLE `matchingtype`
-  MODIFY `matchtype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `matchtype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `multiplechoice`
 --
 ALTER TABLE `multiplechoice`
-  MODIFY `exammulti_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `exammulti_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT for table `prof_subjects`
@@ -449,7 +469,7 @@ ALTER TABLE `subject`
 -- AUTO_INCREMENT for table `trueorfalse`
 --
 ALTER TABLE `trueorfalse`
-  MODIFY `trueorfalse` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `trueorfalse` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
