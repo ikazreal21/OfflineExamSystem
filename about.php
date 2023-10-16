@@ -60,7 +60,8 @@
                                 <h4 class="text-center">About Us</h4>
                             </div>
                             <div class="container">
-                                <div class="content">
+                                <div class="content" style="text-align: center">
+                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse itaque delectus earum laudantium aspernatur natus nam maxime, ipsum quo quam corrupti deleniti hic magni molestiae illum, odit perspiciatis numquam illo?</p>
                                 </div>
                             </div>
                         </div>
