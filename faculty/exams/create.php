@@ -40,7 +40,13 @@ $multiplechoice = 0;
 $identification = 0;
 $matching = 0;
 $trueorfalse = 0;
+$topic = '';
 $status = 'close';
+
+$statement = $pdo->prepare('SELECT DISTINCT topic FROM matchingtype WHERE subject_id = :rnd_id ');
+$statement->bindValue(':rnd_id', $rnd_id);
+$statement->execute();
+$topics = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 $statement = $pdo->prepare('SELECT * FROM accounts WHERE id = :faculty_id ');
 $statement->bindValue(':faculty_id', $_SESSION["id"]);
@@ -77,13 +83,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $matching = $_POST['matching'];
     $trueorfalse = $_POST['trueorfalse'];
     $timer = $_POST['timer'];
+    $topic = $_POST['topic'];
     // $difficulty = $_POST['difficulty'];
     // $unique_id = randomString(8, 2);
 
     if (empty($errors)) {
 
-        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status, timer)
-              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status, :timer)");
+        $statement = $pdo->prepare("INSERT INTO examcreated (subject, subject_id, section_name, section_id, grading_period, yearlevel, semester, prof_name, prof_id, multiplechoice, identification, matching, trueorfalse, status, timer, matching_topic)
+              VALUES (:subject, :subject_id, :section_name, :section_id, :grading_period, :yearlevel, :semester, :prof_name, :prof_id, :multiplechoice, :identification, :matching, :trueorfalse, :status, :timer, :matching_topic)");
 
         $statement->bindValue(':subject', $subject_name);
         $statement->bindValue(':subject_id', $subject_id);
@@ -100,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':trueorfalse', $trueorfalse);
         $statement->bindValue(':status', $status);
         $statement->bindValue(':timer', $timer);
+        $statement->bindValue(':matching_topic', $topic);
         // $statement->bindValue(':difficulty', $difficulty);
         $statement->execute();
         header('Location:list.php');
@@ -274,10 +282,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-auto">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
-                                                    <input type="number" min="0" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
+                                                    <input type="number" min="0" max="<?php echo $match; ?>" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>Topics</label>
+                                                    <select name="topic" class="form-control border-input" required>
+                                                        <?php foreach ($topics as $i => $item): ?>
+                                                        <option selected value="<?php echo $item['topic']; ?>"><?php echo ucfirst($item['topic']); ?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>

@@ -278,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-auto">
                                                 <div class="form-group">
                                                     <label>Number of Identification</label>
-                                                    <input type="number" min="1" max="<?php echo $identi; ?>" name="identification" class="form-control border-input" placeholder="Number of Identification" value="" required>
+                                                    <input type="number" min="0" max="<?php echo $identi; ?>" name="identification" class="form-control border-input" placeholder="Number of Identification" value="" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -294,7 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Number of Matching Type</label>
-                                                    <input type="number" min="1" max="<?php echo $match; ?>" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
+                                                    <input type="number" min="0" max="<?php echo $match; ?>" name="matching" class="form-control border-input" placeholder="Number of Matching Type" value="" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

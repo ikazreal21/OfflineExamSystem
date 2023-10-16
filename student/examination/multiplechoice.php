@@ -15,7 +15,7 @@ if (!isset($_SESSION["exam_taken"])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (strtolower($_POST['radio']) == strtolower($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["answer"])) {
         $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
-        echo 'here';
+        // echo 'here';
     }
     if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
         $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;

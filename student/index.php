@@ -177,7 +177,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Grading Period</th>
                                     	<th>Number of Items</th>
                                     	<th>Time Limit</th>
-                                    	<th>Difficulty</th>
+                                    	<!-- <th>Difficulty</th> -->
                                     	<th>Action</th>
                                     </thead>
                                     <tbody>
@@ -188,7 +188,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo $item['grading_period']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['multiplechoice'] + $item['identification'] + $item['matching'] + $item['trueorfalse']; ?></b></td>
                                             <td style="font-size:medium;"><b><?php echo $item['timer']; ?></b></td>
-                                            <td style="font-size:medium;"><b><?php echo ucfirst($item['difficulty']); ?></b></td>
+                                            <!-- <td style="font-size:medium;"><b><?php echo ucfirst($item['difficulty']); ?></b></td> -->
                                             <td style="text-align:left;">
                                                 <a href="examination/take_exam.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd" onclick="return confirm('Are you sure to take this exam?')">Take Exam</a>
                                             </td>

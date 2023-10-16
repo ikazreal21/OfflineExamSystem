@@ -30,9 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (is_uploaded_file($_FILES['file']['tmp_name'])) {
             if ($_FILES['file']['type'] == 'text/csv') {
                 $reader = new Csv();
+                $reader->setReadDataOnly(true); 
+                $reader->setReadEmptyCells(false);
                 $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
             } else {
                 $reader = new Xlsx();
+                $reader->setReadDataOnly(true); 
+                $reader->setReadEmptyCells(false);
                 $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
             }
 
@@ -40,10 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $worksheet_arr = $worksheet->toArray();
 
             // Remove header row
-            // echo '<pre>';
-            // var_dump($worksheet_arr);
-            // echo '<pre>';
-            // unset($worksheet_arr[0]);
+            echo '<pre>';
+            var_dump($worksheet_arr);
+            echo '<pre>';
+            unset($worksheet_arr[0]);
 
             foreach ($worksheet_arr as $row) {
 

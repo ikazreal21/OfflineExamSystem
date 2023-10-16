@@ -178,7 +178,14 @@ if (count($procdata) == 0) {
                     <div class="">
                         <div class="card ">
                             <div class="header">
-                                <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                                    </div>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
                                 <table class="table">
