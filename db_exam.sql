@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2023 at 07:05 PM
+-- Generation Time: Oct 16, 2023 at 05:03 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -35,10 +35,10 @@ CREATE TABLE `accounts` (
   `email` varchar(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
-  `student_id` varchar(255) NOT NULL,
+  `student_id` varchar(255) DEFAULT NULL,
   `status` varchar(50) NOT NULL,
-  `list_of_subject` varchar(2000) NOT NULL,
-  `yearlevel` varchar(5) NOT NULL
+  `list_of_subject` varchar(2000) DEFAULT NULL,
+  `yearlevel` varchar(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -105,15 +105,16 @@ CREATE TABLE `examcreated` (
   `trueorfalse` int(50) NOT NULL,
   `status` varchar(255) NOT NULL,
   `timer` varchar(255) NOT NULL,
-  `difficulty` varchar(255) NOT NULL
+  `matching_topic` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `examcreated`
 --
 
-INSERT INTO `examcreated` (`exam_id`, `subject`, `section_name`, `section_id`, `subject_id`, `grading_period`, `yearlevel`, `semester`, `prof_name`, `prof_id`, `multiplechoice`, `identification`, `matching`, `trueorfalse`, `status`, `timer`, `difficulty`) VALUES
-(23, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 1, 1, 2, 1, 'open', '15', 'easy');
+INSERT INTO `examcreated` (`exam_id`, `subject`, `section_name`, `section_id`, `subject_id`, `grading_period`, `yearlevel`, `semester`, `prof_name`, `prof_id`, `multiplechoice`, `identification`, `matching`, `trueorfalse`, `status`, `timer`, `matching_topic`) VALUES
+(24, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 1, 1, 1, 1, 'close', '15', ''),
+(27, 'Test3', 'Dash 1', '2', 'WJCLJYC0', 'Prelim', '1st', '1st', 'Test Prof Test', 4, 1, 1, 1, 1, 'close', '15', 'Test');
 
 -- --------------------------------------------------------
 
@@ -135,6 +136,13 @@ CREATE TABLE `exam_take` (
   `out_of` int(255) NOT NULL,
   `yearl` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `exam_take`
+--
+
+INSERT INTO `exam_take` (`examtake_id`, `exam_id`, `student_name`, `student_id`, `subject`, `subject_id`, `section_name`, `section_id`, `grading_per`, `score`, `out_of`, `yearl`) VALUES
+(42, 23, 'Test1 Test1', '1111111', 'Test3', 'WJCLJYC0', 'Dash 1', '2', 'Prelim', 3, 5, '1st');
 
 -- --------------------------------------------------------
 
@@ -180,16 +188,18 @@ CREATE TABLE `matchingtype` (
   `semester` varchar(50) NOT NULL,
   `prof_name` varchar(255) NOT NULL,
   `prof_id` int(50) NOT NULL,
-  `difficulty` varchar(255) NOT NULL
+  `difficulty` varchar(255) NOT NULL,
+  `topic` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `matchingtype`
 --
 
-INSERT INTO `matchingtype` (`matchtype_id`, `question`, `answer`, `subject`, `subject_id`, `yearlevel`, `grading_period`, `semester`, `prof_name`, `prof_id`, `difficulty`) VALUES
-(2, 'Test1', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy'),
-(3, 'Test555', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy');
+INSERT INTO `matchingtype` (`matchtype_id`, `question`, `answer`, `subject`, `subject_id`, `yearlevel`, `grading_period`, `semester`, `prof_name`, `prof_id`, `difficulty`, `topic`) VALUES
+(2, 'Test1', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy', 'Test'),
+(3, 'Test555', 'Test1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, 'easy', 'Test'),
+(4, 'Test111', '1', 'Test3', 'WJCLJYC0', '1st', 'Prelim', '1st', 'Test Prof Test', 4, '', 'Test');
 
 -- --------------------------------------------------------
 
@@ -236,19 +246,20 @@ INSERT INTO `multiplechoice` (`exammulti_id`, `subject`, `subject_id`, `question
 CREATE TABLE `prof_subjects` (
   `prof_subject_id` int(50) NOT NULL,
   `prof_id` varchar(100) NOT NULL,
-  `subject_id` varchar(100) NOT NULL
+  `subject_id` varchar(100) NOT NULL,
+  `role` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `prof_subjects`
 --
 
-INSERT INTO `prof_subjects` (`prof_subject_id`, `prof_id`, `subject_id`) VALUES
-(44, '4', '0AIUEYAZ'),
-(45, '5', '0AIUEYAZ'),
-(50, '4', 'WJCLJYC0'),
-(51, '5', 'WJCLJYC0'),
-(54, '5', 'B0EZ0VSP');
+INSERT INTO `prof_subjects` (`prof_subject_id`, `prof_id`, `subject_id`, `role`) VALUES
+(44, '4', '0AIUEYAZ', ''),
+(45, '5', '0AIUEYAZ', 'main'),
+(50, '4', 'WJCLJYC0', 'main'),
+(51, '5', 'WJCLJYC0', ''),
+(54, '5', 'B0EZ0VSP', '');
 
 -- --------------------------------------------------------
 
@@ -271,7 +282,8 @@ CREATE TABLE `section` (
 INSERT INTO `section` (`section_id`, `section_name`, `subject_id`, `prof_name`, `prof_id`) VALUES
 (2, 'Dash 1', 'WJCLJYC0', 'Test Prof Test', '4'),
 (7, 'Dash 1', 'B0EZ0VSP', 'Test Prof2 Test', '5'),
-(8, 'Dash 2', 'WJCLJYC0', 'Test Prof2 Test', '5');
+(8, 'Dash 2', 'WJCLJYC0', 'Test Prof2 Test', '5'),
+(9, 'Dash 1', '0AIUEYAZ', 'Test Prof Test', '4');
 
 -- --------------------------------------------------------
 
@@ -421,13 +433,13 @@ ALTER TABLE `enrolled_student`
 -- AUTO_INCREMENT for table `examcreated`
 --
 ALTER TABLE `examcreated`
-  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `exam_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `exam_take`
 --
 ALTER TABLE `exam_take`
-  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `identification`
@@ -439,7 +451,7 @@ ALTER TABLE `identification`
 -- AUTO_INCREMENT for table `matchingtype`
 --
 ALTER TABLE `matchingtype`
-  MODIFY `matchtype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `matchtype_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `multiplechoice`
@@ -457,7 +469,7 @@ ALTER TABLE `prof_subjects`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `section_id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `subject`
