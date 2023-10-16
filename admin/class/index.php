@@ -213,7 +213,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             </td>
                                             <td style="text-align:center;">
                                                 <a href="enroll_prof.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">Add Professor</a>
-                                                <a href="edit_prof.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-warning btn-wd">Remove Professor</a>
+                                                <a href="edit_prof.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-warning btn-wd">Edit Professor</a>
                                             </td>
                                             <td style="text-align:center;">
                                                 <a href="delete.php?id=<?php echo $item['rnd_id']; ?>"  onclick="return confirm('Are you sure you want to delete <?php echo $item['subject_name']; ?>?')" class="btn btn-danger btn-wd">Delete</a>

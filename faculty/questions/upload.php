@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $choice5 = $row[6];
                     $answer = $row[7];
                     $prof_name = $row[8];
-                    $difficulty = $row[9];
+                    // $difficulty = $row[9];
 
                     // Check whether member already exists in the database with the same email
                     $statement = $pdo->prepare("SELECT * FROM multiplechoice WHERE question = :question and subject_id = :subject_id");
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // echo 'here';
 
-                        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id, difficulty) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+                        $statement = $pdo->prepare("INSERT INTO multiplechoice (subject, subject_id, question, A, B, C, D, E, answer, yearlevel, grading_period, semester, profname, prof_id) VALUES (:subject, :subject_id, :question, :c1, :c2, :c3, :c4, :c5, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
                         $statement->bindValue(':subject', $subject_name);
                         $statement->bindValue(':subject_id', $subject[0]['rnd_id']);
                         $statement->bindValue(':question', $question);
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $statement->bindValue(':semester', $subject[0]['semester']);
                         $statement->bindValue(':profname', $prof_name);
                         $statement->bindValue(':prof_id', $prof_details[0]['id']);
-                        $statement->bindValue(':difficulty', $difficulty);
+                        // $statement->bindValue(':difficulty', $difficulty);
                         $statement->execute();
                     }
                     $qstring = '?status=succ';
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $question = $row[1];
                     $answer = $row[2];
                     $prof_name = $row[3];
-                    $difficulty = $row[4];
+                    // $difficulty = $row[4];
 
                     // Check whether member already exists in the database with the same email
                     $statement = $pdo->prepare("SELECT * FROM identification WHERE question = :question and subject_id = :subject_id");
@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         // echo 'here';
 
-                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, prof_name, prof_id, difficulty) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+                        $statement = $pdo->prepare("INSERT INTO identification (subject, subject_id, question, answer, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:subject, :subject_id, :question, :answer, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
                         $statement->bindValue(':subject', $subject_name);
                         $statement->bindValue(':subject_id', $subject[0]['rnd_id']);
                         $statement->bindValue(':question', $question);
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $statement->bindValue(':semester', $subject[0]['semester']);
                         $statement->bindValue(':profname', $prof_name);
                         $statement->bindValue(':prof_id', $prof_details[0]['id']);
-                        $statement->bindValue(':difficulty', $difficulty);
+                        // $statement->bindValue(':difficulty', $difficulty);
                         $statement->execute();
                     }
                     $qstring = '?status=succ';
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $question = $row[1];
                     $answer = $row[2];
                     $prof_name = $row[3];
-                    $difficulty = $row[4];
+                    // $difficulty = $row[4];
 
                     // Check whether member already exists in the database with the same email
                     $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question and subject_id = :subject_id");
@@ -184,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($count == 0) {
 
                         // echo 'here';
-                        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, difficulty) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+                        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
                         $statement->bindValue(':question', $question);
                         $statement->bindValue(':answer', $answer);
                         $statement->bindValue(':subject', $subject_name);
@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $statement->bindValue(':semester', $subject[0]['semester']);
                         $statement->bindValue(':profname', $prof_name);
                         $statement->bindValue(':prof_id', $prof_details[0]['id']);
-                        $statement->bindValue(':difficulty', $difficulty);
+                        // $statement->bindValue(':difficulty', $difficulty);
                         $statement->execute();
                     }
                     $qstring = '?status=succ';
@@ -213,10 +213,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $question = $row[1];
                     $answer = $row[2];
                     $prof_name = $row[3];
-                    $difficulty = $row[4];
+                    $topic = $row[4];
+                    // $difficulty = $row[4];
 
                     // Check whether member already exists in the database with the same email
-                    $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question and subject_id = :subject_id");
+                    $statement = $pdo->prepare("SELECT * FROM matchingtype WHERE question = :question and subject_id = :subject_id");
                     $statement->bindValue(':question', $question);
                     $statement->bindValue(':subject_id', $subject[0]['rnd_id']);
                     $statement->execute();
@@ -227,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($count == 0) {
 
                         // echo 'here';
-                        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, difficulty) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+                        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, topic) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :topic)");
                         $statement->bindValue(':question', $question);
                         $statement->bindValue(':answer', $answer);
                         $statement->bindValue(':subject', $subject_name);
@@ -237,7 +238,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $statement->bindValue(':semester', $subject[0]['semester']);
                         $statement->bindValue(':profname', $prof_name);
                         $statement->bindValue(':prof_id', $prof_details[0]['id']);
-                        $statement->bindValue(':difficulty', $difficulty);
+                        $statement->bindValue(':topic', $topic);
+                        // $statement->bindValue(':difficulty', $difficulty);
                         $statement->execute();
                     }
                     $qstring = '?status=succ';

@@ -55,7 +55,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             <ul class="nav">
                 <li>
-                    <a href="">
+                    <a href="index.php">
                         <p>Main Menu</p>
                     </a>
                 </li>
@@ -192,8 +192,41 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
                 </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-7">
+                        <div class="card">
+                            <div class="header">
+                                <h4 class="title">Settings</h4>
+                            </div>
+                            <div class="content">
+                                <form>
+                                <div class="row">
+                                        <div class="col-md-4">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <div class="text-center">
+                                                    <label for="">Reset the Exam and Questions</label>
+                                                </div>
+                                                    <a onclick="return confirm('Are you sure?')" href="delete_all_question.php?id=<?php echo $_SESSION['id']; ?>" class="btn btn-danger btn-wd form-control border-input">Reset</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
         </div>
+
+        
 
 
         <footer class="footer">

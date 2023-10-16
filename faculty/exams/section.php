@@ -16,6 +16,12 @@ $statement->bindValue(':id', $id);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE prof_id = :prof_id and subject_id = :subject_id ');
+$statement->bindValue(':prof_id', $_SESSION['id']);
+$statement->bindValue(':subject_id', $id);
+$statement->execute();
+$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
 $statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id and prof_id = :prof_id');
 $statement->bindValue(':id', $id);
 $statement->bindValue(':prof_id', $_SESSION['id']);
@@ -161,7 +167,9 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Section Name</th>
                                     	<th>Number of Student</th>
                                     	<th>Professor's Name</th>
+                                        <?php if ($data[0]['role'] == 'main'): ?>
                                     	<th>Action</th>
+                                        <?php endif; ?>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($section as $i => $item): ?>
@@ -169,9 +177,11 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
+                                            <?php if ($data[0]['role'] == 'main'): ?>
                                         	<td style="text-align:center;">
                                                 <a href="create.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">Create Exam</a>
                                             </td>
+                                            <?php endif; ?>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

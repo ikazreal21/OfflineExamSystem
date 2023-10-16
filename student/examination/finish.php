@@ -44,7 +44,7 @@ $yearlevel = $student_details[0]['yearlevel'];
         $statement->bindValue(':out_of', $out_of);
         $statement->bindValue(':yearl', $yearlevel);
         $statement->execute();
-        header('Location:../index.php');
+        header('Location:view_exam_results.php');
     }
 
 

@@ -33,9 +33,9 @@ if ($procdata[0]["multiplechoice"] != 0) {
     $_SESSION["current_exam_number"] = intval($procdata[0]["multiplechoice"]);
     $_SESSION["current_type"] = "multiplechoice";
 
-    $statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id and difficulty = :difficulty ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+    $statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
     $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
-    $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
+    // $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
     $statement->execute();
     $multiple_choice = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -55,7 +55,14 @@ if ($procdata[0]["multiplechoice"] != 0) {
     // echo '<pre>';
     // var_dump(count($multiple_choice));
     // echo '<pre>';
-} 
+} else {
+    $_SESSION["current_type"] = "identification";
+    // echo '<pre>';
+    // var_dump($_SESSION);
+    // echo '<pre>';
+    echo "<script>return confirm('Are you sure?');</script>";
+    header("location:index.php?type=" . $_SESSION["current_type"]);
+}
 
 echo "<script>return confirm('Are you sure?');</script>";
     

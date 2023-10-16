@@ -199,7 +199,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Matching Type</th>
                                     	<th>True or False</th>
                                     	<th>Timer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
                                     </thead>
@@ -217,7 +216,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['timer']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['difficulty']; ?></td>
                                         	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">
                                                 <?php if ($item['status'] == 'close'): ?>

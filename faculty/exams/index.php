@@ -7,24 +7,25 @@ require_once "../../others/function.php";
 $search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
+$statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE prof_id = :prof_id and role = "main"');
+$statement->bindValue(':prof_id', $_SESSION['id']);
+$statement->execute();
+$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+
 if ($search1 && $search2) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and yearlevel like :yearlevel and prof_id = :prof_id ORDER BY exam_id DESC');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and yearlevel like :yearlevel and prof_id in (select prof_id from prof_subjects) ORDER BY exam_id DESC');
     $statement->bindValue(':semester', "%$search1%");
     $statement->bindValue(':yearlevel', "%$search2%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
 } elseif ($search1 && empty($search2)) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and prof_id = :prof_id ORDER BY exam_id DESC');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE semester like :semester and prof_id in (select prof_id from prof_subjects) ORDER BY exam_id DESC');
     $statement->bindValue(':semester', "%$search1%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
 
 } elseif ($search2 && empty($search1)) {
-    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel and prof_id = :prof_id ORDER BY exam_id DESC');
+    $statement = $pdo->prepare('SELECT * FROM examcreated WHERE yearlevel like :yearlevel and prof_id in (select prof_id from prof_subjects) ORDER BY exam_id DESC');
     $statement->bindValue(':yearlevel', "%$search2%");
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
 
 } else {
-    $statement = $pdo->prepare('SELECT * FROM examcreated where prof_id = :prof_id ORDER BY exam_id DESC');
-    $statement->bindValue(':prof_id', $_SESSION["id"]);
+    $statement = $pdo->prepare('SELECT * FROM examcreated where prof_id in (select prof_id from prof_subjects) ORDER BY exam_id DESC');
 }
 
 $statement->execute();
@@ -200,7 +201,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Matching Type</th>
                                     	<th>True or False</th>
                                         <th>Timer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Status</th>
                                     	<th>Action</th>
                                     </thead>
@@ -217,9 +217,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><?php echo $item['identification']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['matching']; ?></td>
                                         	<td style="font-size:medium;"><?php echo $item['trueorfalse']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                             <td style="font-size:medium;"><?php echo $item['timer']; ?></td>
-                                        	<td style="font-size:medium;"><?php echo $item['difficulty']; ?></td>
+                                        	<td style="font-size:medium;"><?php echo strtoupper($item['status']); ?></td>
                                         	<td style="text-align:left;">
                                                 <?php if ($item['status'] == 'close'): ?>
                                                     <a href="manual_open.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd">Manual Open</a>

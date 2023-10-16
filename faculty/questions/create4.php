@@ -18,7 +18,7 @@ $semester = '';
 $yearlevel = '';
 $prof_id = '';
 $prof_name = '';
-$difficulty = '';
+// $difficulty = '';
 
 // echo '<pre>';
 // var_dump($faculty);
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prof_id = $prof_details[0]['id'];
     $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     $grading_period = $_POST['grading_period'];
-    $difficulty = $_POST['difficulty'];
+    // $difficulty = $_POST['difficulty'];
 
     $statement = $pdo->prepare("SELECT * FROM trueorfalse WHERE question = :question and subject_id = :subject_id");
     $statement->bindValue(':question', $_POST['question']);
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, difficulty) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+        $statement = $pdo->prepare("INSERT INTO trueorfalse (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id)");
         $statement->bindValue(':question', $_POST['question']);
         $statement->bindValue(':answer', $_POST['radio']);
         $statement->bindValue(':subject', $subject_name);
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':semester', $semester);
         $statement->bindValue(':profname', $prof_name);
         $statement->bindValue(':prof_id', $prof_id);
-        $statement->bindValue(':difficulty', $difficulty);
+        // $statement->bindValue(':difficulty', $difficulty);
         $statement->execute();
         // echo '<pre>';
         // var_dump($_POST["radio"]);
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-auto">
                                                     <div class="form-group">
                                                         <label>Difficulty</label>
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="text-center">
                                                 <button type="submit" name="create" class="btn btn-info btn-fill btn-wd" style="font-size:2rem;">Create</button>
                                             </div>

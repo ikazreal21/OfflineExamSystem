@@ -18,7 +18,8 @@ $semester = '';
 $yearlevel = '';
 $prof_id = '';
 $prof_name = '';
-$difficulty = '';
+$topic = '';
+// $difficulty = '';
 
 // echo '<pre>';
 // var_dump($faculty);
@@ -28,6 +29,12 @@ $statement = $pdo->prepare('SELECT * FROM subject where rnd_id = :rnd_id');
 $statement->bindValue(':rnd_id', $rnd_id);
 $statement->execute();
 $subject = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT DISTINCT topic FROM matchingtype WHERE subject_id = :rnd_id ');
+$statement->bindValue(':rnd_id', $rnd_id);
+$statement->execute();
+$topics = $statement->fetchAll(PDO::FETCH_ASSOC);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -43,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prof_id = $prof_details[0]['id'];
     $prof_name = ucfirst($prof_details[0]['first_name']) . " " . ucfirst($prof_details[0]['last_name']);
     $grading_period = $_POST['grading_period'];
-    $difficulty = $_POST['difficulty'];
+    $topic = $_POST['topic'];
+    // $difficulty = $_POST['difficulty'];
 
     $statement = $pdo->prepare("SELECT * FROM matchingtype WHERE question = :question and subject_id = :subject_id");
     $statement->bindValue(':question', $_POST['question']);
@@ -53,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($count == 0) {
 
-        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, difficulty) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :difficulty)");
+        $statement = $pdo->prepare("INSERT INTO matchingtype (question, answer, subject, subject_id, yearlevel, grading_period, semester, prof_name, prof_id, topic) VALUES (:question, :answer, :subject, :subject_id, :yearlevel, :grading_period, :semester, :profname, :prof_id, :topic)");
         $statement->bindValue(':question', $_POST['question']);
         $statement->bindValue(':answer', $_POST['answer']);
         $statement->bindValue(':subject', $subject_name);
@@ -63,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindValue(':semester', $semester);
         $statement->bindValue(':profname', $prof_name);
         $statement->bindValue(':prof_id', $prof_id);
-        $statement->bindValue(':difficulty', $difficulty);
+        $statement->bindValue(':topic', $topic);
+        // $statement->bindValue(':difficulty', $difficulty);
         $statement->execute();
         header('Location:index.php?search1=matchingtype');
     } else {
@@ -228,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <!-- <div class="row">
                                                 <div class="col-md-auto">
                                                     <div class="form-group">
                                                         <label>Difficulty</label>
@@ -236,6 +245,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                             <option value="easy" selected>Easy</option>
                                                             <option value="medium">Medium</option>
                                                             <option value="hard">Hard</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <div class="row">
+                                                <div class="col-md-auto">
+                                                    <div class="form-group">
+                                                        <label>Topics</label>
+                                                        <select name="topic" class="form-control border-input" required>
+                                                            <option value="" selected>-</option>
+                                                            <?php foreach ($topics as $i => $item): ?>
+                                                            <option value="<?php echo $item['topic']; ?>"><?php echo ucfirst($item['topic']); ?></option>
+                                                            <?php endforeach;?>
                                                         </select>
                                                     </div>
                                                 </div>

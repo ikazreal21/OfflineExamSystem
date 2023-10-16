@@ -31,12 +31,12 @@ foreach ($procdata2 as $i => $products) {
     $statement->bindValue(':id', $products["prof_id"]);
     $statement->execute();
     $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-    // echo '<pre>';
-    // var_dump($procdatas);
-    // echo '<pre>';
-
+    $procdatas[0]["role_per_sub"] = $products["role"];
     $procdata[] = $procdatas[0];
+
+    // echo '<pre>';
+    // var_dump($procdata);
+    // echo '<pre>';
 }
 
 if (count($procdata) == 0) {
@@ -193,6 +193,11 @@ if (count($procdata) == 0) {
                                         	<td style="font-size:medium;"><?php echo $item['id']; ?></td>
                                         	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
                                         	<td style="text-align:left;">
+                                                <?php if ($item['role_per_sub'] == 'main'): ?>
+                                                    <a href="edit_prof_privillage.php?id=<?php echo $id; ?>&faculty=<?php echo $item['id']; ?>&action=remove" class="btn btn-warning btn-wd">Remove Privilage</a>
+                                                <?php else: ?>
+                                                    <a href="edit_prof_privillage.php?id=<?php echo $id; ?>&faculty=<?php echo $item['id']; ?>&action=add" class="btn btn-success btn-wd">Add Privilage</a>
+                                                <?php endif ?>
                                                 <a href="remove_prof.php?id=<?php echo $id; ?>&faculty=<?php echo $item['id']; ?>" class="btn btn-danger btn-wd">Remove</a>
                                             </td>
                                         </tr>

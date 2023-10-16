@@ -214,28 +214,24 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Choice 4</th>
                                     	<th>Choice 5</th>
                                     	<th>Answer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'identification'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'trueorfalse'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                         <?php if ($search == 'matchingtype'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
-                                    	<th>Difficulty</th>
                                     	<th>Action</th>
                                         <?php endif;?>
                                     </thead>
@@ -252,7 +248,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <td style="font-size:medium;"><?php echo $item['E']; ?></td>
                                             <?php endif;?>
                                             <td style="font-size:medium;"><?php echo $item['answer']; ?></td>
-                                            <td style="font-size:medium;"><?php echo ucfirst($item['difficulty']); ?></td>
                                         	<td style="text-align:left;">
                                                 <?php if ($search == 'multiplechoice'): ?>
                                                     <!-- <a href="update.php?exammulti_id=<?php echo $item['exammulti_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
