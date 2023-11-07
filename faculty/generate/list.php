@@ -1,8 +1,38 @@
+<?php
+session_start();
+
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+$id = $_GET['id'] ?? '';
+
+if (!$id) {
+    header('Location: index.php');
+    exit;
+}
+
+$statement = $pdo->prepare('SELECT * from subject where rnd_id = :id');
+$statement->bindValue(':id', $id);
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id and prof_id = :prof_id');
+$statement->bindValue(':id', $id);
+$statement->bindValue(':prof_id', $_SESSION['id']);
+$statement->execute();
+$section = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="../../assets/image/logo.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -29,7 +59,7 @@
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?>
                 </a>
             </div>
 
@@ -49,19 +79,14 @@
                         <p>Exam</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../class/">
-                        <p>Subject</p>
+                <li >
+                    <a href="../subjects/">
+                        <p>Subjects</p>
                     </a>
                 </li>
-                <li  class="active">
+                <li class="active">
                     <a href="">
-                        <p>Reports</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../user/">
-                        <p>Users</p>
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>
@@ -104,7 +129,7 @@
                               </ul>
                         </li> -->
 						<li>
-                            <a href="#">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -114,33 +139,42 @@
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
                         <div class="card ">
-                        <div class="header">
-                                <h4 class="title">Generate Results and Reports</h4>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <h3><?php echo $procdata[0]['subject_name']; ?></h3>
+                                    </div>
+                                    <div class="left">
+                                        <!-- <a href="create_section.php?id=<?php echo $id; ?>" class="btn btn-info btn-fill btn-wd">Create Section</a> -->
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
+                                </div>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
-                                    <!-- <thead>
-                                        <th>ID</th>
-                                    	<th>Name</th>
-                                    	<th>Salary</th>
-                                    	<th>Country</th>
-                                    	<th>City</th>
+                                <table class="table">
+                                    <thead>
+                                    	<th>Section Name</th>
+                                    	<th>Number of Student</th>
+                                    	<th>Professor's Name</th>
+                                    	<th>Action</th>
                                     </thead>
                                     <tbody>
+                                        <?php foreach ($section as $i => $item): ?>
                                         <tr>
-                                        	<td>1</td>
-                                        	<td>Dakota Rice</td>
-                                        	<td>$36,738</td>
-                                        	<td>Niger</td>
-                                        	<td>Oud-Turnhout</td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
+                                        	<td style="text-align:left">
+                                                <a href="view_result_per_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Exam Results</a>
+                                            </td>
                                         </tr>
-                                    </tbody> -->
+                                        <?php endforeach;?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -150,20 +184,7 @@
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

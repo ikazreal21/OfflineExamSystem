@@ -4,27 +4,35 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$id = $_GET['rnd_id'] ?? null;
-$sect_id = $_GET['id'] ?? null;
-
-if (!$id && !$sect_id) {
-    header('Location: index.php');
-    exit;
+if ($_SESSION["usertype"] != "faculty") {
+    header('location:../others/validation.php');
 }
 
-$statement = $pdo->prepare('SELECT * FROM subject WHERE rnd_id = :id ');
-$statement->bindValue(':id', $id);
+$sec = $_GET['id'] ?? '';
+$rnd_id = $_GET['rnd_id'] ?? '';
+
+$available_exam = [];
+
+$statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
+$statement->execute();
+$section = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
 $statement->execute();
 $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// $yearlevel = $procdata1[0]["yearlevel"];
-$subject = $procdata1[0]["subject_name"];
-
 $statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id and section_id = :section_id');
-$statement->bindValue(':subject_id', $id);
-$statement->bindValue(':section_id', $sect_id);
+$statement->bindValue(':section_id', $sec);
+$statement->bindValue(':subject_id', $rnd_id);
 $statement->execute();
 $procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// echo '<pre>';
+// var_dump($procdata2);
+// echo '<pre>';
+
 
 $procdata = [];
 
@@ -42,11 +50,23 @@ foreach ($procdata2 as $i => $products) {
 
 }
 
-if (count($procdata) == 0) {
-    header('Location: section.php?id=' . $id);
-}
+
+// foreach ($procdata as $i => $products) {
+//     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
+//     $statement->bindValue(':subject_id', $products["rnd_id"]);
+//     $statement->execute();
+//     $exam = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+//     $available_exam[] = $exam[0];
+
+// }
+
+// echo '<pre>';
+// var_dump($procdata);
+// echo '<pre>';
 
 ?>
+
 
 
 
@@ -54,7 +74,8 @@ if (count($procdata) == 0) {
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="../../assets/image/logo.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -81,7 +102,7 @@ if (count($procdata) == 0) {
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Admin Dashboard
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -101,19 +122,14 @@ if (count($procdata) == 0) {
                         <p>Exam</p>
                     </a>
                 </li>
-                <li  class="active">
-                    <a href="index.php">
-                        <p>Subject</p>
+                <li >
+                    <a href="../subjects/">
+                        <p>Subjects</p>
                     </a>
                 </li>
-                <li>
-                    <a href="../generate/">
-                        <p>Reports</p>
-                    </a>
-                </li>
-                <li>
-                    <a href="../user/">
-                        <p>Users</p>
+                <li class="active">
+                    <a href="">
+                        <p>Results</p>
                     </a>
                 </li>
             </ul>
@@ -130,12 +146,12 @@ if (count($procdata) == 0) {
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#"></a>
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../profile.php">
+                            <a href="profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>
@@ -156,7 +172,7 @@ if (count($procdata) == 0) {
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../../logout">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -175,30 +191,63 @@ if (count($procdata) == 0) {
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h4 class="title"><b><?php echo $subject; ?></b></h4>
+                                        <h4 class="title">Result of Exam | <?php echo $section[0]['section_name']; ?></h4>
                                     </div>
                                     <div class="left">
-                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        <?php if ($procdata1): ?>
+                                        <a href="download.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>" class="btn btn-info btn-fill btn-wd">Export Data</a>
+                                        <?php endif; ?>
+                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table">
+                                <table class="table table-striped">
                                     <thead>
-                                        <th>Student ID</th>
                                     	<th>Student Name</th>
-                                    	<th>Year Level</th>
-                                    	<th>Action</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Section Name</th>
+                                    	<th>Professor's Name</th>
+                                    	<th>Number of Items</th>
+                                    	<th>Score</th>
+                                    	<th>Percentage Score</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
-                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
-                                        	<td style="text-align:left;">
-                                                <a href="remove.php?id=<?php echo $id; ?>&student_id=<?php echo $item['student_id']; ?>&section_id=<?php echo $sect_id; ?>" class="btn btn-danger btn-wd">Remove</a>
-                                            </td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($procdatas[0]['first_name']) . " " . ucfirst($procdatas[0]['last_name']) ?></b></td>
+
+                                            <?php
+                                             $statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
+                                             $statement->bindValue(':section_id', $sec);
+                                             $statement->execute();
+                                             $section = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                             
+                                             $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
+                                             $statement->bindValue(':section_id', $sec);
+                                             $statement->execute();
+                                             $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                                                // echo '<pre>';
+                                                // var_dump($procdata1);
+                                                // echo '<pre>';
+
+                                            ?>
+                                            <?php if ($procdata1): ?>
+                                        	<td style="font-size:medium;"><b><?php echo $procdata1[0]['subject']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $procdata1[0]['section_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($procdata1[0]['prof_name']); ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $procdata1[0]['out_of']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $procdata1[0]['score']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $procdata1[0]['score']/$procdata1[0]['out_of']*100; ?>%</b></td>
+                                            <?php else: ?>
+                                            <td style="font-size:medium;"><b>~</b></td>
+                                        	<td style="font-size:medium;"><b>~</b></td>
+                                        	<td style="font-size:medium;"><b>~</b></td>
+                                        	<td style="font-size:medium;"><b>~</b></td>
+                                        	<td style="font-size:medium;"><b>~</b></td>
+                                        	<td style="font-size:medium;"><b>~%</b></td>
+                                            <?php endif; ?>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>
@@ -211,20 +260,7 @@ if (count($procdata) == 0) {
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                <!-- -->
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

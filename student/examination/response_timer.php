@@ -1,20 +1,49 @@
-<?php 
+<?php
 session_start();
+require_once "../../dbconnect.php"; 
 
+$examId = $_SESSION['id'];
 
-require_once "../../dbconnect.php";
+// Initialize $session_id to null
+$session_id = null;
 
+if ($examId !== null) {
+    // Query the session_id based on the exam_id
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery->bindValue(':exam_id', $examId);
+    $sessionQuery->execute();
+    $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
-$from_time1 = date("Y-m-d H:i:s");
-$to_time1 = $_SESSION['end_time'];
+    if ($sessionData !== false) {
+        // Set $session_id if a session_id is found for the given exam_id
+        $session_id = $sessionData['session_id'];
+    }
+}
 
-$timefirst=strtotime($from_time1);
-$timesecond=strtotime($to_time1);
+if ($session_id !== null) {
+    // Calculate the remaining time in seconds
+    $elapsed_time = time() - $_SESSION['start_time'];
+    $time_remaining = max(0, $_SESSION['time_remaining'] - $elapsed_time);
 
+    // Update the time_remaining in the database
+    $updateTimeRemainingQuery = $pdo->prepare('UPDATE exam_session SET time_remaining = :time_remaining WHERE session_id = :session_id');
+    $updateTimeRemainingQuery->bindValue(':time_remaining', $time_remaining, PDO::PARAM_INT);
+    $updateTimeRemainingQuery->bindValue(':session_id', $session_id);
+    $updateTimeRemainingQuery->execute();
 
-$diffrenceinseconds = $timesecond - $timefirst;
+    // Check if the time is up in the database
+    $checkTimeUpQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
+    $checkTimeUpQuery->bindValue(':session_id', $session_id);
+    $checkTimeUpQuery->execute();
+    $result = $checkTimeUpQuery->fetch(PDO::FETCH_ASSOC);
 
-echo gmdate("H:i:s", $diffrenceinseconds)
-
-
- ?>
+    // Output the remaining time
+    echo "<p style='font-weight:bold;'>Timer: " . gmdate("H:i:s", $time_remaining) . "</p>";
+} else {
+    echo "Session ID Not Set";
+}
+// var_dump($session_id);
+// echo '<pre>';
+// var_dump($_SESSION);
+// echo '<pre>';
+?>

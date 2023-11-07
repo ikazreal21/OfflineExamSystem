@@ -21,9 +21,34 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
 $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
 $statement->bindValue(':section_id', $sec);
 $statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+$procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id and section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// echo '<pre>';
+// var_dump($procdata2);
+// echo '<pre>';
 
 
+$procdata = [];
+
+foreach ($procdata2 as $i => $products) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+    $statement->bindValue(':student_id', $products["student_id"]);
+    $statement->execute();
+    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // echo '<pre>';
+    // var_dump($procdatas);
+    // echo '<pre>';
+
+    $procdata[] = $procdatas[0];
+
+}
 
 
 // foreach ($procdata as $i => $products) {
@@ -174,26 +199,18 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped">
+                            <table class="table">
                                     <thead>
+                                        <th>Student ID</th>
                                     	<th>Student Name</th>
-                                    	<th>Subject Name</th>
-                                    	<th>Section Name</th>
-                                    	<th>Professor's Name</th>
-                                    	<th>Number of Items</th>
-                                    	<th>Score</th>
-                                    	<th>Percentage Score</th>
+                                    	<th>Year Level</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['student_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['prof_name']); ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['out_of']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['score']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['score']/$item['out_of']*100; ?>%</b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['student_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['first_name']); ?> <?php echo ucfirst($item['last_name']); ?></b></td>
+                                        	<td style="font-size:medium;"><?php echo $item['yearlevel']; ?></td>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

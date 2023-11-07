@@ -8,6 +8,10 @@ if ($_SESSION["usertype"] != "student") {
     header('location:../others/validation.php');
 }
 
+$session_id = uniqid();
+$_SESSION['session_id'] = $session_id;
+
+
 if (!empty($_GET['status'])) {
     switch ($_GET['status']) {
         case 'succ':
@@ -47,7 +51,6 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 // echo '<pre>';
 // var_dump($procdata);
 // echo '<pre>';
-
 ?>
 
 
@@ -57,8 +60,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -71,11 +73,14 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link href="../assets/css/animate.css" rel="stylesheet"/>
     <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/mes.css" rel="stylesheet">
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="../assets/css/themify-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 </head>
 <body>
@@ -127,6 +132,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
+                    <?php
+                        if (isset($_SESSION["message"])) {
+                            
+                            echo '  <div id="mes">' . $_SESSION["message"] . '</div>';
+                            unset($_SESSION["message"]);
+                        }
+                    ?>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="profile.php">
@@ -169,7 +181,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <div class="header">
                                 <h4 class="title">Available Exam</h4>
                             </div>
-                            <div class="content table-responsive table-full-width">
+                            <div class="content table-responsive table-full-width">   
                                 <table class="table table-striped">
                                     <thead>
                                         <th>Subject Name</th>
@@ -190,7 +202,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <td style="font-size:medium;"><b><?php echo $item['timer']; ?></b></td>
                                             <!-- <td style="font-size:medium;"><b><?php echo ucfirst($item['difficulty']); ?></b></td> -->
                                             <td style="text-align:left;">
-                                                <a href="examination/take_exam.php?id=<?php echo $item['exam_id']; ?>" class="btn btn-success btn-wd" onclick="return confirm('Are you sure to take this exam?')">Take Exam</a>
+                                                <button class="btn btn-success btn-wd" onclick="confirmTakeExam(<?php echo $item['exam_id']; ?>)">Take Exam</button>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
@@ -216,14 +228,30 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
 </body>
-
     <script src="../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
 	<script src="../assets/js/main.js" type="text/javascript"></script>
 	<script src="../assets/js/main-checkbox-radio.js"></script>
 	<script src="../assets/js/chartist.min.js"></script>
     <script src="../assets/js/main-notify.js"></script>
 	<script src="../assets/js/paper-dashboard.js"></script>
-
-
 	<script src="../assets/js/demo.js"></script>
+    <script src="../assets/js/mes.js"></script>        
+    <script>
+        function confirmTakeExam(examId) {
+            Swal.fire({
+                title: 'Are you sure to take this exam?',
+                text: "You won't be able to undo this action.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, take it!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // The user clicked "Yes," so redirect to the exam page
+                    window.location.href = `examination/take_exam.php?id=${examId}`;
+                }
+            });
+        }
+    </script>
+
 </html>

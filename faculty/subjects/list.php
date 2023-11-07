@@ -169,8 +169,8 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
-                                        	<td style="text-align:center;">
-                                                <a href="view_result_per_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Exam Results</a>
+                                        	<td style="text-align:left">
+                                                <a href="view_result_per_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Students</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

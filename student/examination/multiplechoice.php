@@ -1,42 +1,141 @@
 <?php
 session_start();
 
+require_once "../../dbconnect.php"; 
+
+// Function to check remaining time and perform redirection if time is zero
+function checkRemainingTime($pdo, $session_id) {
+    $timeRemainingQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
+    $timeRemainingQuery->bindValue(':session_id', $session_id);
+    $timeRemainingQuery->execute();
+    $row = $timeRemainingQuery->fetch(PDO::FETCH_ASSOC);
+
+    if ($row !== false) {
+        $time_remaining = $row['time_remaining'];
+        if ($time_remaining <= 0) {
+            $_SESSION['message'] = "Time's up!";
+            header("Location: finish.php");
+            exit;
+        }
+    }
+}
+
+// Check if the user has taken the exam
 if (!isset($_SESSION["exam_taken"])) {
     header("location:../");
+    exit;
 }
 
-// echo '<pre>';
-// var_dump($_SESSION);
-// echo '<pre>';
-// if ($_SESSION["current_type"] == "multiplechoice") {
 
-// }
+
+$statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
+$statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
+$statement->execute();
+$multiple_choice = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+if (!isset($_SESSION["exam_taken"]["score"])) {
+    $_SESSION["exam_taken"]["score"] = 0;
+}
+
+$_SESSION["exam_taken"]["subject_id"] = $_SESSION["taken_exam"]["subject_id"];
+$_SESSION["exam_taken"]["grading_period"] = $_SESSION["taken_exam"]["grading_period"];
+$_SESSION["exam_taken"]["student_id"] = $_SESSION["student_id"];
+
+$examId = $_SESSION['id'];
+
+// Initialize $session_id to null
+$session_id = null;
+
+if ($examId !== null) {
+    // Query the session_id based on the exam_id
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery->bindValue(':exam_id', $examId);
+    $sessionQuery->execute();
+    $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
+
+    if ($sessionData !== false) {
+        // Set $session_id if a session_id is found for the given exam_id
+        $session_id = $sessionData['session_id'];
+    }
+}
+
+// Retrieve the start_number_multiple from the database
+$getStartNumberQuery = $pdo->prepare('SELECT start_number_multiple FROM exam_session WHERE session_id = :session_id');
+$getStartNumberQuery->bindValue(':session_id', $session_id);
+$getStartNumberQuery->execute();
+$row = $getStartNumberQuery->fetch(PDO::FETCH_ASSOC);
+
+$start_number_multiple = ($row !== false) ? (int) $row['start_number_multiple'] : 0;
+$_SESSION['start_number_multiple'] = $start_number_multiple;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (strtolower($_POST['radio']) == strtolower($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["answer"])) {
-        $_SESSION["exam_taken"]["score"] = $_SESSION["exam_taken"]["score"] + 1;
-        // echo 'here';
+    $timeRemainingQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
+    $timeRemainingQuery->bindValue(':session_id', $session_id);
+    $timeRemainingQuery->execute();
+    $row = $timeRemainingQuery->fetch(PDO::FETCH_ASSOC);
+
+    if ($row !== false) {
+        // Retrieve the time_remaining value from the database
+        $time_remaining = $row['time_remaining'];
+
+        // Calculate the end time based on the retrieved time_remaining
+        $end_time = time() + $time_remaining;
+        $_SESSION["end_time"] = date("Y-m-d H:i:s", $end_time);
+
+        $_SESSION["exam_taken"]["end_time"] = $end_time;
     }
-    if ($_SESSION["start_number_multiple"] < $_SESSION["current_exam_number"] - 1) {
-        $_SESSION["start_number_multiple"] = $_SESSION["start_number_multiple"] + 1;
+
+    $currentQuestion = $_SESSION["multiplechoice"][$start_number_multiple];
+    $selectedAnswer = $_POST['selected_answer'];
+
+    if ($selectedAnswer === $currentQuestion['answer']) {
+        $_SESSION["exam_taken"]["score"]++;
+    }
+
+    // Update the score in the database
+    $newScore = $_SESSION["exam_taken"]["score"];
+    $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET multipleChoiceScore = :new_score WHERE session_id = :session_id');
+    $updateScoreQuery->bindValue(':new_score', $newScore);
+    $updateScoreQuery->bindValue(':session_id', $session_id);
+    $updateScoreQuery->execute();
+
+
+    if ($start_number_multiple < $_SESSION["current_exam_number"] - 1) {
+        // Increment the start_number_multiple by one
+        $start_number_multiple = $start_number_multiple + 1;
+
+        // Update start_number_multiple in the session
+        $_SESSION['start_number_multiple'] = $start_number_multiple;
+
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_multiple = :start_number_multiple WHERE session_id = :session_id');
+        $updateStartNumberQuery->bindValue(':start_number_multiple', $start_number_multiple, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':session_id', $session_id);
+        $updateStartNumberQuery->execute();
+        header("Location: multiplechoice.php");
+        exit;
     } else {
-        $_SESSION["current_type"] = "identification";
-        // echo '<pre>';
-        // var_dump($_SESSION);
-        // echo '<pre>';
-        header("location:index.php?type=" . $_SESSION["current_type"]);
+        $start_number_multiple = $start_number_multiple + 1;
+
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_multiple = :start_number_multiple WHERE session_id = :session_id');
+        $updateStartNumberQuery->bindValue(':start_number_multiple', $start_number_multiple, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':session_id', $session_id);
+        $updateStartNumberQuery->execute();
+        header("location: take_exam.php?id=${examId}");
+        exit;
     }
-
 }
-
+// Output the selected question
+$currentQuestion = $_SESSION["multiplechoice"][$start_number_multiple];
+checkRemainingTime($pdo, $session_id);
 ?>
+
+
 
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -150,20 +249,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
-                                        <b>Timer: <p id='response'></p></b>
-                                        <script type='text/javascript'>
-                                            setInterval(function ()
-                                            {
+                                    <p>Question: <?php echo  $start_number_multiple + 1 ; ?> Of <?php echo $_SESSION["totalss"] ; ?> </p>
+                                        <p id='response'></p>   
+                                        <script type="text/javascript">
+                                            function updateCountdown() {
                                                 var xmlhttp = new XMLHttpRequest();
-                                                xmlhttp.open('GET','response_timer.php', false);
-                                                xmlhttp.send(null);
-                                                document.getElementById("response").innerHTML=xmlhttp.responseText;
-                                                if(xmlhttp.responseText == '00:00:00') {
-                                                    alert('Times Up!!!')
-                                                    window.location="finish.php"
-                                                }
-                                                console.log(xmlhttp.responseText);
-                                            }, 1000); 
+                                                xmlhttp.open('GET', 'response_timer.php', true);
+                                                xmlhttp.send();
+
+                                                xmlhttp.onreadystatechange = function () {
+                                                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                                                        var remainingTime = xmlhttp.responseText;
+                                                        document.getElementById("response").innerHTML = remainingTime;
+
+                                                        // Parse the remaining time as seconds (assuming it's in the format hh:mm:ss)
+                                                        var timeParts = remainingTime.split(':');
+                                                        var seconds = parseInt(timeParts[0]) * 3600 + parseInt(timeParts[1]) * 60 + parseInt(timeParts[2]);
+
+                                                        if (seconds <= 1) {
+                                                            // Use SweetAlert2 for the notification
+                                                            Swal.fire({
+                                                                icon: 'info', // You can customize this (info, error, success, warning, etc.)
+                                                                title: 'Time\'s Up!',
+                                                                text: 'Your time has run out!',
+                                                                confirmButtonText: 'OK'
+                                                            }).then(function () {
+                                                                // Redirect the entire page to "finish.php"
+                                                                window.location.replace("finish.php");
+                                                            });
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                            setInterval(updateCountdown, 1000);
+                                            updateCountdown();
                                         </script>
                                         <!-- <a href="../" class="btn btn-info btn-fill btn-wd">Back</a> -->
                                         <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
@@ -182,28 +301,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </div>
                                         <div class="">
                                             <div class="">
-                                                <div class="">
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["A"]); ?>
-                                                        <input type="radio" name="radio"  value="A">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["B"]); ?>
-                                                        <input type="radio" name="radio" value="B">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["C"]); ?>
-                                                        <input type="radio" name="radio" value="C">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["D"]); ?>
-                                                        <input type="radio" name="radio" value="D">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                    <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["E"]); ?>
-                                                        <input type="radio" name="radio" value="E">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </div>
+                                            <div class="">
+                                                <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["A"]); ?>
+                                                    <input type="radio" name="selected_answer" value="A">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["B"]); ?>
+                                                    <input type="radio" name="selected_answer" value="B">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["C"]); ?>
+                                                    <input type="radio" name="selected_answer" value="C">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["D"]); ?>
+                                                    <input type="radio" name="selected_answer" value="D">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="containers"><?php echo ucfirst($_SESSION["multiplechoice"][$_SESSION["start_number_multiple"]]["E"]); ?>
+                                                    <input type="radio" name="selected_answer" value="E">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
                                             </div>
                                         </div>
                                         <div class="text-center">
@@ -245,7 +364,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 </body>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> 
     <script src="../../assets/js/jquery-1.10.2.js" type="text/javascript"></script>
 	<script src="../../assets/js/main.js" type="text/javascript"></script>
 	<script src="../../assets/js/main-checkbox-radio.js"></script>

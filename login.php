@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (isset($_SESSION["message"])) {
+    echo $_SESSION["message"];
+    unset($_SESSION["message"]); 
+}
+
 require_once 'dbconnect.php';
 // require_once 'others/validation.php';
 
@@ -8,11 +13,10 @@ if (isset($_SESSION["usertype"])) {
     header('location:others/validation.php');
 }
 
-try
-{
+try {
     if (isset($_POST["login"])) {
         if (empty($_POST["username"]) || empty($_POST["password"])) {
-            $message = '<label>All fields are required</label>';
+            $message = '<div class="error-message">All fields are required</div>';
         } else {
             $query = "SELECT * FROM accounts WHERE username = :username AND password = :password and status = 'active'";
             $statement = $pdo->prepare($query);
@@ -40,21 +44,24 @@ try
                     $_SESSION["student_id"] = $user[0]["student_id"];
                 }
 
-                echo "<script>alert('Login Success'); window.location = 'others/validation.php';</script>";
+                $_SESSION["message"] = 'Login Successfully!';
+                header('Location: others/validation.php');
             } else {
-                echo "<script>alert('Login Error'); window.location = 'login.php';</script>";
+                $_SESSION["message"] = 'Wrong Credentials!';
             }
         }
     }
 } catch (PDOException $error) {
-    $message = $error->getMessage();
+    $message = '<div class="error-message">' . $error->getMessage() . '</div>';
 }
+
 ?>
 
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="assets/image/logo.png">
 	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
 	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -69,6 +76,7 @@ try
     <link href="assets/css/animate.css" rel="stylesheet"/>
     <link href="assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="assets/css/demo.css" rel="stylesheet" />
+    <link href="assets/css/mes.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
@@ -114,6 +122,13 @@ try
                             </div>
                             <div class="container">
                                 <div class="content">
+                                    <?php
+                                        if (isset($_SESSION["message"])) {
+                                            
+                                            echo '  <div id="mes">' . $_SESSION["message"] . '</div>';
+                                            unset($_SESSION["message"]);
+                                        }
+                                    ?>
                                     <form method="post" action="login.php">
                                         <div class="row">
                                             <div class="col-md-auto">
@@ -156,6 +171,7 @@ try
 	<script src="assets/js/chartist.min.js"></script>
     <script src="assets/js/main-notify.js"></script>
 	<script src="assets/js/paper-dashboard.js"></script>
+	<script src="assets/js/mes.js"></script>
 
     <script type="text/javascript">
 
