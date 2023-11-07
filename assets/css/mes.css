@@ -1,0 +1,25 @@
+#mes {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    background-color: #2b1e1d; /* Red for error messages */
+    color: white;
+    border-radius: 5px;
+    animation: messageAnimation 3s ease-out;
+}
+
+
+/* Keyframes for message animation */
+@keyframes messageAnimation {
+0% {
+    top: -50px;
+    opacity: 0;
+}
+20% {
+    top: 10%;
+    opacity: 1;
+}
+}
+

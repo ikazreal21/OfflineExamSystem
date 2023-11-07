@@ -44,9 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $worksheet_arr = $worksheet->toArray();
 
             // Remove header row
-            echo '<pre>';
-            var_dump($worksheet_arr);
-            echo '<pre>';
+           // echo '<pre>';
+           // var_dump($worksheet_arr);
+          //  echo '<pre>';
             unset($worksheet_arr[0]);
 
             foreach ($worksheet_arr as $row) {
@@ -108,8 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>

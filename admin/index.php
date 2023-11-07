@@ -33,8 +33,7 @@ $student = $statement->rowCount();
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+	<link rel="icon" type="image/png" href="../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -47,6 +46,7 @@ $student = $statement->rowCount();
     <link href="../assets/css/animate.css" rel="stylesheet"/>
     <link href="../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../assets/css/demo.css" rel="stylesheet" />
+    <link href="../assets/css/mes.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
@@ -111,6 +111,13 @@ $student = $statement->rowCount();
                         <span class="icon-bar bar3"></span>
                     </button>
                     <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
+                    <?php
+                        if (isset($_SESSION["message"])) {
+                            
+                            echo '  <div id="mes">' . $_SESSION["message"] . '</div>';
+                            unset($_SESSION["message"]);
+                        }
+                    ?>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -310,6 +317,7 @@ $student = $statement->rowCount();
 	<script src="../assets/js/chartist.min.js"></script>
     <script src="../assets/js/main-notify.js"></script>
 	<script src="../assets/js/paper-dashboard.js"></script>
+	<script src="../assets/js/mes.js"></script>
 
 
 	<script src="../assets/js/demo.js"></script>

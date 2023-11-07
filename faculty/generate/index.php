@@ -1,15 +1,46 @@
 <?php
+session_start();
 
-session_start()
+require_once "../../dbconnect.php";
+require_once "../../others/function.php";
+
+$search1 = $_GET['search1'] ?? '';
+$search2 = $_GET['search2'] ?? '';
+
+if ($search1 && $search2) {
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester and yearlevel like :yearlevel and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
+    $statement->bindValue(':semester', "%$search1%");
+    $statement->bindValue(':yearlevel', "%$search2%");
+    $statement->bindValue(':prof_id', $_SESSION["id"]);
+
+} elseif ($search1 && empty($search2)) {
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE semester like :semester and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
+    $statement->bindValue(':semester', "%$search1%");
+    $statement->bindValue(':prof_id', $_SESSION["id"]);
+
+} elseif ($search2 && empty($search1)) {
+    $statement = $pdo->prepare('SELECT s.* FROM subject s WHERE yearlevel like :yearlevel and s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
+    $statement->bindValue(':yearlevel', "%$search2%");
+    $statement->bindValue(':prof_id', $_SESSION["id"]);
+
+} else {
+    $statement = $pdo->prepare('SELECT s.* FROM subject s where s.rnd_id in (select p.subject_id from prof_subjects p where p.prof_id = :prof_id)');
+    $statement->bindValue(':prof_id', $_SESSION["id"]);
+}
+
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
+
+
+
 
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+	<link rel="icon" type="image/png" href="../../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -106,7 +137,7 @@ session_start()
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../../logout.php">
+                            <a href="../../logout">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -116,7 +147,6 @@ session_start()
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
@@ -125,8 +155,60 @@ session_start()
                             <div class="header">
                                 <h4 class="title">Generate Results</h4>
                             </div>
+                            <div class="header">
+                                <div class="header-arrangement">
+                                    <div class="right">
+                                        <form action="" method="get">
+                                            <div class="flex">
+                                                <p><b>Filter</b></p>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <select name="search1" class="form-control" style="font-size: medium;">
+                                                            <option value="" selected>Semester</option>
+                                                            <option value="1st">1st</option>
+                                                            <option value="2nd">2nd</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="search2" class="form-control" style="font-size: medium; margin-left:5rem;">
+                                                            <option value="" selected>Year Level</option>
+                                                            <option value="1st">1st</option>
+                                                            <option value="2nd">2nd</option>
+                                                            <option value="3rd">3rd</option>
+                                                            <option value="4th">4th</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" name="search" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="left">
+                                        <!-- <a href="create.php" class="btn btn-info btn-fill btn-wd">Create Subject</a> -->
+                                    </div>
+                                </div>
+                            </div>
                             <div class="content table-responsive table-full-width">
-
+                                <table class="table">
+                                    <thead>
+                                    	<th>Subject Name</th>
+                                    	<th>Year Level</th>
+                                    	<th>Semester</th>
+                                    	<th>Action</th>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
+                                        <tr>
+                                        	<td style="font-size:medium;"><b><?php echo $item['subject_name']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['yearlevel']; ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['semester']; ?></b></td>
+                                            <td style="text-align:left;">
+                                                <a href="list.php?id=<?php echo $item['rnd_id']; ?>" class="btn btn-success btn-wd">List Section</a>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -135,20 +217,7 @@ session_start()
         </div>
         <footer class="footer">
             <div class="container-fluid">
-                <nav class="pull-left">
-                    <ul>
-                        <li>
-                            <a href="">
-                               Contact
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                Support
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

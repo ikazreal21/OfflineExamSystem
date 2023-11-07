@@ -15,20 +15,6 @@ $statement->bindValue(':student_id', $_SESSION["student_id"]);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// foreach ($procdata as $i => $products) {
-//     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
-//     $statement->bindValue(':subject_id', $products["rnd_id"]);
-//     $statement->execute();
-//     $exam = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-//     $available_exam[] = $exam[0];
-
-// }
-
-// echo '<pre>';
-// var_dump($procdata);
-// echo '<pre>';
-
 ?>
 
 
@@ -38,8 +24,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="../../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -52,6 +37,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link href="../../assets/css/animate.css" rel="stylesheet"/>
     <link href="../../assets/css/paper-dashboard.css" rel="stylesheet"/>
     <link href="../../assets/css/demo.css" rel="stylesheet" />
+    <link href="../../assets/css/mes.css" rel="stylesheet" />
 
 
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
@@ -108,6 +94,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                     <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
+                    <?php
+                        if (isset($_SESSION["message"])) {
+                            
+                            echo '  <div id="mes">' . $_SESSION["message"] . '</div>';
+                            unset($_SESSION["message"]);
+                        }
+                    ?>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="../profile.php">
@@ -200,6 +193,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 	<script src="../../assets/js/chartist.min.js"></script>
     <script src="../../assets/js/main-notify.js"></script>
 	<script src="../../assets/js/paper-dashboard.js"></script>
+	<script src="../../assets/js/mes.js"></script>
 
 
 	<script src="../../assets/js/demo.js"></script>
