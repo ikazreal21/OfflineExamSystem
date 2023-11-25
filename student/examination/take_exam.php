@@ -5,16 +5,23 @@ require_once "../../dbconnect.php";
 
 $id = $_GET['id'] ?? null;
 
-
+$student_id = $_GET['student_id'] ?? null;
 
 $statement = $pdo->prepare('SELECT * FROM examcreated where exam_id = :id and status = "open"');
 $statement->bindValue(':id', $id);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+$statement->bindValue(':student_id', $_SESSION['student_id']);
+$statement->execute();
+$student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+$student_id = $_SESSION['student_id'];
+
 // Query to retrieve session_id for the given exam_id
-$sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+$sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id' );
 $sessionQuery->bindValue(':exam_id', $id);
+$sessionQuery->bindValue(':student_id', $student_id);
 $sessionQuery->execute();
 $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -39,9 +46,11 @@ if (!empty($sessionData)) {
     
     $session_id = uniqid();
 
-    $insertSessionQuery = $pdo->prepare('INSERT INTO exam_session (session_id, time_remaining) VALUES (:session_id, :time_remaining)');
+    $insertSessionQuery = $pdo->prepare('INSERT INTO exam_session (session_id, time_remaining, matchingTypeScore, student_id) VALUES (:session_id, :time_remaining, :matchingTypeScore, :student_id)');
     $insertSessionQuery->bindValue(':session_id', $session_id);
     $insertSessionQuery->bindValue(':time_remaining', $time_remaining, PDO::PARAM_INT);
+	$insertSessionQuery->bindValue(':matchingTypeScore', 0);
+	$insertSessionQuery->bindValue(':student_id', $student_id);
     $insertSessionQuery->execute();
 }
 
@@ -51,7 +60,8 @@ if (!empty($procdata)) {
     $_SESSION["data"] = $id;
     $examId = $procdata[0]['exam_id'];
     $_SESSION['id'] = $examId;
-
+	
+	
     // Check if time_remaining is not already in the session
     if (!isset($_SESSION["time_remaining"])) {
         $time_remaining = $timer * 60; 
@@ -94,16 +104,18 @@ if (!empty($procdata)) {
             $_SESSION["exam_taken"]["grading_period"] = $_SESSION["taken_exam"]["grading_period"];
             $_SESSION["exam_taken"]["student_id"] = $_SESSION["student_id"];
 
-            $existingSession = $pdo->prepare('SELECT * FROM exam_take WHERE exam_id = :exam_id');
+            $existingSession = $pdo->prepare('SELECT * FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id');
             $existingSession->bindValue(':exam_id', $examId);
+			$existingSession->bindValue(':student_id', $student_id);
             $existingSession->execute();
             $existingSessionData = $existingSession->fetchAll(PDO::FETCH_ASSOC);
             
             if (count($existingSessionData) == 0) {
                 // If a session with the same session_id doesn't exist, insert it
-                $insertSessionQuery = $pdo->prepare('INSERT IGNORE INTO exam_session (session_id, time_remaining) VALUES (:session_id, :time_remaining)');
+                $insertSessionQuery = $pdo->prepare('INSERT IGNORE INTO exam_session (session_id, time_remaining, student_id) VALUES (:session_id, :time_remaining, :student_id)');
                 $insertSessionQuery->bindValue(':session_id', $session_id);
                 $insertSessionQuery->bindValue(':time_remaining', $time_remaining, PDO::PARAM_INT);
+				$insertSessionQuery->bindValue(':student_id', $student_id);
                 $insertSessionQuery->execute();
             }
 
@@ -115,9 +127,10 @@ if (!empty($procdata)) {
 
             if (count($existingData) == 0) {
                 // If a session with the same session_id doesn't exist, insert it along with the exam_id
-                $insertQuery = $pdo->prepare('INSERT IGNORE INTO exam_take (session_id, exam_id) VALUES (:session_id, :exam_id)');
+                $insertQuery = $pdo->prepare('INSERT INTO exam_take (session_id, exam_id, student_id) VALUES (:session_id, :exam_id, :student_id)');
                 $insertQuery->bindValue(':session_id', $session_id);
                 $insertQuery->bindValue(':exam_id', $examId); // Include the exam_id
+				$insertQuery->bindValue(':student_id', $student_id);
                 $insertQuery->execute();
             }
 
@@ -182,7 +195,7 @@ if (!empty($procdata)) {
                 $_SESSION["current_type"] = "trueorfalse";
                 header("location:index.php?type=" . $_SESSION["current_type"]);
             } else {
-                $_SESSION['message'] = 'You are already take this exam';
+                // $_SESSION['message'] = 'You already took this exam';
                 header("Location: finish.php");
             }
             
@@ -193,4 +206,5 @@ if (!empty($procdata)) {
         $_SESSION["current_type"] = "identification";
     }
 }
+
 ?>

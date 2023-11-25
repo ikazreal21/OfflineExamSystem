@@ -33,6 +33,8 @@ if (!empty($_GET['status'])) {
 $available_exam = [];
 
 $statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
+
+// $statement = $pdo->prepare('SELECT * FROM examcreated');
 $statement->bindValue(':student_id', $_SESSION["student_id"]);
 $statement->bindValue(':student_id', $_SESSION["student_id"]);
 $statement->execute();

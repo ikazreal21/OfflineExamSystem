@@ -3,6 +3,7 @@ session_start();
 
 require_once "../../dbconnect.php"; 
 
+
 // Function to check remaining time and perform redirection if time is zero
 function checkRemainingTime($pdo, $session_id) {
     $timeRemainingQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
@@ -26,6 +27,11 @@ if (!isset($_SESSION["exam_taken"])) {
     exit;
 }
 
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+$statement->bindValue(':student_id', $_SESSION['student_id']);
+$statement->execute();
+$student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+$student_id = $_SESSION['student_id'];
 
 
 $statement = $pdo->prepare('SELECT * FROM multiplechoice WHERE subject_id = :subject_id ORDER BY RAND() LIMIT '. $_SESSION["current_exam_number"]);
@@ -48,8 +54,9 @@ $session_id = null;
 
 if ($examId !== null) {
     // Query the session_id based on the exam_id
-    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id');
     $sessionQuery->bindValue(':exam_id', $examId);
+	$sessionQuery->bindValue(':student_id', $student_id);
     $sessionQuery->execute();
     $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -249,7 +256,7 @@ checkRemainingTime($pdo, $session_id);
                                         <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
-                                    <p>Question: <?php echo  $start_number_multiple + 1 ; ?> Of <?php echo $_SESSION["totalss"] ; ?> </p>
+                                    <p>Question: <?php echo  $start_number_multiple ; ?> Of <?php echo $_SESSION["totalss"] ; ?> </p>
                                         <p id='response'></p>   
                                         <script type="text/javascript">
                                             function updateCountdown() {

@@ -8,6 +8,13 @@ $current_type = $_SESSION["current_type"] ?? null;
 $type = $_SESSION["current_type"];
 $id = $_SESSION['id'];
 
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+$statement->bindValue(':student_id', $_SESSION['student_id']);
+$statement->execute();
+$student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+$student_id = $_SESSION['student_id'];
+
+
 if (!isset($_SESSION["exam_taken"])) {
     sleep(0.5); // Add a 0.5-second delay 
     header("location:../");
@@ -29,8 +36,9 @@ $session_id = null;
 
 if ($id !== null) {
     // Query the session_id based on the exam_id
-    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id');
     $sessionQuery->bindValue(':exam_id', $id);
+	$sessionQuery->bindValue(':student_id', $student_id);
     $sessionQuery->execute();
     $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -138,7 +146,7 @@ elseif ($type == "identification") {
 
         // Store the selected matchingtype IDs in the array
         $selectedMatchingTypeIds = array_merge($selectedMatchingTypeIds, array_column($matchingtype, 'id'));
-
+        $_SESSION["matching_type_id"] = $selectedMatchingTypeIds;
         $statementsMatching = $pdo->prepare('SELECT matchingTypeScore FROM exam_session WHERE session_id = :session_id');
         $statementsMatching->bindValue(':session_id', $session_id);
         $statementsMatching->execute();

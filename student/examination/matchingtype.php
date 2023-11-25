@@ -2,11 +2,24 @@
 session_start();
 require_once "../../dbconnect.php";
 
+
+
+
 // Check if the user is authorized to access this page
 if (!isset($_SESSION["exam_taken"])) {
     header("location:../");
     exit;
 }
+
+// $match_ans = [];
+
+// if (empty($_SESSION["fixmatching_type"])) {
+//     foreach ($_SESSION["matchingtype"] as $i => $matching) {
+//         $match_ans[] = $matching["answer"];
+//         $_SESSION["fixmatching_type"] = $match_ans;
+//     }
+// }
+
 
 function checkRemainingTime($pdo, $session_id) {
     $timeRemainingQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
@@ -28,6 +41,12 @@ if (!isset($_SESSION["exam_taken"]["score"])) {
     $_SESSION["exam_taken"]["score"] = array('matching' => 0);
 }
 
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+$statement->bindValue(':student_id', $_SESSION['student_id']);
+$statement->execute();
+$student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+$student_id = $_SESSION['student_id'];
+
 $examId = $_SESSION['id'];
 
 // Initialize $session_id to null
@@ -35,8 +54,9 @@ $session_id = null;
 
 if ($examId !== null) {
     // Query the session_id based on the exam_id
-    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id');
     $sessionQuery->bindValue(':exam_id', $examId);
+	$sessionQuery->bindValue(':student_id', $student_id);
     $sessionQuery->execute();
     $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -72,7 +92,7 @@ $_SESSION['idents_number_final'] = $scoreIdentification;
 
 // Initialize the user's score to 0 when a new session starts
 if (!isset($_SESSION["exam_taken"]["score"])) {
-    $_SESSION["exam_taken"]["score"] = 0;
+    $_SESSION["exam_taken"]["score"]['matching'] = 0;
 }
 
 $getStartNumberQuery = $pdo->prepare('SELECT start_number_matching FROM exam_session WHERE session_id = :session_id');
@@ -97,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correctAnswer = strtolower($_SESSION["matchingtype"][$_SESSION["start_number_matching"]]["answer"]);
 
 
-     $_SESSION["exam_taken"]["score"]['matching'] = (int) $_SESSION["exam_taken"]["score"]['matching'];
+    // $_SESSION["exam_taken"]["score"]['matching'] = (int) $_SESSION["exam_taken"]["score"]['matching'];
 
     // Check if the submitted answer is correct
     if ($userAnswer == $correctAnswer) {
@@ -141,6 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 checkRemainingTime($pdo, $session_id);
+
 
 ?>
 
@@ -315,19 +336,11 @@ checkRemainingTime($pdo, $session_id);
                                         <h3 class="text-center">Answers</h3>
                                         <div class="row col-md-12 " style="display:inline-flex;justify-content: center;align-items: center;">
                                         <?php
-                                            $statement = $pdo->prepare('SELECT * FROM matchingtype WHERE subject_id = :subject_id and topic = :topic ORDER BY matchtype_id LIMIT ' . $_SESSION["current_exam_number"]);
-                                            $statement->bindValue(':subject_id', $_SESSION["taken_exam"]["subject_id"]);
-                                            $statement->bindValue(':topic', $_SESSION["taken_exam"]["matching_topic"]);
-                                            // $statement->bindValue(':difficulty', $_SESSION["taken_exam"]["difficulty"]);
-                                            $statement->execute();
-                                            $matchingtypes = $statement->fetchAll(PDO::FETCH_ASSOC);
-                                            $_SESSION["matchingtype_answer"] = $matchingtypes;
-
-                                            if (isset($_SESSION["matchingtype_answer"]) && is_array($_SESSION["matchingtype_answer"])) {
-                                                foreach ($_SESSION["matchingtype_answer"] as $answer) {
+                                            if (isset($_SESSION["matchingtype_ans"]) && is_array($_SESSION["matchingtype_ans"])) {
+                                                foreach ($_SESSION["matchingtype_ans"] as $answer) {
                                                     echo '<div class="col-md-2" style="justify-content: center; align-items: center; display: inline-flex;">';
                                                     echo '<div class="form-group" style="margin: 0 15px;">';
-                                                    echo '<h5 style="font-weight: 900; color: black; font-size: 25px;"><u>' . ucfirst($answer['answer']) . '</u></h5>';
+                                                    echo '<h5 style="font-weight: 900; color: black; font-size: 25px;"><u>' . ucfirst($answer) . '</u></h5>';
                                                     echo '</div>'; 
                                                     echo '</div>';
                                                 }

@@ -5,13 +5,20 @@ require_once "../../others/function.php";
 
 $examId = $_SESSION['id'];
 
+$statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+$statement->bindValue(':student_id', $_SESSION['student_id']);
+$statement->execute();
+$student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
+$student_id = $_SESSION['student_id'];
+
 // Initialize $session_id to null
 $session_id = null;
 
 if ($examId !== null) {
     // Query the session_id based on the exam_id
-    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id');
+    $sessionQuery = $pdo->prepare('SELECT session_id FROM exam_take WHERE exam_id = :exam_id AND student_id = :student_id');
     $sessionQuery->bindValue(':exam_id', $examId);
+	$sessionQuery->bindValue(':student_id', $student_id);
     $sessionQuery->execute();
     $sessionData = $sessionQuery->fetch(PDO::FETCH_ASSOC);
 
@@ -103,6 +110,9 @@ $total_score = $scores['multipleChoiceScore'] + $scores['identificationScore'] +
         $statement->bindValue(':yearl', $yearlevel);
         $statement->bindValue(':session_id', $session_id);
         $statement->execute();
+
+        $_SESSION["fixmatching_type"] = [];
+        $_SESSION["start_number_matching"] = 0;
     }
     header('Location:view_exam_results.php');
 }
