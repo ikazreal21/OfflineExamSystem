@@ -4,6 +4,9 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
+$search1 = $_GET['search1'] ?? 'multiplechoice';
+$search2 = $_GET['search2'] ?? '';
+
 if (!empty($_GET['status'])) {
     switch ($_GET['status']) {
         case 'succ':
@@ -22,9 +25,21 @@ if (!empty($_GET['status'])) {
     }
 }
 
-$search = $_GET['search1'] ?? 'multiplechoice';
+$statement = $pdo->prepare('SELECT s.*, (select count(*) from enrolled_student e where e.subject_id = s.rnd_id) as number_of_stud,
+(select count(*) from prof_subjects p where p.subject_id = s.rnd_id) as number_of_prof FROM subject s');
+$statement->execute();
+$subject = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$statement = $pdo->prepare("SELECT * FROM $search");
+// echo '<pre>';
+// var_dump($subject);
+// echo '<pre>';
+
+if ($search1 && $search2) {
+    $statement = $pdo->prepare("SELECT * FROM $search1 WHERE subject = :subject_name");
+    $statement->bindValue(':subject_name', $search2);
+} else {
+    $statement = $pdo->prepare("SELECT * FROM $search1");
+}
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -165,30 +180,39 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <div class="row">
                                                     <div class="col-md-2">
                                                         <select name="search1" class="form-control" style="font-size: medium;">
-                                                            <?php if ($search == 'multiplechoice'): ?>
+                                                            <?php if ($search1 == 'multiplechoice'): ?>
                                                             <option value="multiplechoice" selected>Multiple Choice</option>
                                                             <option value="identification">Identification</option>
                                                             <option value="trueorfalse">True or False</option>
                                                             <option value="matchingtype">Matching Type</option>
                                                             <?php endif;?>
-                                                            <?php if ($search == 'identification'): ?>
+                                                            <?php if ($search1 == 'identification'): ?>
                                                             <option value="multiplechoice">Multiple Choice</option>
                                                             <option value="identification" selected>Identification</option>
                                                             <option value="trueorfalse">True or False</option>
                                                             <option value="matchingtype">Matching Type</option>
                                                             <?php endif;?>
-                                                            <?php if ($search == 'trueorfalse'): ?>
+                                                            <?php if ($search1 == 'trueorfalse'): ?>
                                                             <option value="multiplechoice">Multiple Choice</option>
                                                             <option value="identification">Identification</option>
                                                             <option value="trueorfalse" selected>True or False</option>
                                                             <option value="matchingtype">Matching Type</option>
                                                             <?php endif;?>
-                                                            <?php if ($search == 'matchingtype'): ?>
-                                                            <option value="multiplechoice">Multiple Choice</option>
-                                                            <option value="identification">Identification</option>
-                                                            <option value="trueorfalse">True or False</option>
-                                                            <option value="matchingtype" selected>Matching Type</option>
-                                                            <?php endif;?>
+                                                            <?php if ($search1 == 'matchingtype'): ?>
+                                                                <option value="multiplechoice">Multiple Choice</option>
+                                                                <option value="identification">Identification</option>
+                                                                <option value="trueorfalse">True or False</option>
+                                                                <option value="matchingtype" selected>Matching Type</option>
+                                                                <?php endif;?>
+                                                            </select>
+                                                           
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select name="search2" class="form-control" style="font-size: medium;">
+                                                                <option selected value="">...</option>
+                                                            <?php foreach ($subject as $i => $item): ?>
+                                                                <option value="<?php echo $item['subject_name']; ?> "><?php echo $item['subject_name']; ?></option>
+                                                            <?php endforeach;?>
                                                         </select>
                                                     </div>
                                                     <button type="submit" class="btn btn-info btn-fill btn-wd" style="margin-left:5rem; margin-bottom:1rem;">Search</button>
@@ -204,7 +228,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="content table-responsive table-full-width">
                                 <table class="table table-striped">
                                     <thead>
-                                        <?php if ($search == 'multiplechoice'): ?>
+                                        <?php if ($search1 == 'multiplechoice'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Choice 1</th>
@@ -215,19 +239,19 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     	<th>Answer</th>
                                     	<th>Action</th>
                                         <?php endif;?>
-                                        <?php if ($search == 'identification'): ?>
+                                        <?php if ($search1 == 'identification'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
                                     	<th>Action</th>
                                         <?php endif;?>
-                                        <?php if ($search == 'trueorfalse'): ?>
+                                        <?php if ($search1 == 'trueorfalse'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
                                     	<th>Action</th>
                                         <?php endif;?>
-                                        <?php if ($search == 'matchingtype'): ?>
+                                        <?php if ($search1 == 'matchingtype'): ?>
                                     	<th>Subject Name</th>
                                     	<th>Question</th>
                                     	<th>Answer</th>
@@ -239,7 +263,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         <tr>
                                         	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $item['question']; ?></b></td>
-                                            <?php if ($search == 'multiplechoice'): ?>
+                                            <?php if ($search1 == 'multiplechoice'): ?>
                                                 <td style="font-size:medium;"><?php echo $item['A']; ?></td>
                                                 <td style="font-size:medium;"><?php echo $item['B']; ?></td>
                                                 <td style="font-size:medium;"><?php echo $item['C']; ?></td>
@@ -248,19 +272,19 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                             <?php endif;?>
                                             <td style="font-size:medium;"><?php echo $item['answer']; ?></td>
                                         	<td style="text-align:left;">
-                                                <?php if ($search == 'multiplechoice'): ?>
+                                                <?php if ($search1 == 'multiplechoice'): ?>
                                                     <!-- <a href="update.php?exammulti_id=<?php echo $item['exammulti_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
                                                     <a href="delete.php?exammulti_id=<?php echo $item['exammulti_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
-                                                <?php if ($search == 'identification'): ?>
+                                                <?php if ($search1 == 'identification'): ?>
                                                     <!-- <a href="update.php?examiden_id=<?php echo $item['examiden_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
                                                     <a href="delete.php?examiden_id=<?php echo $item['examiden_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
-                                                <?php if ($search == 'trueorfalse'): ?>
+                                                <?php if ($search1 == 'trueorfalse'): ?>
                                                     <!-- <a href="update.php?trueorfalse=<?php echo $item['trueorfalse']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
                                                     <a href="delete.php?trueorfalse=<?php echo $item['trueorfalse']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>
-                                                <?php if ($search == 'matchingtype'): ?>
+                                                <?php if ($search1 == 'matchingtype'): ?>
                                                     <!-- <a href="update.php?matchingtype_id=<?php echo $item['matchingtype_id']; ?>" class="btn btn-warning btn-wd">Edit Question</a> -->
                                                     <a href="delete.php?matchingtype_id=<?php echo $item['matchtype_id']; ?>" class="btn btn-danger btn-wd">Delete</a>
                                                 <?php endif;?>

@@ -5,14 +5,37 @@ require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
 
+// $faculty = $_GET['faculty'] ?? null;
+$id = $_GET['id'] ?? null;
+// $action = $_GET['action'] ?? null;
+
+
+$statement = $pdo->prepare('SELECT s.*, (select subject_name from subject e where e.rnd_id = s.subject_id) as name_of_subject FROM prof_subjects s where prof_id = :id');
+$statement->bindValue(':id', $id);
+$statement->execute();
+$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+$statement = $pdo->prepare('SELECT * FROM accounts where id = :id');
+$statement->bindValue(':id', $id);
+$statement->execute();
+$prof = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+// echo '<pre>';
+// var_dump($procdata);
+// echo '<pre>';
+
 
 ?>
+
+
+
 
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<link rel="icon" type="image/png" href="../../assets/image/logo.png">
+    <link rel="icon" type="image/png" href="../../assets/image/logo.png">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
 	<title>EXAMINATION SYSTEM - CCS</title>
@@ -50,7 +73,7 @@ require_once "../../others/function.php";
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="../questions/">
                         <p>Questions</p>
                     </a>
                 </li>
@@ -69,7 +92,7 @@ require_once "../../others/function.php";
                         <p>Reports</p>
                     </a>
                 </li>
-                <li class="active">
+                <li  class="active">
                     <a href="../user/">
                         <p>Users</p>
                     </a>
@@ -88,7 +111,7 @@ require_once "../../others/function.php";
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#"></a>
+                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -124,33 +147,44 @@ require_once "../../others/function.php";
             </div>
         </nav>
 
-
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
-                        <div class="card">
+                        <div class="card ">
                             <div class="header">
                                 <div class="header-arrangement">
-                                        <div class="right">
-                                        </div>
-                                        <div class="left">
-                                            <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
-                                        </div>
+                                    <div class="right">
+                                        <h3><b><?php echo ucfirst($prof[0]['first_name']); ?> <?php echo ucfirst($prof[0]['last_name']); ?></b></h3>
                                     </div>
-                                <h4 class="text-center">Role</h4>
-                            </div>
-                            <div class="container">
-                                <div class="content">
-                                    <form method="post">
-                                        <div class="text-center">
-                                            <a href="create.php?search1=admin" class="btn btn-info btn-fill btn-wd">Admin</a>
-                                            <a href="create.php?search1=faculty" class="btn btn-info btn-fill btn-wd">Faculty</a>
-                                            <a href="create.php?search1=student" class="btn btn-info btn-fill btn-wd">Student</a>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </form>
+                                    <div class="left">
+                                        <a href="index.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="content table-responsive table-full-width">
+                                <table class="table">
+                                    <thead>
+                                        <th>Subject ID</th>
+                                    	<th>Subject Name</th>
+                                    	<th>Action</th>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($procdata as $i => $item): ?>
+                                        <tr>
+                                        	<td style="font-size:medium;"><?php echo $item['subject_id']; ?></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['name_of_subject']; ?></b></td>
+                                        	<td style="text-align:left;">
+                                            <?php if ($item['role'] == 'main'): ?>
+                                                    <a href="edit_prof_privillage.php?id=<?php echo $item['prof_id']; ?>&subject_id=<?php echo $item['subject_id']; ?>&action=remove" class="btn btn-warning btn-wd">Remove Privilage</a>
+                                                <?php else: ?>
+                                                    <a href="edit_prof_privillage.php?id=<?php echo $item['prof_id']; ?>&subject_id=<?php echo $item['subject_id']; ?>&action=add" class="btn btn-success btn-wd">Add Privilage</a>
+                                                <?php endif ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach;?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -159,7 +193,20 @@ require_once "../../others/function.php";
         </div>
         <footer class="footer">
             <div class="container-fluid">
-
+                <nav class="pull-left">
+                    <ul>
+                        <li>
+                            <a href="">
+                               Contact
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                Support
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>

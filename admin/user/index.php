@@ -224,6 +224,9 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                                 <?php elseif ($item['status'] == 'deactivated'): ?>
                                                     <a href="activate.php?id=<?php echo $item['id']; ?>" class="btn btn-success btn-">Activate </a>
                                                 <?php endif;?>
+                                                <?php if ($item['role'] == 'faculty'): ?>
+                                                    <a href="view_priv.php?id=<?php echo $item['id']; ?>" class="btn btn-primary btn-">Privilage </a>
+                                                <?php endif;?>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>
