@@ -49,7 +49,15 @@ foreach ($procdata2 as $i => $products) {
     $procdata[] = $procdatas[0];
 
 }
+    // echo '<pre>';
+    // var_dump($procdata);
+    // echo '<pre>';
 
+array_multisort(array_column($procdata, 'last_name'), $procdata);
+
+    // echo '<pre>';
+    // var_dump($procdata);
+    // echo '<pre>';
 
 // foreach ($procdata as $i => $products) {
 //     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
@@ -215,7 +223,7 @@ foreach ($procdata2 as $i => $products) {
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo ucfirst($procdatas[0]['first_name']) . " " . ucfirst($procdatas[0]['last_name']) ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['last_name']) . ", " . ucfirst($item['first_name']) ?></b></td>
 
                                             <?php
                                              $statement = $pdo->prepare('SELECT * FROM section where section_id = :section_id');
@@ -223,8 +231,9 @@ foreach ($procdata2 as $i => $products) {
                                              $statement->execute();
                                              $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                              
-                                             $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
+                                             $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id and student_id = :student_id');
                                              $statement->bindValue(':section_id', $sec);
+                                             $statement->bindValue(':student_id', $item['student_id']);
                                              $statement->execute();
                                              $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
