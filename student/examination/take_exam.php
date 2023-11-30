@@ -183,19 +183,23 @@ if (!empty($procdata)) {
         
             if ($_SESSION['multi_number']['start_number_multiple'] != $allTotals['multiplechoice']) {
                 header("Location: multipleChoice.php");
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
             } else if ($_SESSION['idents_number']['start_number_identification'] != $allTotals['identification']) {
                 $_SESSION["current_type"] = "identification";
                 header("location:index.php?type=" . $_SESSION["current_type"]);
                 // header("Location: identification.php");
             } else if ($_SESSION['matching_number']['start_number_matching'] != $allTotals['matching'] ) {
                 $_SESSION["current_type"] = "matchingtype";
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
                 header("location:index.php?type=" . $_SESSION["current_type"]);
                 // header("Location: matchingType.php");
             } else if ($_SESSION['tor_number']['start_number_tor'] != $allTotals['trueorfalse']) {
                 $_SESSION["current_type"] = "trueorfalse";
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
                 header("location:index.php?type=" . $_SESSION["current_type"]);
             } else {
                 // $_SESSION['message'] = 'You already took this exam';
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
                 header("Location: finish.php");
             }
             

@@ -66,6 +66,11 @@ if ($examId !== null) {
     }
 }
 
+$inactive_session = $pdo->prepare('UPDATE exam_session SET inactive_window = :inactive_window WHERE session_id = :session_id');
+$inactive_session->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
+$inactive_session->bindValue(':session_id', $session_id);
+$inactive_session->execute();
+
 // Retrieve the start_number_multiple from the database
 $getStartNumberQuery = $pdo->prepare('SELECT start_number_multiple FROM exam_session WHERE session_id = :session_id');
 $getStartNumberQuery->bindValue(':session_id', $session_id);
@@ -76,6 +81,8 @@ $start_number_multiple = ($row !== false) ? (int) $row['start_number_multiple'] 
 $_SESSION['start_number_multiple'] = $start_number_multiple;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
+
     $timeRemainingQuery = $pdo->prepare('SELECT time_remaining FROM exam_session WHERE session_id = :session_id');
     $timeRemainingQuery->bindValue(':session_id', $session_id);
     $timeRemainingQuery->execute();
@@ -101,8 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Update the score in the database
     $newScore = $_SESSION["exam_taken"]["score"];
-    $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET multipleChoiceScore = :new_score WHERE session_id = :session_id');
+    $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET multipleChoiceScore = :new_score, inactive_window = :inactive_window WHERE session_id = :session_id');
     $updateScoreQuery->bindValue(':new_score', $newScore);
+    $updateScoreQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
     $updateScoreQuery->bindValue(':session_id', $session_id);
     $updateScoreQuery->execute();
 
@@ -165,6 +173,19 @@ checkRemainingTime($pdo, $session_id);
 <body>
 
 <div class="wrapper">
+    <script>
+        document.addEventListener("visibilitychange", (event) => {
+        if (document.visibilityState == "visible") {
+            // console.log("tab is active")
+        } else {
+            console.log("tab")
+            console.log(<?php $_SESSION["inactive_tab"]?>)
+            <?php
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"]  + 1;
+            ?>
+        }
+        });
+    </script>
     <div class="sidebar" data-background-color="white" data-active-color="success">
     	<div class="sidebar-wrapper">
             <div class="logo">

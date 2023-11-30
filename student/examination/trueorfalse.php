@@ -125,6 +125,8 @@ $_SESSION['start_number_tor'] = $start_number_tor;
 
 // Check if the user has submitted an identification answer
 if (isset($_POST['exam'])) {
+    $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
+
     $userAnswer = strtolower($_POST['answer']);
     $correctAnswer = strtolower($_SESSION["identification"][$_SESSION["start_number_identification"]]["answer"]);
     if (strtolower($_POST['radio']) == strtolower($_SESSION["trueorfalse"][$_SESSION["start_number_tor"]]["answer"])) {
@@ -149,10 +151,16 @@ if (isset($_POST['exam'])) {
         $_SESSION["exam_taken"]["end_time"] = $end_time;
     }
 
+    $inactive_session = $pdo->prepare('UPDATE exam_session SET inactive_window = :inactive_window WHERE session_id = :session_id');
+    $inactive_session->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
+    $inactive_session->bindValue(':session_id', $session_id);
+    $inactive_session->execute();
+
     // Update the score in the database
     $newScore = $_SESSION["exam_taken"]["score"]['tor'];
-    $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET trueOrFalseScore = :new_score WHERE session_id = :session_id');
+    $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET trueOrFalseScore = :new_score, inactive_window = :inactive_window WHERE session_id = :session_id');
     $updateScoreQuery->bindValue(':new_score', $newScore);
+    $updateScoreQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
     $updateScoreQuery->bindValue(':session_id', $session_id);
     $updateScoreQuery->execute();
 
@@ -160,8 +168,9 @@ if (isset($_POST['exam'])) {
         $start_number_tor = $start_number_tor + 1;
 
         // var_dump('After start_number_tor update', $start_number_tor); // Debug line
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_tor = :start_number_tor WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_tor = :start_number_tor, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_tor', $start_number_tor, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         $_SESSION["current_type"] = "trueorfalse";
@@ -170,11 +179,13 @@ if (isset($_POST['exam'])) {
     } else {
         $start_number_tor = $start_number_tor + 1;
         // var_dump('After start_number_tor update', $start_number_tor); // Debug line
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_tor = :start_number_tor WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_tor = :start_number_tor, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_tor', $start_number_tor, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         // The user has completed the tor section
+        $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
         header("location: take_exam.php?id=${examId}");
     }
 }

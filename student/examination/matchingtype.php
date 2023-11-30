@@ -112,12 +112,18 @@ $start_number_matching = ($row !== false) ? (int) $row['start_number_matching'] 
 $_SESSION["start_number_matching"] = $start_number_matching;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
+
     // Get the submitted answer from the form
     $userAnswer = strtolower($_POST['answer']);
     $correctAnswer = strtolower($_SESSION["matchingtype"][$_SESSION["start_number_matching"]]["answer"]);
 
 
     // $_SESSION["exam_taken"]["score"]['matching'] = (int) $_SESSION["exam_taken"]["score"]['matching'];
+    $inactive_session = $pdo->prepare('UPDATE exam_session SET inactive_window = :inactive_window WHERE session_id = :session_id');
+    $inactive_session->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
+    $inactive_session->bindValue(':session_id', $session_id);
+    $inactive_session->execute();
 
     // Check if the submitted answer is correct
     if ($userAnswer == $correctAnswer) {
@@ -125,8 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Update the score in the database
         $newScore =  $_SESSION["exam_taken"]["score"]['matching'];
-        $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET matchingTypeScore = :new_score WHERE session_id = :session_id');
+        $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET matchingTypeScore = :new_score, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateScoreQuery->bindValue(':new_score', $newScore);
+        $updateScoreQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateScoreQuery->bindValue(':session_id', $session_id);
         $updateScoreQuery->execute();
     }
@@ -142,16 +149,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($start_number_matching < $_SESSION["current_exam_number"] - 1) {
         $start_number_matching = $start_number_matching + 1;
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_matching = :start_number_matching WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_matching = :start_number_matching, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_matching', $start_number_matching, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         // $_SESSION["current_type"] = "matchingtype";
         header("location: matchingtype.php");
     } else {
         $start_number_matching = $start_number_matching + 1;
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_matching = :start_number_matching WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_matching = :start_number_matching, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_matching', $start_number_matching, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         // $_SESSION["current_type"] = "trueorfalse";
@@ -193,6 +202,18 @@ checkRemainingTime($pdo, $session_id);
 <body>
 
 <div class="wrapper">
+    <script>
+        document.addEventListener("visibilitychange", (event) => {
+        if (document.visibilityState == "visible") {
+            // console.log("tab is active")
+        } else {
+            console.log(<?php $_SESSION["inactive_tab"]?>)
+            <?php
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"]  + 1;
+            ?>
+        }
+        });
+    </script>
     <div class="sidebar" data-background-color="white" data-active-color="success">
     	<div class="sidebar-wrapper">
             <div class="logo">

@@ -69,6 +69,11 @@ $getStartNumberQuery->bindValue(':session_id', $session_id);
 $getStartNumberQuery->execute();
 $row = $getStartNumberQuery->fetch(PDO::FETCH_ASSOC);
 
+$inactive_session = $pdo->prepare('UPDATE exam_session SET inactive_window = :inactive_window WHERE session_id = :session_id');
+$inactive_session->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
+$inactive_session->bindValue(':session_id', $session_id);
+$inactive_session->execute();
+
 $start_number_identification = ($row !== false) ? (int) $row['start_number_identification'] : 0;
 $_SESSION['start_number_identification'] = $start_number_identification;
 
@@ -80,6 +85,8 @@ $_SESSION['multi_number_final'] = $scoreMultipleFinal;
 
 // Check if the user has submitted an identification answer
 if (isset($_POST['exam'])) {
+    $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"] - 1;
+
     $userAnswer = strtolower($_POST['answer']);
     $correctAnswer = strtolower($_SESSION["identification"][$_SESSION["start_number_identification"]]["answer"]);
 
@@ -87,24 +94,27 @@ if (isset($_POST['exam'])) {
         $_SESSION["exam_taken"]["score"]['identification']++;
         // Update the score in the database
         $newScore = $_SESSION["exam_taken"]["score"]['identification'];
-        $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET identificationScore = :new_score WHERE session_id = :session_id');
+        $updateScoreQuery = $pdo->prepare('UPDATE exam_session SET identificationScore = :new_score, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateScoreQuery->bindValue(':new_score', $newScore);
+        $updateScoreQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateScoreQuery->bindValue(':session_id', $session_id);
         $updateScoreQuery->execute();
     }
     
     if ($start_number_identification < $_SESSION["current_exam_number"] - 1) {
         $start_number_identification = $start_number_identification + 1;
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_identification = :start_number_identification WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_identification = :start_number_identification, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_identification', $start_number_identification, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         // $_SESSION["current_type"] = "identification";
         header("location: identification.php");
     } else {
         $start_number_identification = $start_number_identification + 1;
-        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_identification = :start_number_identification WHERE session_id = :session_id');
+        $updateStartNumberQuery = $pdo->prepare('UPDATE exam_session SET start_number_identification = :start_number_identification, inactive_window = :inactive_window WHERE session_id = :session_id');
         $updateStartNumberQuery->bindValue(':start_number_identification', $start_number_identification, PDO::PARAM_INT);
+        $updateStartNumberQuery->bindValue(':inactive_window', $_SESSION["inactive_tab"]);
         $updateStartNumberQuery->bindValue(':session_id', $session_id);
         $updateStartNumberQuery->execute();
         header("location: take_exam.php?id=${examId}");
@@ -140,6 +150,18 @@ checkRemainingTime($pdo, $session_id);
 <body>
 
 <div class="wrapper">
+    <script>
+        document.addEventListener("visibilitychange", (event) => {
+        if (document.visibilityState == "visible") {
+            // console.log("tab is active")
+        } else {
+            console.log(<?php $_SESSION["inactive_tab"]?>)
+            <?php
+                $_SESSION["inactive_tab"] = $_SESSION["inactive_tab"]  + 1;
+            ?>
+        }
+        });
+    </script>
     <div class="sidebar" data-background-color="white" data-active-color="success">
     	<div class="sidebar-wrapper">
             <div class="logo">

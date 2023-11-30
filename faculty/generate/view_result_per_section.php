@@ -221,6 +221,7 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                                     	<th>Number of Items</th>
                                     	<th>Score</th>
                                     	<th>Percentage Score</th>
+                                    	<th>Inactive Tab</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
@@ -252,6 +253,11 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                                         	<td style="font-size:medium;"><b><?php echo $procdata1[0]['out_of']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $procdata1[0]['score']; ?></b></td>
                                         	<td style="font-size:medium;"><b><?php echo $procdata1[0]['score']/$procdata1[0]['out_of']*100; ?>%</b></td>
+                                                <?php if ($procdata1[0]["inactive_window"]  < 0): ?>
+                                                    <td style="font-size:medium;"><b>0 Tabs Inactive</b></td>
+                                                <?php else: ?>
+                                                    <td style="font-size:medium;"><b><?php echo $procdata1[0]['inactive_window']?> Tabs Inactive</b></td>
+                                                <?php endif; ?>
                                             <?php else: ?>
                                             <td style="font-size:medium;"><b>~</b></td>
                                         	<td style="font-size:medium;"><b>~</b></td>
@@ -259,6 +265,7 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                                         	<td style="font-size:medium;"><b>~</b></td>
                                         	<td style="font-size:medium;"><b>~</b></td>
                                         	<td style="font-size:medium;"><b>~%</b></td>
+                                        	<td style="font-size:medium;"><b>~</b></td>
                                             <?php endif; ?>
                                         </tr>
                                         <?php endforeach;?>

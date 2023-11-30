@@ -36,7 +36,7 @@ $student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
 $exam_id = $_SESSION['taken_exam']['exam_id'];
 var_dump($exam_id);
 $student_id = $_SESSION['student_id'];
-$student_name = ucfirst($_SESSION['last_name']) . " " . ucfirst($_SESSION['first_name']);
+$student_name = ucfirst($_SESSION['last_name']) . ", " . ucfirst($_SESSION['first_name']);
 $subject = $_SESSION['taken_exam']['subject'];
 $subject_id = $_SESSION['taken_exam']['subject_id'];
 $section_name = $_SESSION['taken_exam']['section_name'];
@@ -47,7 +47,7 @@ $yearlevel = $student_details[0]['yearlevel'];
 
 if (empty($errors)) {
 // Query the multipleChoiceScore, identificationScore, matchingTypeScore, and trueOrFalseScore
-$query = $pdo->prepare('SELECT multipleChoiceScore, identificationScore, matchingTypeScore, trueOrFalseScore FROM exam_session WHERE session_id = :session_id');
+$query = $pdo->prepare('SELECT multipleChoiceScore, identificationScore, matchingTypeScore, trueOrFalseScore, inactive_window FROM exam_session WHERE session_id = :session_id');
 $query->bindValue(':session_id', $session_id);
 $query->execute();
 $scores = $query->fetch(PDO::FETCH_ASSOC);
@@ -94,8 +94,8 @@ $total_score = $scores['multipleChoiceScore'] + $scores['identificationScore'] +
         $deleteExistingStatement->bindValue(':session_id', $session_id);
         $deleteExistingStatement->execute();
         // No record with the same attributes exists; insert a new record
-        $statement = $pdo->prepare("INSERT INTO exam_take (exam_id, student_name, student_id, subject, subject_id, section_name, section_id, grading_per, score, out_of, yearl, session_id) 
-        VALUES (:exam_id, :student_name, :student_id, :subject, :subject_id, :section_name, :section_id, :grading_per, :score, :out_of, :yearl, :session_id)");
+        $statement = $pdo->prepare("INSERT INTO exam_take (exam_id, student_name, student_id, subject, subject_id, section_name, section_id, grading_per, score, out_of, yearl, session_id, inactive_window) 
+        VALUES (:exam_id, :student_name, :student_id, :subject, :subject_id, :section_name, :section_id, :grading_per, :score, :out_of, :yearl, :session_id, :inactive_window)");
 
         $statement->bindValue(':exam_id', $exam_id);
         $statement->bindValue(':student_name', $student_name);
@@ -109,10 +109,12 @@ $total_score = $scores['multipleChoiceScore'] + $scores['identificationScore'] +
         $statement->bindValue(':out_of', $out_of);
         $statement->bindValue(':yearl', $yearlevel);
         $statement->bindValue(':session_id', $session_id);
+        $statement->bindValue(':inactive_window', $scores['inactive_window']);
         $statement->execute();
 
         $_SESSION["fixmatching_type"] = [];
         $_SESSION["start_number_matching"] = 0;
+        $_SESSION["inactive_tab"] = 0;
     }
     header('Location:view_exam_results.php');
 }
