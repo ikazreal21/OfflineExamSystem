@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2023 at 08:50 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Nov 30, 2023 at 10:17 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -70,12 +70,12 @@ CREATE TABLE `enrolled_student` (
 --
 
 INSERT INTO `enrolled_student` (`enrolled_id`, `student_id`, `subject_id`, `section_id`) VALUES
-(152, '15645', 'UEAU1KCA', '12'),
 (153, '1236', 'UEAU1KCA', '12'),
 (154, '6123', 'UEAU1KCA', '12'),
 (158, '15645', 'ZN0DL704', '14'),
 (159, '1236', 'ZN0DL704', '14'),
-(160, '6123', 'ZN0DL704', '14');
+(160, '6123', 'ZN0DL704', '14'),
+(161, '15645', 'UEAU1KCA', '12');
 
 -- --------------------------------------------------------
 
@@ -128,19 +128,23 @@ CREATE TABLE `exam_session` (
   `start_number_identification` int(11) DEFAULT 0,
   `start_number_matching` int(11) DEFAULT 0,
   `start_number_tor` int(11) DEFAULT 0,
-  `student_id` varchar(255) NOT NULL
+  `student_id` varchar(255) NOT NULL,
+  `inactive_window` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `exam_session`
 --
 
-INSERT INTO `exam_session` (`session_id`, `time_remaining`, `multipleChoiceScore`, `identificationScore`, `matchingTypeScore`, `trueOrFalseScore`, `start_number_multiple`, `start_number_identification`, `start_number_matching`, `start_number_tor`, `student_id`) VALUES
-('6559b312a043c', 3586, 2, NULL, 1, 1, 3, 3, 3, 3, '15645'),
-('6559b33066ad6', 3585, 0, NULL, 0, NULL, 2, 2, 2, 2, '15645'),
-('6559b36fa1530', 3591, 0, NULL, 0, 2, 2, 2, 2, 2, '6123'),
-('6559b37d7f857', 3342, 2, 2, 2, 2, 3, 3, 3, 3, '6123'),
-('6559b600d7a25', 1501, 1, NULL, 1, NULL, 3, 3, 1, 0, '1236');
+INSERT INTO `exam_session` (`session_id`, `time_remaining`, `multipleChoiceScore`, `identificationScore`, `matchingTypeScore`, `trueOrFalseScore`, `start_number_multiple`, `start_number_identification`, `start_number_matching`, `start_number_tor`, `student_id`, `inactive_window`) VALUES
+('6568f812b4318', 1830, 1, NULL, 1, 1, 2, 2, 2, 2, '15645', '10'),
+('6568f842c7c82', 1787, 1, NULL, 0, 3, 3, 3, 3, 3, '15645', '15'),
+('6568f8ca483f5', 1657, 0, NULL, 0, 2, 2, 2, 2, 2, '15645', '2'),
+('6568f95174b00', 1512, 1, NULL, 3, 1, 3, 3, 3, 3, '15645', '-1'),
+('6568f9bb3afe7', 1419, 1, NULL, 0, 1, 2, 2, 2, 2, '15645', '2'),
+('6568f9e4bb40f', 1367, 0, NULL, 1, 1, 3, 3, 3, 3, '15645', '1'),
+('6568fa1a0923c', 1325, 1, NULL, 0, 1, 2, 2, 2, 2, '15645', '-1'),
+('6568fa345abb9', 1283, 0, NULL, 1, 1, 3, 3, 3, 3, '15645', '0');
 
 -- --------------------------------------------------------
 
@@ -161,19 +165,17 @@ CREATE TABLE `exam_take` (
   `score` int(32) DEFAULT NULL,
   `out_of` int(255) NOT NULL,
   `yearl` varchar(32) DEFAULT NULL,
-  `session_id` varchar(255) DEFAULT NULL
+  `session_id` varchar(255) DEFAULT NULL,
+  `inactive_window` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `exam_take`
 --
 
-INSERT INTO `exam_take` (`examtake_id`, `exam_id`, `student_name`, `student_id`, `subject`, `subject_id`, `section_name`, `section_id`, `grading_per`, `score`, `out_of`, `yearl`, `session_id`) VALUES
-(380, 47, 'Stud One', '15645', 'PCAS111', 'ZN0DL704', 'Y-2', '14', 'Finals', 4, 12, '2nd', '6559b312a043c'),
-(382, 46, 'Stud One', '15645', 'DSAA211', 'UEAU1KCA', 'Y-3', '12', 'Prelim', 0, 8, '2nd', '6559b33066ad6'),
-(384, 46, 'Stud Three', '6123', 'DSAA211', 'UEAU1KCA', 'Y-3', '12', 'Prelim', 2, 8, '1st', '6559b36fa1530'),
-(386, 47, 'Stud Three', '6123', 'PCAS111', 'ZN0DL704', 'Y-2', '14', 'Finals', 8, 12, '1st', '6559b37d7f857'),
-(389, 47, '', '1236', '', '', '', '', '', NULL, 0, NULL, '6559b600d7a25');
+INSERT INTO `exam_take` (`examtake_id`, `exam_id`, `student_name`, `student_id`, `subject`, `subject_id`, `section_name`, `section_id`, `grading_per`, `score`, `out_of`, `yearl`, `session_id`, `inactive_window`) VALUES
+(411, 46, 'One Stud', '15645', 'DSAA211', 'UEAU1KCA', 'Y-3', '12', 'Prelim', 2, 8, '2nd', '6568fa1a0923c', '-1'),
+(413, 47, 'One Stud', '15645', 'PCAS111', 'ZN0DL704', 'Y-2', '14', 'Finals', 2, 12, '2nd', '6568fa345abb9', '0');
 
 -- --------------------------------------------------------
 
@@ -486,7 +488,7 @@ ALTER TABLE `accounts`
 -- AUTO_INCREMENT for table `enrolled_student`
 --
 ALTER TABLE `enrolled_student`
-  MODIFY `enrolled_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `enrolled_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 
 --
 -- AUTO_INCREMENT for table `examcreated`
@@ -498,7 +500,7 @@ ALTER TABLE `examcreated`
 -- AUTO_INCREMENT for table `exam_take`
 --
 ALTER TABLE `exam_take`
-  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=390;
+  MODIFY `examtake_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=414;
 
 --
 -- AUTO_INCREMENT for table `identification`
