@@ -36,7 +36,7 @@ $student_details = $statement->fetchAll(PDO::FETCH_ASSOC);
 $exam_id = $_SESSION['taken_exam']['exam_id'];
 var_dump($exam_id);
 $student_id = $_SESSION['student_id'];
-$student_name = ucfirst($_SESSION['first_name']) . " " . ucfirst($_SESSION['last_name']);
+$student_name = ucfirst($_SESSION['last_name']) . " " . ucfirst($_SESSION['first_name']);
 $subject = $_SESSION['taken_exam']['subject'];
 $subject_id = $_SESSION['taken_exam']['subject_id'];
 $section_name = $_SESSION['taken_exam']['section_name'];

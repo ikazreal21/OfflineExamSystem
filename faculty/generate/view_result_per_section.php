@@ -10,6 +10,7 @@ if ($_SESSION["usertype"] != "faculty") {
 
 $sec = $_GET['id'] ?? '';
 $rnd_id = $_GET['rnd_id'] ?? '';
+$grading = $_GET['grade_per'] ?? '';
 
 $available_exam = [];
 
@@ -18,8 +19,9 @@ $statement->bindValue(':section_id', $sec);
 $statement->execute();
 $section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id');
+$statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id and grading_per = :grade_per');
 $statement->bindValue(':section_id', $sec);
+$statement->bindValue(':grade_per', $grading);
 $statement->execute();
 $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -30,7 +32,7 @@ $statement->execute();
 $procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 // echo '<pre>';
-// var_dump($procdata2);
+// var_dump($procdata1);
 // echo '<pre>';
 
 
@@ -203,9 +205,9 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                                     </div>
                                     <div class="left">
                                         <?php if ($procdata1): ?>
-                                        <a href="download.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>" class="btn btn-info btn-fill btn-wd">Export Data</a>
+                                        <a href="download.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>&grade_per=<?php echo $grading; ?>" class="btn btn-info btn-fill btn-wd">Export Data</a>
                                         <?php endif; ?>
-                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        <a href="list.php?id=<?php echo $rnd_id; ?>" class="btn btn-info btn-fill btn-wd">Back</a>
                                     </div>
                                 </div>
                             </div>
@@ -231,9 +233,10 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                                              $statement->execute();
                                              $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                              
-                                             $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id and student_id = :student_id');
+                                             $statement = $pdo->prepare('SELECT s.*, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name FROM exam_take s where section_id = :section_id and student_id = :student_id and grading_per = :grade_per');
                                              $statement->bindValue(':section_id', $sec);
                                              $statement->bindValue(':student_id', $item['student_id']);
+                                             $statement->bindValue(':grade_per', $grading);
                                              $statement->execute();
                                              $procdata1 = $statement->fetchAll(PDO::FETCH_ASSOC);
 

@@ -4,23 +4,13 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$id = $_GET['id'] ?? '';
+$sec = $_GET['id'] ?? '';
+$rnd_id = $_GET['rnd_id'] ?? '';
 
-if (!$id) {
+if (!$sec && !$rnd_id) {
     header('Location: index.php');
     exit;
 }
-
-$statement = $pdo->prepare('SELECT * from subject where rnd_id = :id');
-$statement->bindValue(':id', $id);
-$statement->execute();
-$procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$statement = $pdo->prepare('SELECT  s.*, (select count(*) from enrolled_student e where e.subject_id = s.subject_id and e.section_id = s.section_id) as number_of_stud from section s where subject_id = :id and prof_id = :prof_id');
-$statement->bindValue(':id', $id);
-$statement->bindValue(':prof_id', $_SESSION['id']);
-$statement->execute();
-$section = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -59,7 +49,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <?php echo ucfirst($_SESSION["first_name"]); ?>
+                    <?php echo ucfirst($_SESSION["first_name"]); ?> Dashboard
                 </a>
             </div>
 
@@ -103,12 +93,12 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <span class="icon-bar bar2"></span>
                         <span class="icon-bar bar3"></span>
                     </button>
-                    <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a>
+                    <!-- <a class="navbar-brand" href="#">EXAMINATION SYSTEM - CCS</a> -->
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="../profile.php">
+                            <a href="profile.php">
                                 <i class="ti-panel"></i>
 								<p>Profile</p>
                             </a>
@@ -129,7 +119,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                               </ul>
                         </li> -->
 						<li>
-                            <a href="../../logout">
+                            <a href="../../logout.php">
 								<p>Logout</p>
                             </a>
                         </li>
@@ -139,43 +129,35 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </nav>
 
+
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="">
-                        <div class="card ">
+                        <div class="card">
                             <div class="header">
-                                <div class="header-arrangement">
-                                    <div class="right">
-                                        <h3><?php echo $procdata[0]['subject_name']; ?></h3>
+                                <div class="header">
+                                    <div class="header-arrangement">
+                                        <div class="right">
+                                        </div>
+                                        <div class="left">
+                                            <a href="list.php?id=<?php echo $rnd_id; ?>" class="btn btn-info btn-fill btn-wd">Back</a>
+                                        </div>
                                     </div>
-                                    <div class="left">
-                                        <!-- <a href="create_section.php?id=<?php echo $id; ?>" class="btn btn-info btn-fill btn-wd">Create Section</a> -->
-                                        <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
-                                    </div>
+                                    <h4 class="text-center">Grading</h4>
                                 </div>
                             </div>
-                            <div class="content table-responsive table-full-width">
-                                <table class="table">
-                                    <thead>
-                                    	<th>Section Name</th>
-                                    	<th>Number of Student</th>
-                                    	<th>Professor's Name</th>
-                                    	<th>Action</th>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($section as $i => $item): ?>
-                                        <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
-                                        	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
-                                        	<td style="text-align:left">
-                                                <a href="view_result_per_grading.php?id=<?php echo $item["section_id"] ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Exam Results</a>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
+                            <div class="container">
+                                <div class="content">
+                                    <form method="post">
+                                        <div class="text-center">
+                                            <a href="view_result_per_section.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>&grade_per=Prelim" class="btn btn-info btn-fill btn-wd">Prelim</a>
+                                            <a href="view_result_per_section.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>&grade_per=Midterm" class="btn btn-info btn-fill btn-wd">Midterm</a>
+                                            <a href="view_result_per_section.php?id=<?php echo $sec; ?>&rnd_id=<?php echo $rnd_id; ?>&grade_per=Finals" class="btn btn-info btn-fill btn-wd">Finals</a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -184,7 +166,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <footer class="footer">
             <div class="container-fluid">
-
+                <!-- -->
                 <div class="copyright pull-right">
                     &copy; <script>document.write(new Date().getFullYear())</script>
                 </div>
