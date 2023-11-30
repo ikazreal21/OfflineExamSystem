@@ -7,7 +7,7 @@ require_once "../../others/function.php";
 
 $sec = $_GET['id'] ?? '';
 $rnd_id = $_GET['rnd_id'] ?? '';
-$grading = $_GET['grade_per'] ?? '';
+$grading = $_GET['grade_per'] ?? ''; 
 
 $statement = $pdo->prepare('SELECT s.student_name, s.subject, s.section_name, (select e.prof_name from section e where e.section_id = s.section_id) as prof_name, s.out_of, s.score FROM exam_take s where section_id = :section_id and grading_per = :grade_per order by s.student_name');
 $statement->bindValue(':section_id', $sec);
