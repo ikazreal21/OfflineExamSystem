@@ -277,7 +277,7 @@ checkRemainingTime($pdo, $session_id);
                                         <h4><?php echo ucfirst($_SESSION["taken_exam"]["subject"]); ?></h4>
                                     </div>
                                     <div class="left">
-                                    <p>Question: <?php echo  $start_number_multiple ; ?> Of <?php echo $_SESSION["totalss"] ; ?> </p>
+                                    <p>Question: <?php echo  $start_number_multiple + 1; ?> Of <?php echo $_SESSION["totalss"] ; ?> </p>
                                         <p id='response'></p>   
                                         <script type="text/javascript">
                                             function updateCountdown() {

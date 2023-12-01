@@ -306,7 +306,7 @@ checkRemainingTime($pdo, $session_id);
                                     </div>
                                     <div class="left">
                                     <p>Question <?php
-                                    $questionNumber = $start_number_matching +
+                                    $questionNumber = $start_number_matching + 1 + 
                                                     ($_SESSION['multi_numbers_final']['start_number_multiple'] ?? 0) +
                                                     ($_SESSION['idents_number_final']['start_number_identification'] ?? 0);
 

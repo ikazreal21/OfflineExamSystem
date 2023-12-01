@@ -4,7 +4,7 @@ session_start();
 require_once "../../dbconnect.php";
 require_once "../../others/function.php";
 
-$search1 = $_GET['search1'] ?? 'multiplechoice';
+$search1 = $_GET['search1'] ?? '';
 $search2 = $_GET['search2'] ?? '';
 
 if (!empty($_GET['status'])) {
@@ -42,6 +42,9 @@ if ($search1 && $search2) {
 }
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+$_SESSION['delete_question'] = $procdata;
 
 // echo '<pre>';
 // var_dump($_GET['search1']);
@@ -222,7 +225,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                     <div class="left">
                                         <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Subjects</a>
-                                        <a href="mark_delete.php?search1=<?php echo $search1; ?>&search2=<?php echo $search2; ?>" class="btn btn-danger btn-fill btn-wd">Delete Question</a>
+                                        <a href="bulk_delete.php?search1=<?php echo $search1; ?>&search2=<?php echo $search2; ?>" onclick="return confirm('Are you sure you want to Delete this Questions?')" class="btn btn-warning btn-fill btn-wd">Confirm Delete</a>
                                     </div>
                                 </div>
                             </div>
