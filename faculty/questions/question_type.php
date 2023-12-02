@@ -49,6 +49,7 @@ $rnd_id = $_GET['id'] ?? '';
                         <p>Main Menu</p>
                     </a>
                 </li>
+                <?php if ($_SESSION["prof_role"] == 'main'): ?>
                 <li class="active">
                     <a href="../questions/">
                         <p>Questions</p>
@@ -59,6 +60,7 @@ $rnd_id = $_GET['id'] ?? '';
                         <p>Exam</p>
                     </a>
                 </li>
+                <?php endif;?>
                 <li >
                     <a href="../subjects/">
                         <p>Subjects</p>

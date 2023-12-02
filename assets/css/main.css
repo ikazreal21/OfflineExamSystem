@@ -2289,7 +2289,7 @@ a.btn.disabled, fieldset[disabled] a.btn {
 }
 .btn-info {
     color: #fff;
-    background-color: #5bc0de;
+    background-color: #893d3d;
     border-color: #46b8da;
 }
 .btn-info.focus, .btn-info:focus {
@@ -2316,11 +2316,11 @@ a.btn.disabled, fieldset[disabled] a.btn {
     background-image: none;
 }
 .btn-info.disabled, .btn-info.disabled.active, .btn-info.disabled.focus, .btn-info.disabled:active, .btn-info.disabled:focus, .btn-info.disabled:hover, .btn-info[disabled], .btn-info[disabled].active, .btn-info[disabled].focus, .btn-info[disabled]:active, .btn-info[disabled]:focus, .btn-info[disabled]:hover, fieldset[disabled] .btn-info, fieldset[disabled] .btn-info.active, fieldset[disabled] .btn-info.focus, fieldset[disabled] .btn-info:active, fieldset[disabled] .btn-info:focus, fieldset[disabled] .btn-info:hover {
-    background-color: #5bc0de;
+    background-color: #893d3d;
     border-color: #46b8da;
 }
 .btn-info .badge {
-    color: #5bc0de;
+    color: #893d3d;
     background-color: #fff;
 }
 .btn-warning {
@@ -3331,7 +3331,7 @@ select[multiple].input-group-sm>.form-control, select[multiple].input-group-sm>.
     color: #777;
 }
 .navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
-    color: #5e5e5e;
+    color: black;
     background-color: transparent;
 }
 .navbar-default .navbar-text {
@@ -3631,7 +3631,7 @@ a.label:focus, a.label:hover {
     background-color: #777;
 }
 .label-default[href]:focus, .label-default[href]:hover {
-    background-color: #5e5e5e;
+    background-color: black;
 }
 .label-primary {
     background-color: #337ab7;
@@ -3646,7 +3646,7 @@ a.label:focus, a.label:hover {
     background-color: #449d44;
 }
 .label-info {
-    background-color: #5bc0de;
+    background-color: #893d3d;
 }
 .label-info[href]:focus, .label-info[href]:hover {
     background-color: #31b0d5;
@@ -3902,7 +3902,7 @@ to {
     background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
 }
 .progress-bar-info {
-    background-color: #5bc0de;
+    background-color: #893d3d;
 }
 .progress-striped .progress-bar-info {
     background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
@@ -4879,7 +4879,7 @@ button.close {
     background-image: -o-linear-gradient(left, rgba(0, 0, 0, .5) 0, rgba(0, 0, 0, .0001) 100%);
     background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, .0001)));
     background-image: linear-gradient(to right, rgba(0, 0, 0, .5) 0, rgba(0, 0, 0, .0001) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000',  endColorstr='#00000000',  GradientType=1);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000',  endColorstr='#3B1B1B00',  GradientType=1);
     background-repeat: repeat-x;
 }
 .carousel-control.right {
@@ -4889,7 +4889,7 @@ button.close {
     background-image: -o-linear-gradient(left, rgba(0, 0, 0, .0001) 0, rgba(0, 0, 0, .5) 100%);
     background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, .0001)), to(rgba(0, 0, 0, .5)));
     background-image: linear-gradient(to right, rgba(0, 0, 0, .0001) 0, rgba(0, 0, 0, .5) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',  endColorstr='#80000000',  GradientType=1);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3B1B1B00',  endColorstr='#80000000',  GradientType=1);
     background-repeat: repeat-x;
 }
 .carousel-control:focus, .carousel-control:hover {

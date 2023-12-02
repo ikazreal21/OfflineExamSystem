@@ -122,6 +122,7 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                         <p>Main Menu</p>
                     </a>
                 </li>
+                <?php if ($_SESSION["prof_role"] == 'main'): ?>
                 <li>
                     <a href="../questions/">
                         <p>Questions</p>
@@ -132,6 +133,7 @@ array_multisort(array_column($procdata, 'last_name'), $procdata);
                         <p>Exam</p>
                     </a>
                 </li>
+                <?php endif;?>
                 <li >
                     <a href="../subjects/">
                         <p>Subjects</p>

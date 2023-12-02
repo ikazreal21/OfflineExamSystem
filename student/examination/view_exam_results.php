@@ -57,7 +57,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <ul class="nav">
-                <li class="active">
+                <li>
                     <a href="../">
                         <p>Exam</p>
                     </a>
@@ -68,6 +68,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                     </a>
                 </li>
                 <li>
+					<li class="active">
                     <a href="">
                         <p>Exam Results</p>
                     </a>

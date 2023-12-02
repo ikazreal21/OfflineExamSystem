@@ -94,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Main Menu</p>
                     </a>
                 </li>
+                <?php if ($_SESSION["prof_role"] =='main'):?>
                 <li>
                     <a href="questions/">
                         <p>Questions</p>
@@ -104,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Exam</p>
                     </a>
                 </li>
+                <?php endif;?>
                 <li>
                     <a href="subjects/">
                         <p>Subjects</p>

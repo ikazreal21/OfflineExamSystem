@@ -115,6 +115,8 @@ $total_score = $scores['multipleChoiceScore'] + $scores['identificationScore'] +
         $_SESSION["fixmatching_type"] = [];
         $_SESSION["start_number_matching"] = 0;
         $_SESSION["inactive_tab"] = 0;
+		
+		//unset($_SESSION['time_remaining']);
     }
     header('Location:view_exam_results.php');
 }

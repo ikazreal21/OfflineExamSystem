@@ -108,11 +108,13 @@ $_SESSION['delete_question'] = $procdata;
                         <p>Subject</p>
                     </a>
                 </li>
+                <!--
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
                     </a>
                 </li>
+                -->
                 <li>
                     <a href="../user/">
                         <p>Users</p>
@@ -225,7 +227,7 @@ $_SESSION['delete_question'] = $procdata;
                                     </div>
                                     <div class="left">
                                         <a href="list.php" class="btn btn-info btn-fill btn-wd">List of Subjects</a>
-                                        <a href="bulk_delete.php?search1=<?php echo $search1; ?>&search2=<?php echo $search2; ?>" onclick="return confirm('Are you sure you want to Delete this Questions?')" class="btn btn-warning btn-fill btn-wd">Confirm Delete</a>
+                                        <a href="bulk_delete.php?search1=<?php echo $search1; ?>&search2=<?php echo $search2; ?>" onclick="return confirm('Are you sure you want to delete these questions?')" class="btn btn-warning btn-fill btn-wd">Confirm Delete</a>
                                     </div>
                                 </div>
                             </div>

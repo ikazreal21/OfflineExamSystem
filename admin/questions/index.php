@@ -105,11 +105,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Subject</p>
                     </a>
                 </li>
+                <!--
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
                     </a>
                 </li>
+                -->
                 <li>
                     <a href="../user/">
                         <p>Users</p>

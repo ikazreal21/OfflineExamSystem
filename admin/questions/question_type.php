@@ -64,11 +64,13 @@ $rnd_id = $_GET['id'] ?? '';
                         <p>Subject</p>
                     </a>
                 </li>
+                <!--
                 <li>
                     <a href="../generate/">
                         <p>Reports</p>
                     </a>
                 </li>
+                -->
                 <li>
                     <a href="../user/">
                         <p>Users</p>

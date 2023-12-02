@@ -23,22 +23,35 @@ $statement->bindValue(':section_id', $sec);
 $statement->execute();
 $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$statement = $pdo->prepare('SELECT * FROM enrolled_student WHERE subject_id  = :subject_id and section_id = :section_id');
+$statement->bindValue(':section_id', $sec);
+$statement->bindValue(':subject_id', $rnd_id);
+$statement->execute();
+$procdata2 = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-// foreach ($procdata as $i => $products) {
-//     $statement = $pdo->prepare('SELECT * from examcreated where subject_id = :subject_id ');
-//     $statement->bindValue(':subject_id', $products["rnd_id"]);
-//     $statement->execute();
-//     $exam = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-//     $available_exam[] = $exam[0];
+$procdata = [];
 
-// }
+foreach ($procdata2 as $i => $products) {
+    $statement = $pdo->prepare('SELECT * FROM accounts WHERE student_id = :student_id');
+    $statement->bindValue(':student_id', $products["student_id"]);
+    $statement->execute();
+    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-// echo '<pre>';
-// var_dump($procdata);
-// echo '<pre>';
+    // echo '<pre>';
+    // var_dump($procdatas);
+    // echo '<pre>';
+
+    $procdata[] = $procdatas[0];
+
+}
+    // echo '<pre>';
+    // var_dump($procdata);
+    // echo '<pre>';
+
+array_multisort(array_column($procdata, 'last_name'), $procdata);
 
 ?>
 
@@ -87,6 +100,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Main Menu</p>
                     </a>
                 </li>
+                <?php if ($_SESSION["prof_role"] == 'main'): ?>
                 <li>
                     <a href="../questions/">
                         <p>Questions</p>
@@ -97,7 +111,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Exam</p>
                     </a>
                 </li>
-                <li  class="active">
+                <?php endif;?>
+                <li class="active">
                     <a href="../subjects/">
                         <p>Subjects</p>
                     </a>
@@ -166,7 +181,7 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                             <div class="header">
                                 <div class="header-arrangement">
                                     <div class="right">
-                                        <h4 class="title">Result of Exam | <?php echo $section[0]['section_name']; ?></h4>
+                                        <h4 class="title">List of Student | <?php echo $section[0]['section_name']; ?></h4>
                                     </div>
                                     <div class="left">
                                         <a href="list.php" class="btn btn-info btn-fill btn-wd">Back</a>
@@ -177,23 +192,13 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
                                 <table class="table table-striped">
                                     <thead>
                                     	<th>Student Name</th>
-                                    	<th>Subject Name</th>
-                                    	<th>Section Name</th>
-                                    	<th>Professor's Name</th>
-                                    	<th>Number of Items</th>
-                                    	<th>Score</th>
-                                    	<th>Percentage Score</th>
+                                    	<th>Student ID</th>
                                     </thead>
                                     <tbody>
                                         <?php foreach ($procdata as $i => $item): ?>
                                         <tr>
-                                        	<td style="font-size:medium;"><b><?php echo $item['student_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['subject']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['section_name']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['prof_name']); ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['out_of']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['score']; ?></b></td>
-                                        	<td style="font-size:medium;"><b><?php echo $item['score']/$item['out_of']*100; ?>%</b></td>
+                                        	<td style="font-size:medium;"><b><?php echo ucfirst($item['last_name']) . ", " . ucfirst($item['first_name']) ?></b></td>
+                                        	<td style="font-size:medium;"><b><?php echo $item['student_id']; ?></b></td>
                                         </tr>
                                         <?php endforeach;?>
                                     </tbody>

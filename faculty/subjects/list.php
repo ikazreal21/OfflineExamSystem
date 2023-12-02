@@ -69,6 +69,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Main Menu</p>
                     </a>
                 </li>
+                <?php if ($_SESSION["prof_role"] == 'main'): ?>
                 <li>
                     <a href="../questions/">
                         <p>Questions</p>
@@ -79,6 +80,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                         <p>Exam</p>
                     </a>
                 </li>
+                <?php endif;?>
                 <li class="active">
                     <a href="../subjects/">
                         <p>Subjects</p>
@@ -170,7 +172,7 @@ $section = $statement->fetchAll(PDO::FETCH_ASSOC);
                                         	<td style="font-size:medium;"><b><?php echo $item['number_of_stud']; ?></b></td>
                                         	<td style="font-size:medium;"><?php echo $item['prof_name']; ?></td>
                                         	<td style="text-align:center;">
-                                                <a href="view_result_per_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Exam Results</a>
+                                                <a href="view_result_per_section.php?id=<?php echo $item['section_id']; ?>&rnd_id=<?php echo $item['subject_id']; ?>" class="btn btn-success btn-wd">View Student</a>
                                             </td>
                                         </tr>
                                         <?php endforeach;?>

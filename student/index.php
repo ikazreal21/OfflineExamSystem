@@ -32,7 +32,9 @@ if (!empty($_GET['status'])) {
 
 $available_exam = [];
 
-$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
+//$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id)');
+//$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.subject_id in (select p.subject_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id and score is not null)');
+$statement = $pdo->prepare('SELECT e.* FROM examcreated e where e.section_id in (select p.section_id from enrolled_student p where p.student_id = :student_id) and status = "open" and e.exam_id not in (select x.exam_id from exam_take x where x.student_id = :student_id and score is not null)');
 
 // $statement = $pdo->prepare('SELECT * FROM examcreated');
 $statement->bindValue(':student_id', $_SESSION["student_id"]);
@@ -81,8 +83,8 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
     <link href="../assets/css/themify-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> -->
+    <script src="../assets/js/sweetalert.js"></script>
 
 </head>
 <body>
@@ -240,9 +242,18 @@ $procdata = $statement->fetchAll(PDO::FETCH_ASSOC);
     <script src="../assets/js/mes.js"></script>        
     <script>
         function confirmTakeExam(examId) {
+            let learnCoding = `How to start learning web development?
+- Learn HTML
+- Learn CSS
+- Learn JavaScript
+Use freeCodeCamp to learn all the above and much, much more !
+`
+
             Swal.fire({
                 title: 'Are you sure to take this exam?',
-                text: "You won't be able to undo this action.",
+                
+                // text: "You won't be able to undo this action.",
+                text: learnCoding,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, take it!',

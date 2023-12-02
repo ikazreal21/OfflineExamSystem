@@ -110,11 +110,13 @@ if (count($procdata) == 0) {
                         <p>Subject</p>
                     </a>
                 </li>
+                <!--
                 <li>
-                    <a href="../generate/">
+                    <a href="generate/">
                         <p>Reports</p>
                     </a>
                 </li>
+                -->
                 <li>
                     <a href="../user/">
                         <p>Users</p>

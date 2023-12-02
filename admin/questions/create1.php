@@ -153,11 +153,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p>Subject</p>
                     </a>
                 </li>
+                <!--
                 <li>
-                    <a href="../generate/">
+                    <a href="generate/">
                         <p>Reports</p>
                     </a>
                 </li>
+                -->
                 <li>
                     <a href="../user/">
                         <p>Users</p>

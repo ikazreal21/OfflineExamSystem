@@ -3,7 +3,6 @@ session_start();
 
 require_once "../../dbconnect.php"; 
 
-echo $_SESSION["exam_taken"]["score"]['identification'];
 
 // Function to check remaining time and perform redirection if time is zero
 function checkRemainingTime($pdo, $session_id) {

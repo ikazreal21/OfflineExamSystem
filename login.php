@@ -28,6 +28,12 @@ try {
             );
             $count = $statement->rowCount();
             $user = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            $procdata = [];
+
+
+
+
             // echo '<pre>';
             // var_dump($user[0]);
             // echo '<pre>';
@@ -36,6 +42,25 @@ try {
                 $_SESSION["username"] = $_POST["username"];
                 $_SESSION["email"] = $user[0]["email"];
                 $_SESSION["usertype"] = $user[0]["role"];
+                if ($user[0]["role"] == "faculty") {
+                    $statement = $pdo->prepare('SELECT * FROM prof_subjects WHERE prof_id = :prof_id');
+                    $statement->bindValue(':prof_id', $user[0]["id"]);
+                    $statement->execute();
+                    $procdatas = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    $_SESSION["data"] = $procdatas;
+
+                    foreach ($procdatas as $row) {
+                        if ($row['role'] == "main") {
+                            $_SESSION["prof_role"] = "main";
+                        } else {
+                            $_SESSION["prof_role"] = "none";
+                        }
+                    }
+                } else {
+                    $_SESSION["prof_role"] = "none";
+                }
+
                 $_SESSION["first_name"] = $user[0]["first_name"];
                 $_SESSION["last_name"] = $user[0]["last_name"];
                 $_SESSION["id"] = $user[0]["id"];
@@ -118,6 +143,10 @@ try {
                     <div class="">
                         <div class="card">
                             <div class="header">
+                                <div class="logo-login" style="width:250px; margin:auto; display: flex; justify-content:space-around;">
+                                    <img src="assets/image/CCS LOGO.png" width="100" height="100">
+                                    <img src="assets/image/OLFU LOGO.png" width="100" height="100">
+                                </div>
                                 <h4 class="text-center">Our Lady of Fatima University Examination System</h4>
                             </div>
                             <div class="container">

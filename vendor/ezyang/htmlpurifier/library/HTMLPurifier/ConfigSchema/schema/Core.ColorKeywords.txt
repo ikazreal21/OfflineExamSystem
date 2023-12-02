@@ -10,7 +10,7 @@ array (
   'azure' => '#F0FFFF',
   'beige' => '#F5F5DC',
   'bisque' => '#FFE4C4',
-  'black' => '#000000',
+  'black' => '#3B1B1B',
   'blanchedalmond' => '#FFEBCD',
   'blue' => '#0000FF',
   'blueviolet' => '#8A2BE2',
